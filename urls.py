@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     # Example:
     # (r'^blip/', include('blip.foo.urls')),
 
+    (r'/dashboard', cockpit.views.main, ),
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
