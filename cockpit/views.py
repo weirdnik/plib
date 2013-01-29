@@ -1,11 +1,11 @@
 # Create your views here.
 
-from django.http import HttpResponse as HTTPResponse, 
-  HttpResponseRedirect as HTTPResponseRedirect,
-  HttpResponseGone as HTTPResponseGone
-  HttpResponseBadRequest as HTTPResponseBadRequest,
-  HttpResponseNotAllowed as HTTPResponseNotAllowed,
-  HttpResponseForbidden as HTTPResponseForbidden
+from django.http import HttpResponse as HTTPResponse
+from django.http import   HttpResponseRedirect as HTTPResponseRedirect
+from django.http import   HttpResponseGone as HTTPResponseGone
+from django.http import   HttpResponseBadRequest as HTTPResponseBadRequest
+from django.http import   HttpResponseNotAllowed as HTTPResponseNotAllowed
+from django.http import   HttpResponseForbidden as HTTPResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.shortcuts import redirect
