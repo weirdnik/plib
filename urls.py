@@ -9,7 +9,9 @@ urlpatterns = patterns('',
     # Example:
     # (r'^blip/', include('blip.foo.urls')),
 
-    (r'^dashboard', 'cockpit.views.main' ),
+    (r'^dashboard/?$', 'cockpit.views.main' ),
+    (r'^user/(?P<username>\w+)/dashboard/?$', 'cockpit.views.main' ),
+    (r'^user/(?P<username>\w+)/follow/?$', 'profile.views.follow' ),    
     (r'^status/(?P<object_id>\d+)/?$', 'cockpit.views.status'),
     (r'^status/?$', 'cockpit.views.status'),
     

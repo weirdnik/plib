@@ -17,25 +17,32 @@ from models import Status, StatusForm
 from profile.models import User
 
 @login_required
-def main (request):
+def main (request, username=None):
 
   'main cockpit view for logged in user'
-  
-  user = get_object_or_404(User, pk=request.user.id)  
-  if user:
-    profile = get_object_or_404(User, pk=user.id)
-    result = dict(profile=profile, form=StatusForm())
     
-#    result['statuses'] = Status.objects.filter(owner__exact=user, recipient__exact=user).order_by('date')
-    result['statuses'] = Status.objects.filter(owner__exact=user).order_by('-date')    
-    template = loader.get_template('cockpit.html')
-    context = RequestContext (request, result)
-    
-    return HTTPResponse (template.render(context))
+  user = get_object_or_404 (User, user__username__exact=username) if username else get_object_or_404(User, pk=request.user.id)  
+  profile = get_object_or_404 (User, pk=user.id)
   
+  template = loader.get_template('cockpit.html')
+  result = dict(profile=profile, form=StatusForm())
+
+  if username:    
+    result['statuses'] = Status.objects.filter(owner__exact=user).order_by('-date')
+    result['watch'] = True
   else:
+    following = user.watches.all()
+    statuses = Status.objects.filter(owner__in=following, owner__exact=user).order_by('-date')
+#    result['statuses'] = Status.objects.filter(owner__exact=user, recipient__exact=user).order_by('date')
+    result['statuses'] = statuses
+    result['watch'] = False
+    
+  context = RequestContext (request, result)
+  return HTTPResponse (template.render(context))
   
-    return HTTPResponseRedirect ('/')
+#  else:
+  
+#    return HTTPResponseRedirect ('/')
     
   
 @login_required  
