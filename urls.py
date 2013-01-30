@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     (r'^dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/follow/?$', 'profile.views.follow' ),    
+    (r'^user/(?P<username>\w+)/unfollow/?$', 'profile.views.unfollow' ),    
     (r'^status/(?P<object_id>\d+)/?$', 'cockpit.views.status'),
     (r'^status/?$', 'cockpit.views.status'),
     
