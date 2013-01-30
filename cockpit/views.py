@@ -1,5 +1,6 @@
 # Create your views here.
 
+from django.db.models import Q
 from django.http import HttpResponse as HTTPResponse
 from django.http import   HttpResponseRedirect as HTTPResponseRedirect
 from django.http import   HttpResponseGone as HTTPResponseGone
@@ -20,31 +21,36 @@ from profile.models import User
 def main (request, username=None):
 
   'main cockpit view for logged in user'
-    
-  user = get_object_or_404 (User, user__username__exact=username) if username else get_object_or_404(User, pk=request.user.id)  
-  profile = get_object_or_404 (User, pk=user.id)
+  
+  user = get_object_or_404(User, pk=request.user.id)
+  profile = get_object_or_404 (User, user__username__exact=username) if username else user
+  
+  # profile - the profile displayed
+  # user - the logged user's profile
   
   template = loader.get_template('cockpit.html')
   result = dict(profile=profile, form=StatusForm())
+  
+  following = user.watches.all()
 
   if username:    
-    result['statuses'] = Status.objects.filter(owner__exact=user).order_by('-date')
-    result['watch'] = True
+    result['statuses'] = Status.objects.filter(owner__exact=profile).order_by('-date')
+
+    if profile in following:
+      result['follow'] = False
+      result['unfollow'] = True
+    else:
+      result['follow'] = True
+      result['unfollow'] = False
   else:
-    following = user.watches.all()
-    statuses = Status.objects.filter(owner__in=following, owner__exact=user).order_by('-date')
-#    result['statuses'] = Status.objects.filter(owner__exact=user, recipient__exact=user).order_by('date')
+    statuses = Status.objects.filter(Q(owner__in=following)|Q(owner__exact=profile))
     result['statuses'] = statuses
     result['watch'] = False
-    
+
   context = RequestContext (request, result)
   return HTTPResponse (template.render(context))
   
-#  else:
-  
-#    return HTTPResponseRedirect ('/')
-    
-  
+
 @login_required  
 def status (request, object_id=None):
 
