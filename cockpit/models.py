@@ -8,14 +8,17 @@ class Status (models.Model):
 
   date = models.DateTimeField (auto_now_add=True)
   owner = models.ForeignKey (User, related_name="sender_set")
-  recipient = models.ForeignKey (User, related_name="recipient_set")
-  private = models.BooleanField ()
-  text = models.TextField ()
-  image = models.ImageField(upload_to="images/%s.%N")
+  recipient = models.ForeignKey (User, related_name="recipient_set", blank=True, null=True)
+  private = models.BooleanField (default=False)
+  text = models.TextField (blank=False)
+  image = models.ImageField(upload_to="images/%s.%N", blank=True)
+  
+  
   
 class StatusForm (ModelForm):
   class Meta:
     model = Status
+    fields = ['text', 'image']
 
 class Tag (models.Model):
 

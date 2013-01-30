@@ -16,18 +16,18 @@ from django.template import RequestContext, loader, Template
 from models import Status, StatusForm
 from profile.models import User
 
+@login_required
 def main (request):
 
   'main cockpit view for logged in user'
   
-  user = request.user
-  
+  user = get_object_or_404(User, pk=request.user.id)  
   if user:
     profile = get_object_or_404(User, pk=user.id)
-    result = dict(profile=profile)
+    result = dict(profile=profile, form=StatusForm())
     
-    result['statuses'] = Status.objects.filter(owner__exact=user, recipient__exact=user).order_by('date')
-    
+#    result['statuses'] = Status.objects.filter(owner__exact=user, recipient__exact=user).order_by('date')
+    result['statuses'] = Status.objects.filter(owner__exact=user).order_by('-date')    
     template = loader.get_template('cockpit.html')
     context = RequestContext (request, result)
     
@@ -41,6 +41,8 @@ def main (request):
 @login_required  
 def status (request, object_id=None):
 
+  user = get_object_or_404(User, pk=request.user.id)
+  
   if request.method == 'GET':
     if not object_id:
       return HTTPResponseNotAllowed ()
@@ -60,8 +62,11 @@ def status (request, object_id=None):
     
       form = StatusForm (request.POST)
       if form.is_valid():
-        status=form.save()
-        
+        status=form.save(commit=False)
+        status.owner=user
+        status.save()
+      else:
+        HTTPResponseBadRequest()
       return HTTPResponseRedirect(reverse('cockpit.views.main'))
       
   else:

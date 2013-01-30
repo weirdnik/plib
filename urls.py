@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     (r'^dashboard', 'cockpit.views.main' ),
     (r'^status/(?P<object_id>\d+)/?$', 'cockpit.views.status'),
+    (r'^status/?$', 'cockpit.views.status'),
     
     # Uncomment the admin/doc line below to enable admin documentation:
     #(r'^admin/doc/', include('django.contrib.admindocs.urls')),
