@@ -1,5 +1,5 @@
 # Create your views here.
-
+# -*- coding: iso-8859-2 -*-
 import re
 
 from django.db.models import Q
@@ -33,14 +33,17 @@ def main (request, username=None):
   
   # profile - the profile displayed
   # user - the logged user's profile
-  
+   
   template = loader.get_template('cockpit.html')
   result = dict(profile=profile, form=StatusForm())
   
   following = user.watches.all()
 
   if username:    
-    result['statuses'] = Status.objects.filter(owner__exact=profile).order_by('-date')
+    result['statuses'] = Status.objects.filter(
+      ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and owner
+      ( (Q(owner__exact=profile) | Q(recipient__exact=profile)) & Q(private__exact=False))
+      ).order_by('-date')
 
     if profile in following:
       result['follow'] = False
@@ -48,11 +51,10 @@ def main (request, username=None):
     else:
       result['follow'] = True
       result['unfollow'] = False
-  else:
-    statuses = Status.objects.filter((Q(owner__in=following) & Q(recipient__exact=None))
-      | Q(owner__exact=profile) | Q(recipient__exact=profile))
-  #  statuses = Status.objects.filter(  Q(owner__exact=profile|Q(recipient__exact=profile))
-#    (Q(owner__in=following) & Q(recipient__exact=None))|
+  else: # profile = user
+    statuses = Status.objects.filter(
+       (Q(owner__in=following) & Q(recipient__exact=None)) |
+       Q(owner__exact=profile) | Q(recipient__exact=profile))
   
     result['statuses'] = statuses
     result['watch'] = False
