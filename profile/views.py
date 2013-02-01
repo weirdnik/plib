@@ -11,9 +11,11 @@ from django.core.context_processors import csrf
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext, loader, Template
+from django.template import Context, RequestContext, loader, Template
 
 from models import User
+
+from cockpit.models import Status
 
 @login_required
 def follow (request, username):
@@ -47,3 +49,16 @@ def unfollow (request, username):
   else:
     return HTTPResponseNotAllowed ()
 
+
+def blog (request, username):
+  if request.method == 'GET':
+  
+    user =  get_object_or_404(User, user__id=request.user.id)  
+    print user    
+    statuses = Status.objects.filter(owner__exact=user, recipient__exact=None)
+
+    print statuses    
+    template = loader.get_template('blog.html')
+    
+    return HTTPResponse(template.render(Context(dict(statuses=statuses, profile=user))))
+    
