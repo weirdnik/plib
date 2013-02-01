@@ -1,0 +1,18 @@
+
+<html>
+  <head>
+    <title>blog uzytkownika {{ profile.user.username }}</title>
+  </head>
+  <body>
+    <div id="profile">
+    
+    </div>
+{% if statuses %}    
+    <div id="content">{% for status in statuses %}
+      <div id="entry-{{ status.id }}" class="status">
+        <p class="status">{{ status.text }}</p>
+      </div>
+    </div>{% endfor %}{% else %}
+    <p>nic tu jeszcze nie ma</p>{% endif %}
+  </body>
+</html>

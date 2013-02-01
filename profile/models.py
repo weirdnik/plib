@@ -15,6 +15,7 @@ class User (models.Model):
   phone = models.TextField ()
   private = models.BooleanField (default = False)
   watches = models.ManyToManyField ('User', related_name='user_watches_set', blank=True)
+#  sex
 
   def __unicode__ (self):
   
