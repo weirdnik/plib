@@ -1,5 +1,7 @@
 # Create your views here.
 
+import re
+
 from django.db.models import Q
 from django.http import HttpResponse as HTTPResponse
 from django.http import   HttpResponseRedirect as HTTPResponseRedirect
@@ -13,9 +15,13 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext, loader, Template
+from django.contrib.auth.models import User as DjangoUser
 
 from models import Status, StatusForm
 from profile.models import User
+
+MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
+MENTION_RE = re.compile('\^(?P<nickname>\w+)')
 
 @login_required
 def main (request, username=None):
@@ -43,7 +49,11 @@ def main (request, username=None):
       result['follow'] = True
       result['unfollow'] = False
   else:
-    statuses = Status.objects.filter(Q(owner__in=following)|Q(owner__exact=profile))
+    statuses = Status.objects.filter((Q(owner__in=following) & Q(recipient__exact=None))
+      | Q(owner__exact=profile) | Q(recipient__exact=profile))
+  #  statuses = Status.objects.filter(  Q(owner__exact=profile|Q(recipient__exact=profile))
+#    (Q(owner__in=following) & Q(recipient__exact=None))|
+  
     result['statuses'] = statuses
     result['watch'] = False
 
@@ -77,6 +87,16 @@ def status (request, object_id=None):
       if form.is_valid():
         status=form.save(commit=False)
         status.owner=user
+  
+        
+        msg = MESSAGE_RE.match(status.text)
+        
+        if msg:
+          recipient = get_object_or_404(DjangoUser, username=msg.groupdict()['recipient'])
+          status.recipient = get_object_or_404(User, user=recipient)
+          if status.text[1] == '>':
+            status.private = True
+        
         status.save()
       else:
         HTTPResponseBadRequest()
