@@ -1,5 +1,5 @@
 {% extends "page.html" %}
-{% block content %} 
+
 <h1>kokpit użytownika {{profile.user.username}}</h1>
 <div id="userinfo">
 {% if follow %}
@@ -39,5 +39,3 @@
 {% else %}
 <p>nic tu jeszcze nie ma</p>
 {% endif %}
-
-{% endblock %}

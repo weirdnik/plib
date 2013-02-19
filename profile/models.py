@@ -6,7 +6,7 @@ from django.contrib.auth.models import User as AuthUser
 class User (models.Model):
 
   user = models.OneToOneField (AuthUser, related_name='django_user_set')
-  
+  active = models.BooleanField (default=False)  
   name = models.TextField()
   about = models.TextField()
   icbm = models.TextField()
