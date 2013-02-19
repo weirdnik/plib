@@ -1,29 +1,46 @@
 {% extends "page.html" %}
 {% block content %} 
-      <h1>kokpit użytownika {{profile.user.username}}</h1>
-      <div id="userinfo">
-{% if follow %}        <form method="POST" action="{% url profile.views.follow username=profile.user.username %}">
-        {% csrf_token %}
-          <input type="submit" value="obserwuj"/>
-        </form>{% endif %}
-{% if unfollow %}        <form method="POST" action="{% url profile.views.unfollow username=profile.user.username %}">
-        {% csrf_token %}
-          <input type="submit" value="nie obserwuj"/>
-        </form>{% endif %}
-      </div>
-      <form method="POST" action="{% url cockpit.views.status %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="plib!"/>
-      </form>{% if profile.watches.all %}
-      <h2>Obserwowani</h2>
-      <ul>{% for f in profile.watches.all %}
-        <li><a href="{% url cockpit.views.main  username=f.user.username %}">{{f.user.username}}</a></li>{% endfor %}
-      </ul>{% else %}
-      <p>nikogo nie obserwuje</p>{% endif %}
+    <h1>kokpit użytownika {{profile.user.username}}</h1>
+    <div id="cockpit" style="display: table-row">  
+      <div style="display:table-cell; vertical-align: top;">
 
-      <iframe id="feed" sandbox="allow-scripts" scrolling="auto" 
-        src="{% url cockpit.views.feed username=profile.user.username %}" 
-        style="width:  30em; height:60em;">
-      </iframe>
+        <div id="post-form">
+          <form method="POST" action="{% url cockpit.views.status %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="plib!"/>
+          </form>
+        </div><!-- post-form end -->
+
+        <div id="userinfo">
+          <h2>{{ profile.user.username }}</h2>
+{% if follow %}          <form method="POST" action="{% url profile.views.follow username=profile.user.username %}">
+            {% csrf_token %}
+            <input type="submit" value="obserwuj"/>
+          </form>{% endif %}
+{% if unfollow %}          <form method="POST" action="{% url profile.views.unfollow username=profile.user.username %}">
+            {% csrf_token %}
+            <input type="submit" value="nie obserwuj"/>
+          </form>{% endif %}
+          <h2>Obserwowani</h2>{% if profile.watches.all %}
+          <ul>{% for f in profile.watches.all %}
+            <li><a href="{% url cockpit.views.main  username=f.user.username %}">{{f.user.username}}</a></li>{% endfor %}
+          </ul>{% else %}
+          <p>nikogo nie obserwuje</p>{% endif %}  
+        </div><!-- userinfo end -->      
+      </div>
+         
+      <div style="display: table-cell;">
+        <iframe id="feed" sandbox="allow-scripts" scrolling="auto" 
+          src="{% url cockpit.views.feed username=profile.user.username %}" 
+          style="width: 30em; height:60em;">
+        </iframe>
+      </div>
+    </div>
+         
+         
+          
+
+
+
 {% endblock %}
