@@ -30,7 +30,7 @@ def feed_lookup (user, profile, private):
   if private:
     result = Status.objects.filter(
       (Q(owner__in=following) & Q(recipient__exact=None)) |
-      Q(owner__exact=profile) | Q(recipient__exact=profile))
+      Q(owner__exact=profile) | Q(recipient__exact=profile)).order_by('-date')
       
   else:
      result = Status.objects.filter(
