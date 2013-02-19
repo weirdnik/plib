@@ -1,8 +1,0 @@
-
-
-<p><form method="POST" action="{% url profile.views.register %}"> </p>
-{% csrf_token %}
-{{ form.as_p }}
-<p><input type="text" name="email" id="email" /></p>
-<p><input type="submit" value="register!" /></p>
-</form>

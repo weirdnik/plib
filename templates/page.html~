@@ -1,5 +1,0 @@
-<div id="menubar">{% if user %} 
-<a href="{% url django.contrib.auth.views.logout %}">logout</a>{% endif %}
-</div>
-
-{% block content %} {% endblock content %}
