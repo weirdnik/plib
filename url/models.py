@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 
 from profile.models import User
 
@@ -13,8 +14,12 @@ class URL(models.Model):
   public = models.BooleanField()
   description = models.TextField(blank=True)
   created = models.DateTimeField(auto_now_add=True)
-          
 
+class URLForm (ModelForm):
+  class Meta:
+    model = URL
+    fields = ('url')
+    
 class Click (models.Model):
 
   date = models.DateTimeField(auto_now_add=True)
