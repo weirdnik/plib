@@ -26,14 +26,4 @@
         src="{% url cockpit.views.feed username=profile.user.username %}" 
         style="width:  30em; height:60em;">
       </iframe>
-
-{% if statuses %}
-{% for status in statuses %}
-<p>{{ status.owner.user.username}}: {{ status.text }}</p>
-<p>{{ status.date }}</p>
-{% endfor %}
-{% else %}
-<p>nic tu jeszcze nie ma</p>
-{% endif %}
-
 {% endblock %}
