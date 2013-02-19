@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>dgasgsfdgfsg></title>
+    <meta http-equiv="refresh" content="30">
+  </head>
+  <body>{% if feed %}
+    <ul>{% for status in feed %}
+    dupa
+      <li>
+        <p class="status">{{ status.owner.user.username}}: {{ status.text }}</p>
+        <p class="status-date">{{ status.date }}</p>
+      </li>{% endfor %}
+    </ul>{% endif %}
+    <!-- feed.html -->
+  </body>
+</html>

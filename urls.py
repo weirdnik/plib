@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     (r'^dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/dashboard/?$', 'cockpit.views.main' ),
+    (r'^user/(?P<username>\w+)/feed/?$', 'cockpit.views.feed' ),    
     (r'^user/(?P<username>\w+)/follow/?$', 'profile.views.follow' ),    
     (r'^user/(?P<username>\w+)/unfollow/?$', 'profile.views.unfollow' ),    
     (r'^user/(?P<username>\w+)/blog/?$', 'profile.views.blog' ),    
