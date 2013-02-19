@@ -23,6 +23,24 @@ from profile.models import User
 MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
 MENTION_RE = re.compile('\^(?P<nickname>\w+)')
 
+###
+
+def feed_lookup (user, profile, private):
+  following = user.watches.all()
+  if private:
+    result = Status.objects.filter(
+      (Q(owner__in=following) & Q(recipient__exact=None)) |
+      Q(owner__exact=profile) | Q(recipient__exact=profile))
+      
+  else:
+     result = Status.objects.filter(
+       ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and own
+       ( (Q(owner__exact=profile) | Q(recipient__exact=profile)) & Q(private__exact=False))
+       ).order_by('-date')
+                       
+  return result
+
+###
 @login_required
 def main (request, username=None):
 
@@ -40,10 +58,11 @@ def main (request, username=None):
   following = user.watches.all()
 
   if username:    
-    result['statuses'] = Status.objects.filter(
-      ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and owner
-      ( (Q(owner__exact=profile) | Q(recipient__exact=profile)) & Q(private__exact=False))
-      ).order_by('-date')
+    result['statuses'] = feed_lookup (user, profile, False)
+#    result['statuses'] = Status.objects.filter(
+#      ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and owner
+#      ( (Q(owner__exact=profile) | Q(recipient__exact=profile)) & Q(private__exact=False))
+#      ).order_by('-date')
 
     if profile in following:
       result['follow'] = False
@@ -52,17 +71,29 @@ def main (request, username=None):
       result['follow'] = True
       result['unfollow'] = False
   else: # profile = user
-    statuses = Status.objects.filter(
-       (Q(owner__in=following) & Q(recipient__exact=None)) |
-       Q(owner__exact=profile) | Q(recipient__exact=profile))
+    statuses = feed_lookup (user, profile, True)
+#    statuses = Status.objects.filter(
+#       (Q(owner__in=following) & Q(recipient__exact=None)) |
+#       Q(owner__exact=profile) | Q(recipient__exact=profile))
   
     result['statuses'] = statuses
     result['watch'] = False
-
+    result['profile'] = profile
   context = RequestContext (request, result)
   return HTTPResponse (template.render(context))
-  
 
+@login_required
+def feed (request, username):  
+
+
+  user = get_object_or_404(User, pk=request.user.id)
+  profile = get_object_or_404 (User, user__username__exact=username) if username else user
+
+  statuses = feed_lookup (user, profile, user==profile)  
+  template = loader.get_template("feed.html")
+  return HTTPResponse (template.render(RequestContext(request, dict(feed=statuses, profile=profile))))
+ 
+ 
 @login_required  
 def status (request, object_id=None):
 
