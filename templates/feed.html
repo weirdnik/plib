@@ -1,16 +1,15 @@
 <html>
   <head>
     <title>dgasgsfdgfsg></title>
-    <meta http-equiv="refresh" content="30">
+    <meta http-equiv="refresh" content="5">
   </head>
   <body>{% if feed %}
     <ul>{% for status in feed %}
-    dupa
       <li>
         <p class="status">{{ status.owner.user.username}}: {{ status.text }}</p>
         <p class="status-date">{{ status.date }}</p>
       </li>{% endfor %}
-    </ul>{% endif %}
+    </ul>{% else %}<p>Uzytkownik jeszcze niczego nie napisal</p>{% endif %}
     <!-- feed.html -->
   </body>
 </html>
