@@ -1,6 +1,13 @@
+import re
+from django.core.urlresolvers import reverse
+
 from django.db import models
 from profile.models import User
 from django.forms import ModelForm
+
+#
+
+TAG_RE = re.compile('#(?P<tag>\w+)')
 
 # Create your models here.
 
@@ -10,9 +17,24 @@ class Status (models.Model):
   owner = models.ForeignKey (User, related_name="sender_set")
   recipient = models.ForeignKey (User, related_name="recipient_set", blank=True, null=True)
   private = models.BooleanField (default=False)
+  tagged = models.BooleanField (default=True)
   text = models.TextField (blank=False)
   image = models.ImageField(upload_to="images/%s.%N", blank=True)
   
+#  event  
+
+  def render (self):
+
+    result = self.text
+  
+    if self.tagged:
+
+      result = TAG_RE.sub ( lambda g: '<a href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(tag=g.group().strip('#'))) ,g.group()),  s))
+      
+    
+    return result
+  
+     
   
   
 class StatusForm (ModelForm):
