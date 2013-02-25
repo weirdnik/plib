@@ -8,7 +8,9 @@ from django.forms import ModelForm
 #
 
 TAG_RE = re.compile('#(?P<tag>\w+)')
-MENTION_RE = re.compile('^(?P<username>\w+)')
+MENTION_RE = re.compile('\^(?P<username>\w+)')
+YOUTUBE_RE = re.compile ('http://(www.)youtube.com/watch\?v=(?P<video>[\w\d]+)')
+VIMEO_RE = re.compile ('https?://(www.)vimeo.com/(?P<video>\d+)')
 
 # Create your models here.
 
@@ -26,13 +28,18 @@ class Status (models.Model):
 
   def render (self):
 
-    result = MENTION_RE.sub( lambda g: '<a href="%s">%s</a>' % (reverse('cockpit.views.main', kwargs=dict(username=g.group().strip('^'))), g.group().strip('^')), self.text))
-  
+    result = MENTION_RE.sub( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main', kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
+
+    # embedding stuff from other sites
+    
+    result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'], self.text )
+#    result = VIMEO_RE.sub  ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'], self.text)
+
     if self.tagged:
 
-      result = TAG_RE.sub ( lambda g: '<a href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(tag=g.group().strip('#'))) ,g.group()),  s))    
+      result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(tag=g.group().strip('#'))) ,g.group()), result)
 
-      return result
+    return result
 
   
 class StatusForm (ModelForm):
