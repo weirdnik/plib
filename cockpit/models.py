@@ -9,8 +9,9 @@ from django.forms import ModelForm
 
 TAG_RE = re.compile('#(?P<tag>\w+)')
 MENTION_RE = re.compile('\^(?P<username>\w+)')
-YOUTUBE_RE = re.compile ('http://(www.)youtube.com/watch\?v=(?P<video>[\w\d]+)')
-VIMEO_RE = re.compile ('https?://(www.)vimeo.com/(?P<video>\d+)')
+YOUTUBE_RE = re.compile ('http://(www.)?youtube.com/watch\?v=(?P<video>[\w\d]+)')
+
+VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 
 # Create your models here.
 
@@ -32,8 +33,8 @@ class Status (models.Model):
 
     # embedding stuff from other sites
     
-    result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'], self.text )
-#    result = VIMEO_RE.sub  ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'], self.text)
+    result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'], result )
+    result = VIMEO_RE.sub  ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'], result)
 
     if self.tagged:
 
