@@ -1,11 +1,13 @@
 # Create your views here.
 
+import string, random
+
 from django.http import HttpResponse as HTTPResponse
-from django.http import   HttpResponseRedirect as HTTPResponseRedirect
-from django.http import   HttpResponseGone as HTTPResponseGone
-from django.http import   HttpResponseBadRequest as HTTPResponseBadRequest
-from django.http import   HttpResponseNotAllowed as HTTPResponseNotAllowed
-from django.http import   HttpResponseForbidden as HTTPResponseForbidden
+from django.http import HttpResponseRedirect as HTTPResponseRedirect
+from django.http import HttpResponseGone as HTTPResponseGone
+from django.http import HttpResponseBadRequest as HTTPResponseBadRequest
+from django.http import HttpResponseNotAllowed as HTTPResponseNotAllowed
+from django.http import HttpResponseForbidden as HTTPResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.shortcuts import redirect
@@ -13,10 +15,11 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.template import Context, RequestContext, loader, Template
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 import django.forms as forms
 
 from models import User
+from email import confirm
 
 from cockpit.models import Status
 
@@ -70,40 +73,68 @@ def register (request):
 
   from django.contrib.auth.models import User as DjangoUser
 
-  class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(max_length=128)
-        
+  template = loader.get_template ('register.html')
 
+  class RegistrationForm(UserCreationForm):
+#    pass
+    email = forms.EmailField(max_length=128)
+       
   if request.method == 'GET':
-    template = loader.get_template ('register.html')
-    return HTTPResponse (template.render(RequestContext(request, dict(form=UserCreationForm()))))
+
+    return HTTPResponse (template.render(RequestContext(request, dict(form=RegistrationForm()))))
     
-  if request.method == 'POST':
+  elif request.method == 'POST':
 
     form = RegistrationForm(request.POST)
     
     if form.is_valid():
     
       print  dir(form['password1']),  form['password2'].data
+      print form
       if  form['password1'].data == form['password2'].data:
         username = form['username'].data
         password = form['password1'].data
         email = form['email'].data
+         
+        # Warning: elsewhere in the code user is profile.models.User instance
+        # here it is django.auth User instance
 
-        # Warning: elsewhere in the code User is profile.models.User instance
-        # here it is django.auth USer instance
-        
-        user = DjangoUser.objects.create_user(username, email, password)
-        user.save()
-        
-        profile = User(user=user)
-        profile.save()
-
-        u = authenticate(username, password)        
-        login (request, user)
+        try: 
+          user = DjangoUser.objects.get(username=username)        
+        except DjangoUser.DoesNotExist:
+          user = DjangoUser.objects.create_user(username, email, password)
+          user.is_active = False
+          user.save()
+                  
+          profile = User(user=user)
+          slug = ''
+          for i in xrange(16):
+            slug = slug + random.choice(string.ascii_letters)
+          profile.slug = slug
+          print email, slug
+         
+          profile.save()
+          confirm (email, slug)          
       else:
         print 'bad passwords'
         return HTTPResponseBadRequest()
     else:
-    
-      return HTTPResponseRedirect(reverse('profile.views.register'))
+      return HTTPResponse (template.render(RequestContext(request, dict(form=form))))
+
+def confirm (request, slug=None):
+
+  if slug:
+    user = get_object_or_404(User, slug__exact=slug)
+    if user:
+      user.user.is_active = True
+      user.user.save()
+      user.active = True
+      user.save()
+#      u = authenticate(user.user.username, password)        
+#      login (request, user.user)
+      template = loader.get_template('confirmed.html')
+      
+      return HTTPResponse(template.render(Context(dict(user=user))))
+      
+  return HTTPResponseRedirect(reverse('cockpit.views.main'))
+
