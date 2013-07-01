@@ -9,6 +9,8 @@ urlpatterns = patterns('',
     # Example:
     # (r'^blip/', include('blip.foo.urls')),
 
+    (r'^/?$', 'main.views.front' ),    # front page
+    
     (r'^dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/feed/?$', 'cockpit.views.feed' ),    
@@ -17,11 +19,16 @@ urlpatterns = patterns('',
     (r'^user/(?P<username>\w+)/blog/?$', 'profile.views.blog' ),    
     (r'^status/(?P<object_id>\d+)/?$', 'cockpit.views.status'),
     (r'^status/?$', 'cockpit.views.status'),
+
+    (r'^tag/(?P<tag>\w+)/$', 'cockpit.views.tag'),
     
-    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login',
+      {'template_name': 'login.html'}),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout',
+      {'template_name': 'logout.html'}),
 
     (r'^accounts/register/$', 'profile.views.register'),
+    (r'^accounts/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),    
     # Uncomment the admin/doc line below to enable admin documentation:
     #(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # Uncomment the next line to enable the admin:
