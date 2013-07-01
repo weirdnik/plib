@@ -17,7 +17,10 @@ class User (models.Model):
   '''
   
   user = models.OneToOneField (AuthUser, related_name='django_user_set')
-  active = models.BooleanField (default=False)  
+  active = models.BooleanField (default=False)
+  premium = models.BooleanField (default=False)
+  official = models.BooleanField (default=False)
+  seed = models.SlugField()
   name = models.TextField()
   about = models.TextField()
   icbm = models.TextField()
