@@ -1,11 +1,13 @@
 {% extends "page.html" %}
 {% block content %} 
+    <script type="text/javascript" src="/static/js/submit.js"></script>
     <h1>kokpit użytownika {{profile.user.username}}</h1>
     <div id="cockpit" style="display: table-row">  
       <div style="display:table-cell; vertical-align: top;">
 
-        <div id="post-form">
-          <form method="POST" action="{% url cockpit.views.status %}">
+        <div id="status_form">
+          <form method="POST" action="{% url cockpit.views.status %}"
+          onkeyup="if(isEnterPressed(event)){ document.status_form.submit(); }">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="plib!"/>
@@ -31,7 +33,7 @@
       </div>
          
       <div style="display: table-cell;">
-        <iframe id="feed" sandbox="allow-scripts" scrolling="auto" 
+        <iframe id="feed" scrolling="auto" 
           src="{% url cockpit.views.feed username=profile.user.username %}" 
           style="width: 30em; height:60em;">
         </iframe>
