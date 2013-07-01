@@ -7,8 +7,8 @@ from django.contrib.auth.models import User as AuthUser
 
 class User (models.Model):
   '''
-  active     - konto aktywne
-  name       - nazwa usera 
+#  active     - konto aktywne - obsolete, auth to ma
+#  name       - nazwa usera  -''-
   about      - opis
   icbm       - lokalizacja
   avatar     - obrazek awatara
@@ -19,21 +19,21 @@ class User (models.Model):
   '''
   
   user = models.OneToOneField (AuthUser, related_name='django_user_set')
-  active = models.BooleanField (default=False)
+#  active = models.BooleanField (default=False)
+  love = models.BooleanField (default=False)
   premium = models.BooleanField (default=False)
   official = models.BooleanField (default=False)
-  seed = models.SlugField()
-  name = models.TextField()
-  about = models.TextField()
-  icbm = models.TextField()
+  slug = models.SlugField ()
+  name = models.TextField ()
+  about = models.TextField ()
+  icbm = models.TextField ()
+  sex = models.CharField(max_length=1, choices=(('m','m'), ('f', 'f'), ('o','o'), ('n','n/a')))
   avatar = models.ImageField(upload_to="avatars/%s", blank=True)
   background = models.ImageField (upload_to="backgrounds/%s", blank=True)
   phone = models.TextField ()
-  private = models.BooleanField (default = False)
+  private = models.BooleanField (default=False)
   watches = models.ManyToManyField ('User', related_name='user_watches_set', blank=True)
   ignores = models.ManyToManyField ('User', related_name='user_ignores_set', blank=True)  
-
-#  sex
 
   def __unicode__ (self):
   
