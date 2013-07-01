@@ -19,7 +19,7 @@ from django.contrib.auth import login, authenticate
 import django.forms as forms
 
 from models import User
-from email import confirm
+import sendmail
 
 from cockpit.models import Status
 
@@ -92,7 +92,7 @@ def register (request):
       print  dir(form['password1']),  form['password2'].data
       print form
       if  form['password1'].data == form['password2'].data:
-        username = form['username'].data
+        username = form['username'].data.strip()
         password = form['password1'].data
         email = form['email'].data
          
@@ -114,7 +114,9 @@ def register (request):
           print email, slug
          
           profile.save()
-          confirm (email, slug)          
+          sendmail.confirm (email, slug)          
+          template = loader.get_template ('confirm.html')
+          return HTTPResponse (template.render(RequestContext(request, dict(email=email))))
       else:
         print 'bad passwords'
         return HTTPResponseBadRequest()

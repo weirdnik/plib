@@ -2,15 +2,19 @@
 
 import smtplib, re
 
+from email.MIMEText import MIMEText
+from email.Header import Header
+from time import gmtime, strftime
+
 FROM_ADDR = 'Plan B <blip@hell.pl>'
 
-def sendmail(recipient):
+def sendmail(recipient, message):
 
   def envelope(addr):
     emailre = re.compile('<(.+@.+)>')
     return emailre.search(addr).group().strip('<>')
     
-  message = MIMEText(MESSAGE,'plain', 'UTF-8')
+  message = MIMEText(message,'plain', 'UTF-8')
   message['From'] = FROM_ADDR
   message['To'] = recipient
   message['Priority'] = 'normal'
@@ -23,5 +27,10 @@ def sendmail(recipient):
   smtp.connect()
   smtp.sendmail(envelope(FROM_ADDR), recipient, message.as_string())
   smtp.close()
+  print 'sent'
                                                   
-                                                  
+
+def confirm (recipient, message):
+  print recipient,message
+  sendmail (recipient, message)
+      
