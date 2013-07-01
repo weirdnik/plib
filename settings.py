@@ -96,6 +96,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'plib.profile',
     'plib.cockpit',
+    'plib.main',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -103,3 +104,5 @@ INSTALLED_APPS = (
 )
 
 AUTH_PROFILE_MODULE = 'profile.User'
+
+
