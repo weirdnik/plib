@@ -6,7 +6,7 @@
   <body>{% if feed %}
     <ul>{% for status in feed %}
       <li>
-        <p class="status">{{ status.owner.user.username}}: {{ status.text }}</p>
+        <p class="status">{{ status.owner.user.username}}: {{ status.render|safe }}</p>
         <p class="status-date">{{ status.date }}</p>
       </li>{% endfor %}
     </ul>{% else %}<p>Uzytkownik jeszcze niczego nie napisal</p>{% endif %}
