@@ -4,7 +4,18 @@ from django.contrib.auth.models import User as AuthUser
 # Create your models here.
 
 class User (models.Model):
-
+  '''
+  active     - konto aktywne
+  name       - nazwa usera 
+  about      - opis
+  icbm       - lokalizacja
+  avatar     - obrazek awatara
+  background - obrazek t³a
+  phone      - nr telefonu
+  private    - user prywatny (nie ma bliploga)
+  watches    - obserwowanie
+  '''
+  
   user = models.OneToOneField (AuthUser, related_name='django_user_set')
   active = models.BooleanField (default=False)  
   name = models.TextField()
@@ -15,6 +26,8 @@ class User (models.Model):
   phone = models.TextField ()
   private = models.BooleanField (default = False)
   watches = models.ManyToManyField ('User', related_name='user_watches_set', blank=True)
+  ignores = models.ManyToManyField ('User', related_name='user_ignores_set', blank=True)  
+
 #  sex
 
   def __unicode__ (self):
