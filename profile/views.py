@@ -112,9 +112,12 @@ def register (request):
             slug = slug + random.choice(string.ascii_letters)
           profile.slug = slug
           print email, slug
+          
+          slug_path = reverse('profile.views.confirm', kwargs=dict(slug=slug))
+          slug_url = request.META['HTTP_ORIGIN'] + slug_path
          
           profile.save()
-          sendmail.confirm (email, slug)          
+          sendmail.confirm (email, slug_url)          
           template = loader.get_template ('confirm.html')
           return HTTPResponse (template.render(RequestContext(request, dict(email=email))))
       else:
