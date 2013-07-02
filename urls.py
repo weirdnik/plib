@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     (r'^/?$', 'main.views.front' ),    # front page
     
     (r'^dashboard/?$', 'cockpit.views.main' ),
+    (r'^mobile/?$', 'cockpit.views.feed', dict(mobile=True), 'mobile_dashboard'),
+    
     (r'^user/(?P<username>\w+)/dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/feed/?$', 'cockpit.views.feed' ),    
     (r'^user/(?P<username>\w+)/follow/?$', 'profile.views.follow' ),    
@@ -19,6 +21,9 @@ urlpatterns = patterns('',
     (r'^user/(?P<username>\w+)/blog/?$', 'profile.views.blog' ),    
     (r'^status/(?P<object_id>\d+)/?$', 'cockpit.views.status'),
     (r'^status/?$', 'cockpit.views.status'),
+    
+    (r'^statusm/?$', 'cockpit.views.status', dict(mobile=True), 'mobile_status'),    
+
 
     (r'^tag/(?P<tag>\w+)/$', 'cockpit.views.tag'),
     
