@@ -99,7 +99,7 @@ def feed (request, username=None, mobile=False):
  
  
 @login_required  
-def status (request, object_id=None):
+def status (request, object_id=None, mobile=False):
 
   user = get_object_or_404(DjangoUser, pk=request.user.id)
   profile = get_object_or_404 (User, user__exact=user)
@@ -144,7 +144,10 @@ def status (request, object_id=None):
         
       else:
         HTTPResponseBadRequest()
-      return HTTPResponseRedirect(reverse('cockpit.views.main'))
+      if mobile:
+        return HTTPResponseRedirect(reverse('mobile_dashboard'))      
+      else:
+        return HTTPResponseRedirect(reverse('cockpit.views.main'))
       
   else:
     return HTTPResponseBadRequest()

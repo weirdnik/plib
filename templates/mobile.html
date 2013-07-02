@@ -1,7 +1,7 @@
 
     <div id="cockpit">
       <h1>kokpit</h1>
-      <form method="POST" action="{% url cockpit.views.status %}">  
+      <form method="POST" action="{% url mobile_status %}">  
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="plib!"/>
