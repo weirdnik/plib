@@ -26,6 +26,9 @@ MENTION_RE = re.compile('\^(?P<nickname>\w+)')
 ###
 
 def feed_lookup (user, profile, private):
+  ''' This is the core function of the service. It takes logged user's profile,
+  current displayed user's profile, and private [?] parameter.
+  '''
   following = user.watches.all()
   if private:
     result = Status.objects.filter(
@@ -60,10 +63,6 @@ def main (request, username=None):
 
   if username:    
     result['statuses'] = feed_lookup (user_profile, profile, False)
-#    result['statuses'] = Status.objects.filter(
-#      ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and owner
-#      ( (Q(owner__exact=profile) | Q(recipient__exact=profile)) & Q(private__exact=False))
-#      ).order_by('-date')
 
     if profile in following:
       result['follow'] = False
@@ -73,9 +72,6 @@ def main (request, username=None):
       result['unfollow'] = False
   else: # profile = user
     statuses = feed_lookup (user_profile, profile, True)
-#    statuses = Status.objects.filter(
-#       (Q(owner__in=following) & Q(recipient__exact=None)) |
-#       Q(owner__exact=profile) | Q(recipient__exact=profile))
   
     result['statuses'] = statuses
     result['watch'] = False
@@ -83,22 +79,30 @@ def main (request, username=None):
   context = RequestContext (request, result)
   return HTTPResponse (template.render(context))
 
+
 @login_required
-def feed (request, username=None):  
+def feed (request, username=None, mobile=False):  
 
   user = get_object_or_404(DjangoUser, pk=request.user.id)
   user_profile = get_object_or_404 (User, user__exact=user)
   profile = get_object_or_404 (User, user__username__exact=username) if username else user_profile
 
   statuses = feed_lookup (user_profile, profile, user==profile)  
-  template = loader.get_template("feed.html")
-  return HTTPResponse (template.render(RequestContext(request, dict(feed=statuses, profile=profile))))
+  if mobile:
+    template = loader.get_template("mobile.html")
+    form = StatusForm()
+  else:
+    template = loader.get_template("feed.html")
+    form = None
+  return HTTPResponse (template.render(RequestContext(request,
+     dict(feed=statuses, profile=profile, form=form))))
  
  
 @login_required  
 def status (request, object_id=None):
 
-  user = get_object_or_404(User, pk=request.user.id)
+  user = get_object_or_404(DjangoUser, pk=request.user.id)
+  profile = get_object_or_404 (User, user__exact=user)
   
   if request.method == 'GET':
     if not object_id:
@@ -120,7 +124,7 @@ def status (request, object_id=None):
       form = StatusForm (request.POST)
       if form.is_valid():
         status=form.save(commit=False)
-        status.owner=user
+        status.owner=profile
 
         #ESCAPE CONTENT - CRITICAL  XXX
         
@@ -147,3 +151,4 @@ def status (request, object_id=None):
 
 def tag(request, tag):
   pass    
+  
