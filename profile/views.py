@@ -31,7 +31,7 @@ def follow (request, username):
   if request.method == 'POST':
   
     user =  get_object_or_404(DjangoUser, pk=request.user.id)  
-
+    profile = get_object_or_404(User, user__exact=user)      
     follow = get_object_or_404 (User, user__username__exact=username)
   
     profile.watches.add(follow)
@@ -62,8 +62,7 @@ def unfollow (request, username):
 def blog (request, username):
   if request.method == 'GET':
   
-    user =  get_object_or_404(User, user__id=request.user.id)  
-    print user    
+    user =  get_object_or_404(User, user__username__exact=username)  
     statuses = Status.objects.filter(owner__exact=user, recipient__exact=None)
 
     print statuses    
