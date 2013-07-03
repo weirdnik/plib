@@ -114,7 +114,7 @@ def register (request):
           print email, slug
           
           slug_path = reverse('profile.views.confirm', kwargs=dict(slug=slug))
-          slug_url = request.META['HTTP_ORIGIN'] + slug_path
+          slug_url = 'http://' + request.META.get('HTTP_ORIGIN','localhost') + slug_path
          
           profile.save()
           sendmail.confirm (email, slug_url)          
