@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404
 from django.template import Context, RequestContext, loader, Template
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User as DjangoUser
+
 import django.forms as forms
 
 from models import User
@@ -28,11 +30,12 @@ def follow (request, username):
 
   if request.method == 'POST':
   
-    user =  get_object_or_404(User, pk=request.user.id)  
+    user =  get_object_or_404(DjangoUser, pk=request.user.id)  
+    profile = get_object_or_404(User, user__exact=user)
     follow = get_object_or_404 (User, user__username__exact=username)
   
-    user.watches.add(follow)
-    user.save()
+    profile.watches.add(follow)
+    profile.save()
   
     return HTTPResponseRedirect (reverse('cockpit.views.main'))
   else:
@@ -71,7 +74,6 @@ def blog (request, username):
 
 def register (request):
 
-  from django.contrib.auth.models import User as DjangoUser
 
   template = loader.get_template ('register.html')
 
