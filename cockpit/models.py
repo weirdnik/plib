@@ -9,7 +9,7 @@ from django.forms import ModelForm
 
 TAG_RE = re.compile('#(?P<tag>\w+)')
 MENTION_RE = re.compile('\^(?P<username>\w+)')
-YOUTUBE_RE = re.compile ('http://(www.)?youtube.com/watch\?v=(?P<video>[\w\d]+)')
+YOUTUBE_RE = re.compile ('http://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 
