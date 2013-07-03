@@ -30,12 +30,11 @@ def follow (request, username):
 
   if request.method == 'POST':
   
-    user =  get_object_or_404(DjangoUser, pk=request.user.id)  
-    profile = get_object_or_404(User, user__exact=user)      
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
     follow = get_object_or_404 (User, user__username__exact=username)
   
-    profile.watches.add(follow)
-    profile.save()
+    user.watches.add(follow)
+    user.save()
   
     return HTTPResponseRedirect (reverse('cockpit.views.main'))
   else:
@@ -46,13 +45,12 @@ def unfollow (request, username):
 
   if request.method == 'POST':
   
-    user =  get_object_or_404(User, pk=request.user.id)
-    profile = get_object_or_404(User, user__exact=user)      
+    user =  get_object_or_404(User, user__id__exact=request.user.id)
     follow = get_object_or_404 (User, user__username__exact=username)
 
-    if follow in profile.watches.all():
-      profile.watches.remove(follow)
-      profile.save()
+    if follow in user.watches.all():
+      user.watches.remove(follow)
+      user.save()
   
     return HTTPResponseRedirect (reverse('cockpit.views.main'))
   else:
