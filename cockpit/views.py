@@ -1,6 +1,9 @@
 # Create your views here.
 # -*- coding: iso-8859-2 -*-
+
 import re
+
+from PIL import Image
 
 from django.db.models import Q
 from django.http import HttpResponse as HTTPResponse
@@ -16,6 +19,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
+from django.db.models.signals import post_save
 
 from models import Status, StatusForm
 from profile.models import User
@@ -101,6 +105,22 @@ def feed (request, username=None, mobile=False):
 @login_required  
 def status (request, object_id=None, mobile=False):
 
+  def process_image(**kwargs):
+    instance = kwargs.get('instance', None)
+    print kwargs
+    print kwargs['instance'].image.path  
+    print 'dipa'
+    if kwargs.get('created', False):
+      if instance:
+        if instance.image:
+          image = Image.open(instance.image.path)
+          image.thumbnail((640,480), Image.ANTIALIAS)
+#        icon = image.thumbnail((256,256), Image.ANTIALIAS)
+          image.save(instance.image.path + '_preview' + '.jpg', 'JPEG')
+#        icon.save(instance.image.path + '.preview.', 'JPEG')
+        
+  post_save.connect(process_image, sender=Status)
+  
   user = get_object_or_404(DjangoUser, pk=request.user.id)
   profile = get_object_or_404 (User, user__exact=user)
   
@@ -121,7 +141,7 @@ def status (request, object_id=None, mobile=False):
       return HTTPResponseNotAllowed ()
     else:
     
-      form = StatusForm (request.POST)
+      form = StatusForm (request.POST, request.FILES)
       if form.is_valid():
         status=form.save(commit=False)
         status.owner=profile
@@ -137,9 +157,9 @@ def status (request, object_id=None, mobile=False):
           status.recipient = get_object_or_404(User, user=recipient)
           if status.text[1] == '>':
             status.private = True
-        
         status.save()
-        
+
+        print status.image.path        
         # convert txt.png -resize 400\> 200.png
         
       else:
