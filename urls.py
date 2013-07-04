@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     (r'^/?$', 'main.views.front' ),    # front page
     
     (r'^dashboard/?$', 'cockpit.views.main' ),
-    (r'^mobile/?$', 'cockpit.views.feed', dict(mobile=True), 'mobile_dashboard'),
+    (r'^dashboard/m/?$', 'cockpit.views.feed', dict(mobile=True), 'mobile_dashboard'),
     
     (r'^user/(?P<username>\w+)/dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/feed/?$', 'cockpit.views.feed' ),    
@@ -27,13 +27,14 @@ urlpatterns = patterns('',
 
     (r'^tag/(?P<tag>\w+)/$', 'cockpit.views.tag'),
     
-    (r'^accounts/login/$', 'django.contrib.auth.views.login',
+    (r'^account/login/$', 'django.contrib.auth.views.login',
       {'template_name': 'login.html'}),
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout',
+    (r'^account/logout/$', 'django.contrib.auth.views.logout',
       {'template_name': 'logout.html'}),
 
-    (r'^accounts/register/$', 'profile.views.register'),
-    (r'^accounts/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),    
+    (r'^account/register/$', 'profile.views.register'),
+    (r'^account/$', 'profile.views.edit'),    
+    (r'^account/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),    
     # Uncomment the admin/doc line below to enable admin documentation:
     #(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # Uncomment the next line to enable the admin:

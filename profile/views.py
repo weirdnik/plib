@@ -20,7 +20,8 @@ from django.contrib.auth.models import User as DjangoUser
 
 import django.forms as forms
 
-from models import User
+from models import User, UserForm
+
 import sendmail
 
 from cockpit.models import Status
@@ -142,3 +143,17 @@ def confirm (request, slug=None):
       
   return HTTPResponseRedirect(reverse('cockpit.views.main'))
 
+
+def edit (request):
+
+  if request.method == 'GET':
+    template = loader.get_template ("account.html")
+    result = dict(form=UserForm())
+  else:
+    form = UserForm(request.POST, request.FILES)
+    if form.is_valid():
+      pass
+    else:
+      result = dict(form=form)
+      
+  return HTTPResponse(template.render(RequestContext(result)))     
