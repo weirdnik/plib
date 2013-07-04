@@ -1,6 +1,6 @@
 {% extends "xhtml.html" %}{% block body %}
     <div id="cockpit">
-      <h1>Edycja parametrów konta</h1>
+      <h1>Edycja konta</h1>
       <form method="POST" action="{% url profile.views.edit %}" enctype="multipart/form-data"> 
         {% csrf_token %}
         {{ form.as_p }}
