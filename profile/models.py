@@ -1,6 +1,7 @@
 #
 # -*- coding: iso-8859-2 -*-
 from django.db import models
+from django.forms import ModelForm
 from django.contrib.auth.models import User as AuthUser
 
 # Create your models here.
@@ -38,3 +39,9 @@ class User (models.Model):
   def __unicode__ (self):
   
     return self.user.username
+
+class UserForm (ModelForm):
+  class Meta:
+    model = User
+    fields = ['name', 'about', 'icbm', 'sex', 'avatar', 'background']
+          
