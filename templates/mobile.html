@@ -1,14 +1,16 @@
-
+{% extends "xhtml.html" %}{% block body %}
     <div id="cockpit">
       <h1>kokpit</h1>
-      <form method="POST" action="{% url mobile_status %}">  
+      <form method="POST" action="{% url mobile_status %}" enctype="multipart/form-data"> 
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="plib!"/>
       </form>{% if feed %}{% for status in feed %}
-      <div class="status">
-        <p class="status">{{ status.owner.user.username}}: {{ status.render|safe }}</p>
-        <p class="status-date">{{ status.date }}</p>
-      </div>{% endfor %}{% else %}
+      <div class="{% if status.private %}private {% endif %}status">
+        <p class="status"><span title="{{ status.date }}">[&#x231A;]</span>
+        <strong>{{ status.owner.user.username}}</strong>: {{ status.render|safe }}</p>
+      </div>
+      <hr />{% endfor %}{% else %}
       <p class="message">Kokpit jest pusty!</p>{% endif %}
     </div>
+{% endblock body %}

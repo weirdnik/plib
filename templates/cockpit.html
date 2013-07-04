@@ -6,7 +6,7 @@
       <div style="display:table-cell; vertical-align: top;">
 
         <div id="status_form">
-          <form method="POST" action="{% url cockpit.views.status %}"
+          <form method="POST" action="{% url cockpit.views.status %}" enctype="multipart/form-data"
           onkeyup="if(isEnterPressed(event)){ document.status_form.submit(); }">
             {% csrf_token %}
             {{ form.as_p }}

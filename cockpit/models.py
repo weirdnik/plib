@@ -1,6 +1,8 @@
-import re
-from django.core.urlresolvers import reverse
+#
 
+import re, os
+
+from django.core.urlresolvers import reverse
 from django.db import models
 from profile.models import User
 from django.forms import ModelForm
@@ -23,8 +25,14 @@ class Status (models.Model):
   private = models.BooleanField (default=False)
   tagged = models.BooleanField (default=True)
   text = models.TextField (blank=False)
-  image = models.ImageField(upload_to="images/%s.%N", blank=True)
-  
+  image = models.ImageField(upload_to="upload/images/%s.%N", blank=True)
+#  image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, height_field='image_height', width_field='image_width')  
+#  image_height = models.IntegerField(blank=True)
+#  image_width = models.IntegerField(blank=True)  
+#  preview = models.ImageField(upload_to="images/%s.%N", blank=True)
+#  icon = models.ImageField(upload_to="images/%s.%N", blank=True)
+#  Error: No word lists can be found for the language "pl_PL".
+# action = models.CharField  
 #  event  
 
   def render (self):
@@ -39,6 +47,15 @@ class Status (models.Model):
     if self.tagged:
 
       result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(tag=g.group().strip('#'))) ,g.group()), result)
+
+    # TODO private messages marking
+
+    if self.image:
+      if os.path.exists(self.image.path):
+        path = self.image.url + '_preview.jpg'
+#        '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling
+        
+        result = result + '<div class="status-image"><img src="%s"></div>' % path
 
     return result
 
