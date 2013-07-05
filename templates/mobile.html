@@ -1,4 +1,7 @@
 {% extends "xhtml.html" %}{% block body %}
+    <div id="menu">
+      <p>kokpit | konto | wyloguj</p>
+    </div>
     <div id="cockpit">
       <h1>kokpit</h1>
       <form method="POST" action="{% url mobile_status %}" enctype="multipart/form-data"> 
