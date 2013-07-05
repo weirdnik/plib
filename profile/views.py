@@ -2,6 +2,10 @@
 
 import string, random
 
+from PIL import Image
+
+import sendmail
+
 from django.http import HttpResponse as HTTPResponse
 from django.http import HttpResponseRedirect as HTTPResponseRedirect
 from django.http import HttpResponseGone as HTTPResponseGone
@@ -17,14 +21,14 @@ from django.template import Context, RequestContext, loader, Template
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User as DjangoUser
+from django.db.models.signals import post_save
 
 import django.forms as forms
 
 from models import User, UserForm
-
-import sendmail
-
 from cockpit.models import Status
+
+###
 
 @login_required
 def follow (request, username):
@@ -72,7 +76,6 @@ def blog (request, username):
 
 def register (request):
 
-
   template = loader.get_template ('register.html')
 
   class RegistrationForm(UserCreationForm):
@@ -90,7 +93,6 @@ def register (request):
     if form.is_valid():
     
       print  dir(form['password1']),  form['password2'].data
-      print form
       if  form['password1'].data == form['password2'].data:
         username = form['username'].data.strip()
         password = form['password1'].data
@@ -146,14 +148,36 @@ def confirm (request, slug=None):
 
 def edit (request):
 
+  def process_images(**kwargs):
+    instance = kwargs.get('instance', None)
+#    print instance.avatar.path
+#    print instance.background.path
+
+    if instance.avatar:
+      avatar = Image.open(instance.avatar.path)
+      avatar.thumbnail((256,256), Image.ANTIALIAS)
+      avatar.save(instance.avatar.path + '.jpg', 'JPEG')
+                                                                        
+  post_save.connect(process_images, sender=User)
+  template = loader.get_template ("account.html")                                                                          
+  user =  get_object_or_404(User, user__id__exact=request.user.id)  
+
   if request.method == 'GET':
-    template = loader.get_template ("account.html")
-    result = dict(form=UserForm())
-  else:
+    initial = { 'name': user.name, 'about': user.about, 'icbm': user.icbm }
+    result = dict(form=UserForm(initial))
+    
+  elif request.method == 'POST':
     form = UserForm(request.POST, request.FILES)
     if form.is_valid():
-      pass
-    else:
-      result = dict(form=form)
+      save = False
+      for item in ('name', 'about', 'icbm', 'sex', 'avatar', 'background'):
+        value = form.cleaned_data.get(item, None)
+        if value:
+          setattr(user, item, value)
+          save = True
+      if save:
+        user.save()
+    result = dict(form=form)
       
-  return HTTPResponse(template.render(RequestContext(result)))     
+  return HTTPResponse(template.render(RequestContext(request, result)))
+  
