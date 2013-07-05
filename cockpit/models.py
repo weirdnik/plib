@@ -24,6 +24,7 @@ class Status (models.Model):
   recipient = models.ForeignKey (User, related_name="recipient_set", blank=True, null=True)
   private = models.BooleanField (default=False)
   tagged = models.BooleanField (default=True)
+  event = models.BooleanField (default=True)
   text = models.TextField (blank=False)
   image = models.ImageField(upload_to="upload/images/%s.%N", blank=True)
 #  image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, height_field='image_height', width_field='image_width')  
