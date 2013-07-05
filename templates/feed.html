@@ -2,10 +2,12 @@
   <head>
     <title>dgasgsfdgfsg></title>
     <meta http-equiv="refresh" content="5">
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
   </head>
   <body>{% if feed %}
     <ul>{% for status in feed %}
       <li>
+        <p><img class="avatar" src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}{% else %}/static/gfx/avatar{% endif %}.jpg" /></p>      
         <p class="status">{{ status.owner.user.username}}: {{ status.render|safe }}</p>
         <p class="status-date">{{ status.date }}</p>
       </li>{% endfor %}
