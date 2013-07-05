@@ -1,0 +1,39 @@
+
+h1 { font-size: large; }
+body { color: green; background: light-gray; font-family: Verdana, sans; }
+
+.private { background: gray; }
+
+div.status { background: white;
+   padding: 0.2em;
+   align: bottom; }
+
+
+.status-image { padding-top: 1ex; padding-left: 1em; }
+
+.avatar { width: 5ex; height: 5ex; flow: right; }
+
+div.status-date { font-size: xx-small; vertical-align: superscript; }
+
+iframe { display: inline-block;
+ vertical-align: text-top;
+}
+
+img.background {
+  min-height: 100%;
+  min-width: 1600px;
+      
+  width: 100%;
+  height: auto;
+      
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+@media screen and (max-width: 1600px) {
+  img.background {
+     left: 50%;
+      margin-left: -800px;
+  }
+}
