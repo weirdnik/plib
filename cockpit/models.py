@@ -5,7 +5,7 @@ import re, os
 from django.core.urlresolvers import reverse
 from django.db import models
 from profile.models import User
-from django.forms import ModelForm
+from django.forms import ModelForm, Textarea
 
 #
 
@@ -64,7 +64,9 @@ class StatusForm (ModelForm):
   class Meta:
     model = Status
     fields = ['text', 'image']
-
+    widgets = {
+      'text': Textarea(attrs={'cols': 60, 'rows': 2}),
+    }
 
 class Tag (models.Model):
 
