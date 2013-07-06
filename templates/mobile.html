@@ -14,7 +14,7 @@
       <div class="{% if status.private %}private {% endif %}status">
         <img class="avatar" src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar{% endif %}" />
         <p class="status"><span title="{{ status.date }}">[&#x231A;]</span>
-        <strong>{{ status.owner.user.username}}</strong>: {{ status.render|safe }}</p>
+        <strong><a href="{% url cockpit.views.feed username=status.owner.user.username %}">{{ status.owner.user.username }}</a></strong>: {{ status.render|safe }}</p>
       </div>
       <hr />{% endfor %}{% else %}
       <p class="message">Kokpit jest pusty!</p>{% endif %}
