@@ -107,9 +107,6 @@ def status (request, object_id=None, mobile=False):
 
   def process_image(**kwargs):
     instance = kwargs.get('instance', None)
-    print kwargs
-    print kwargs['instance'].image.path  
-    print 'dipa'
     if kwargs.get('created', False):
       if instance:
         if instance.image:
@@ -159,7 +156,6 @@ def status (request, object_id=None, mobile=False):
             status.private = True
         status.save()
 
-        print status.image.path        
         # convert txt.png -resize 400\> 200.png
         
       else:
