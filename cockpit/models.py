@@ -4,7 +4,7 @@ import re, os
 
 from django.core.urlresolvers import reverse
 from django.db import models
-from profile.models import User
+from plib.profile.models import User
 from django.forms import ModelForm, Textarea
 
 #
@@ -24,17 +24,17 @@ class Status (models.Model):
   recipient = models.ForeignKey (User, related_name="recipient_set", blank=True, null=True)
   private = models.BooleanField (default=False)
   tagged = models.BooleanField (default=True)
-  event = models.BooleanField (default=True)
   text = models.TextField (blank=False)
   image = models.ImageField(upload_to="upload/images/%s.%N", blank=True)
-#  image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, height_field='image_height', width_field='image_width')  
-#  image_height = models.IntegerField(blank=True)
-#  image_width = models.IntegerField(blank=True)  
-#  preview = models.ImageField(upload_to="images/%s.%N", blank=True)
-#  icon = models.ImageField(upload_to="images/%s.%N", blank=True)
-#  Error: No word lists can be found for the language "pl_PL".
-# action = models.CharField  
-#  event  
+  tags_watched = models.ManyToManyField (aTag)
+  tags_ignored = models.ManyToManyField (Tag)
+  ignored = models.ManyToManyField (User)
+  image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, height_field='image_height', width_field='image_width')  
+  image_height = models.IntegerField(blank=True)
+  image_width = models.IntegerField(blank=True)  
+  preview = models.ImageField(upload_to="images/%s.%N", blank=True)
+  icon = models.ImageField(upload_to="images/%s.%N", blank=True)
+  action = models.CharField (max_length=16, choices=(('like', 'like'), ))
 
   def render (self):
 
