@@ -51,15 +51,15 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-STATIC_ROOT = os.path.join(PROJECT_DIR,'static')
-MEDIA_ROOT = os.path.join(STATIC_ROOT,'upload')
+#STATIC_ROOT = os.path.join(PROJECT_DIR,'static')
 
-
+MEDIA_ROOT = os.path.join(PROJECT_DIR,'static')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 STATIC_URL = '/static/'
+MEDIA_URL = '/static/'
 
 STATICFILES_DIRS = (
     '/usr/share/pyshared/django/contrib/admin/static/',
