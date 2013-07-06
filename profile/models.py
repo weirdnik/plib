@@ -3,6 +3,7 @@
 from django.db import models
 from django.forms import ModelForm
 from django.contrib.auth.models import User as AuthUser
+from cockpit import Tag
 
 # Create your models here.
 
@@ -13,28 +14,31 @@ class User (models.Model):
   about      - opis
   icbm       - lokalizacja
   avatar     - obrazek awatara
-  background - obrazek t³a
+  background - obrazek tla
   phone      - nr telefonu
   private    - user prywatny (nie ma bliploga)
   watches    - obserwowanie
   '''
   
   user = models.OneToOneField (AuthUser, related_name='django_user_set')
-#  active = models.BooleanField (default=False)
   love = models.BooleanField (default=False)
   premium = models.BooleanField (default=False)
   official = models.BooleanField (default=False)
-  slug = models.SlugField (blank=True)
-  name = models.TextField (blank=True)
-  about = models.TextField (blank=True)
-  icbm = models.TextField (blank=True)
-  sex = models.CharField(max_length=1, choices=(('m','m'), ('f', 'f'), ('o','o'), ('n','nie dotyczy')))
-  avatar = models.ImageField(upload_to="avatars/%s", blank=True)
-  background = models.ImageField (upload_to="backgrounds/%s", blank=True)
-  phone = models.TextField (blank=True)
+  slug = models.SlugField (blank=True, null=True)
+  name = models.TextField (blank=True, null=True)
+  about = models.TextField (blank=True, null=True)
+  icbm = models.TextField (blank=True, null=True)
+  sex = models.CharField(max_length=1, choices=(('m','m'), ('f', 'f'), ('o','o'), ('n','nie dotyczy')), default='o')
+  avatar = models.ImageField(upload_to="avatars/%s", blank=True, null=True)
+  background = models.ImageField (upload_to="backgrounds/%s", blank=True, null=True, height_field='background_height', width_field='background_width')
+  background_height = models.IntegerField(blank=True, null=True)
+  background_width = models.IntegerField(blank=True, null=True)
+  phone = models.TextField (blank=True, null=True)
   private = models.BooleanField (default=False)
-  watches = models.ManyToManyField ('User', related_name='user_watches_set', blank=True)
-  ignores = models.ManyToManyField ('User', related_name='user_ignores_set', blank=True)  
+  watches = models.ManyToManyField ('User', related_name='watched_users_set', blank=True, null=True)
+  ignores = models.ManyToManyField ('User', related_name='ignored_users_set', blank=True, null=True)  
+  watches_tags = models.ManyToManyField (Tag, related_name='watched_tag_set', blank=True, null=True)
+  ignores_tags = models.ManyToManyField (Tag, related_name='ignored_tag_set', blank=True, null=True)  
 
   def __unicode__ (self):
   
