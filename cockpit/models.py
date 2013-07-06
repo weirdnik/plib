@@ -58,7 +58,7 @@ class StatusForm (ModelForm):
     model = Status
     fields = ['text', 'image']
     widgets = {
-      'text': Textarea(attrs={'cols': 60, 'rows': 2}),
+      'text': Textarea(attrs={'cols': 60, 'rows': 2, 'onkeydown': 'pressed(event)'}),
     }
 
 
