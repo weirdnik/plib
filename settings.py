@@ -15,12 +15,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/home/staff/alex/plib/blip.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'plib',                       # Or path to database file if using sqlite3.
+        'USER': 'planb',                      # Not used with sqlite3.
+        'PASSWORD': 'blip2.planb.plib',       # Not used with sqlite3.
+        'HOST': 'db.hell',                    # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -49,12 +49,19 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(PROJECT_DIR,'static')
+STATIC_ROOT = os.path.join(PROJECT_DIR,'static')
+MEDIA_ROOT = os.path.join(STATIC_ROOT,'upload')
+
+
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    '/usr/share/pyshared/django/contrib/admin/static/',
+)
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -94,13 +101,18 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'plib.profile',
-    'plib.cockpit',
-    'plib.main',
+    'django.contrib.staticfiles',
+    'profile', 
+    'cockpit',
+    'main',
+#    'plib.profile',
+#    'plib.cockpit',
+#    'plib.main',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'gunicorn',
 )
 
 AUTH_PROFILE_MODULE = 'profile.User'
