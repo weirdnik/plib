@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>{{ app_name }}</title>
+    <meta http-equiv="refresh" content="30">
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+  </head>
+  <body>
+    <div id="frontpage-intro">
+      <h1>{{ app_name }}</h1>  
+    </div>{% if feed %}
+    <div id="frontpage-feed">
+      <ul>{% for status in feed %}
+        <li>
+{% include "status.inc" %}
+        </li>{% endfor %}
+      </ul>{% else %}<p>Uzytkownik jeszcze niczego nie napisal</p>{% endif %}
+    </div>
+  </body>
+</html>
