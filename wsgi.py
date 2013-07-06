@@ -9,6 +9,6 @@ if local_path not in sys.path:
 if super_path not in sys.path:
   sys.path.append(super_path)
             
-os.environ['DJANGO_SETTINGS_MODULE'] = 'skandale.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'plib.settings'
 application = django.core.handlers.wsgi.WSGIHandler()
             
