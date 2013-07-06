@@ -30,6 +30,10 @@ from cockpit.models import Status
 
 ###
 
+HOST_URL = 'http://plib.hell.pl'
+
+###
+
 @login_required
 def follow (request, username):
 
@@ -115,7 +119,7 @@ def register (request):
           profile.slug = slug
           
           slug_path = reverse('profile.views.confirm', kwargs=dict(slug=slug))
-          slug_url = request.META.get('HTTP_ORIGIN','localhost') + slug_path
+          slug_url = request.META.get('HTTP_ORIGIN',HOST_URL) + slug_path
          
           profile.save()
           sendmail.confirm (email, slug_url)          
