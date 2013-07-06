@@ -45,6 +45,7 @@ def follow (request, username):
   else:
     return HTTPResponseNotAllowed ()
 
+
 @login_required
 def unfollow (request, username):
 
@@ -68,7 +69,6 @@ def blog (request, username):
     user =  get_object_or_404(User, user__username__exact=username)  
     statuses = Status.objects.filter(owner__exact=user, recipient__exact=None)
 
-    print statuses    
     template = loader.get_template('blog.html')
     
     return HTTPResponse(template.render(Context(dict(statuses=statuses, profile=user))))
@@ -113,10 +113,9 @@ def register (request):
           for i in xrange(16):
             slug = slug + random.choice(string.ascii_letters)
           profile.slug = slug
-          print email, slug
           
           slug_path = reverse('profile.views.confirm', kwargs=dict(slug=slug))
-          slug_url = 'http://' + request.META.get('HTTP_ORIGIN','localhost') + slug_path
+          slug_url = request.META.get('HTTP_ORIGIN','localhost') + slug_path
          
           profile.save()
           sendmail.confirm (email, slug_url)          
