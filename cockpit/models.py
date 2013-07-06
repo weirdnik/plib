@@ -17,6 +17,12 @@ VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 
 # Create your models here.
 
+class Tag (models.Model):
+
+  tag = models.TextField ()
+  status = models.ManyToManyField ('Status')
+  
+
 class Status (models.Model):
 
   date = models.DateTimeField (auto_now_add=True)
@@ -26,8 +32,8 @@ class Status (models.Model):
   tagged = models.BooleanField (default=True)
   text = models.TextField (blank=False)
   image = models.ImageField(upload_to="upload/images/%s.%N", blank=True)
-  tags_watched = models.ManyToManyField (aTag)
-  tags_ignored = models.ManyToManyField (Tag)
+  tags_watched = models.ManyToManyField (Tag, related_name='tags_watched_set')
+  tags_ignored = models.ManyToManyField (Tag, related_name='tags_ignored_set')
   ignored = models.ManyToManyField (User)
   image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, height_field='image_height', width_field='image_width')  
   image_height = models.IntegerField(blank=True)
@@ -69,11 +75,6 @@ class StatusForm (ModelForm):
       'text': Textarea(attrs={'cols': 60, 'rows': 2}),
     }
 
-class Tag (models.Model):
-
-  tag = models.TextField ()
-  status = models.ManyToManyField (Status)
-  
 
 class Like (models.Model):
 
