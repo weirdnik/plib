@@ -11,9 +11,8 @@ from settings import APP_NAME
 
 def front(request):
 
-  print request.user.id
   if request.user.id:
-    return HTTPResponseRedirect(reverse('cockpit.views.main'))
+    return HTTPResponseRedirect(reverse('mobile_dashboard'))
   else:
     statuses = Status.objects.filter(private__exact=False, recipient__exact=None).order_by('-date')
     

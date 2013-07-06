@@ -31,10 +31,10 @@ urlpatterns = patterns('',
     
     # user management stuff
     (r'^account/login/$', 'django.contrib.auth.views.login',
-      {'template_name': 'login.html'}),
+      {'template_name': 'login.html'}, 'login_user'),
     (r'^account/logout/$', 'django.contrib.auth.views.logout',
       {'template_name': 'logout.html'}, 'logout_user'),
-    (r'^account/register/$', 'profile.views.register'),
+    (r'^account/register/$', 'profile.views.register', None, 'create_user'),
     (r'^account/$', 'profile.views.edit', None, 'edit_account'),    
     (r'^account/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),    
 
