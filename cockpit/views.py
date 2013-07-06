@@ -99,7 +99,7 @@ def feed (request, username=None, mobile=False):
     template = loader.get_template("feed.html")
     form = None
   return HTTPResponse (template.render(RequestContext(request,
-     dict(feed=statuses, profile=profile, form=form))))
+     dict(feed=statuses, profile=profile, form=form, javascripts=('enter',)))))
  
  
 @login_required  
