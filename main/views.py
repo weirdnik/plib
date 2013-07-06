@@ -18,5 +18,5 @@ def front(request):
       feed = statuses[:20] if statuses else None
     
     template = loader.get_template('front.html')
-    return HTTPResponse(template.render(Context(dict(feed=feed)})))
+    return HTTPResponse(template.render(Context(dict(feed=feed))))
       
