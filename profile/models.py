@@ -1,9 +1,10 @@
 #
 # -*- coding: iso-8859-2 -*-
+
+
 from django.db import models
 from django.forms import ModelForm
 from django.contrib.auth.models import User as AuthUser
-from cockpit import Tag
 
 # Create your models here.
 
@@ -37,8 +38,8 @@ class User (models.Model):
   private = models.BooleanField (default=False)
   watches = models.ManyToManyField ('User', related_name='watched_users_set', blank=True, null=True)
   ignores = models.ManyToManyField ('User', related_name='ignored_users_set', blank=True, null=True)  
-  watches_tags = models.ManyToManyField (Tag, related_name='watched_tag_set', blank=True, null=True)
-  ignores_tags = models.ManyToManyField (Tag, related_name='ignored_tag_set', blank=True, null=True)  
+  watches_tags = models.ManyToManyField ('cockpit.Tag', related_name='watched_tag_set', blank=True, null=True)
+  ignores_tags = models.ManyToManyField ('cockpit.Tag', related_name='ignored_tag_set', blank=True, null=True)  
 
   def __unicode__ (self):
   
