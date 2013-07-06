@@ -7,6 +7,16 @@ from email.Header import Header
 from time import gmtime, strftime
 
 FROM_ADDR = 'Plan B <blip@hell.pl>'
+TEMPLATE = '''Aby potwierdzic konto w serwisie kliknij na ponizszy odnosnik:
+
+%s
+
+Jesli nie rejestrowales sie w Planie B, oznacza to, ze ktos uzyl Twojego adresu.
+W takim wypadku mozesz zignorowac niniejsza wiadomosc.
+
+Zaloga Planu B
+'''
+
 
 def sendmail(recipient, message):
 
@@ -27,10 +37,8 @@ def sendmail(recipient, message):
   smtp.connect()
   smtp.sendmail(envelope(FROM_ADDR), recipient, message.as_string())
   smtp.close()
-  print 'sent'
-                                                  
+
 
 def confirm (recipient, message):
-  print recipient,message
-  sendmail (recipient, message)
+  sendmail (recipient, TEMPLATE % message)
       
