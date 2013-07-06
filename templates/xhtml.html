@@ -4,7 +4,8 @@
 <html xml:lang="{% trans "pl" %}">
   <head>
     <title>{% if user.is_authenticated %}kokpit uzytkownika {{ user.username }}{% else %}Plan B{% endif %}</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css" />    
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />{% if javascripts %}{% for script in javascripts %}
+    <script type="text/javascript" src="/static/{{ script }}.js"></script>{% endfor %}{% endif %}
   </head>
   <body>{% block body %}{% endblock body %}  
   </body>
