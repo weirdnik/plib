@@ -9,7 +9,7 @@ from cockpit.models import Status
 
 def front(request):
 
-  if request.user:
+  if request.user.id:
     return HTTPResponseRedirect(reverse('cockpit.views.main'))
   else:
     statuses = Status.objects.filter(private__exact=False, recipient__exact=False).order_by('-date')
