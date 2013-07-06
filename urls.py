@@ -33,9 +33,9 @@ urlpatterns = patterns('',
     (r'^account/login/$', 'django.contrib.auth.views.login',
       {'template_name': 'login.html'}),
     (r'^account/logout/$', 'django.contrib.auth.views.logout',
-      {'template_name': 'logout.html'}),
+      {'template_name': 'logout.html'}, 'logout_user'),
     (r'^account/register/$', 'profile.views.register'),
-    (r'^account/$', 'profile.views.edit'),    
+    (r'^account/$', 'profile.views.edit', None, 'edit_account'),    
     (r'^account/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),    
 
     # legacy paths, hardcoded somewhere
