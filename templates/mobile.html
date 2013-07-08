@@ -11,9 +11,18 @@
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="plib!"/>
-      </form>{% if feed %}{% for status in feed %}
-            {% if not profile.user.username = user.username %}subscribe{% endif %}
-            
+      </form>{% if feed %}{% for status in feed %}{% if not profile.user.username = user.username %}
+      <div id="follow-block">{% if follow %}
+        <form method="POST" action="{% url profile.views.follow username=profile.user.username %}">
+          {% csrf_token %}
+          <input type="submit" value="obserwuj"/>
+        </form>{% else %}
+        <form method="POST" action="{% url profile.views.unfollow username=profile.user.username %}">
+           {% csrf_token %}
+           <input type="submit" value="nie obserwuj"/>
+        </form>{% endif %}
+      </div>                                                                               
+      {% endif %}            
       <div class="{% if status.private %}private {% endif %}status">
         <img class="avatar" src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar{% endif %}" />
         <p class="status"><span title="{{ status.date }}">[&#x231A;]</span>

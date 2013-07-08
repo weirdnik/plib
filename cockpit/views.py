@@ -88,7 +88,7 @@ def main (request, username=None):
 def feed (request, username=None, mobile=False):  
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
-
+  follow = True
 #  if username: 
 #    profile = get_object_or_404(User, user__username__exact=username)
 #  else:
@@ -100,13 +100,15 @@ def feed (request, username=None, mobile=False):
 
   statuses = feed_lookup (user, profile, user==profile)  
   if mobile:
+    if profile in user.watches.all():
+      follow=False
     template = loader.get_template("mobile.html")
     form = StatusForm()
   else:
     template = loader.get_template("feed.html")
     form = None
   return HTTPResponse (template.render(RequestContext(request,
-     dict(feed=statuses, profile=profile, form=form, javascripts=('enter',)))))
+     dict(feed=statuses, profile=profile, form=form, javascripts=('enter',), follow=follow))))
  
  
 @login_required  
