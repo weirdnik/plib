@@ -21,7 +21,7 @@ class Status (models.Model):
   owner = models.ForeignKey ('profile.User', related_name="sender_set")
   recipient = models.ForeignKey ('profile.User', related_name="recipient_set", blank=True, null=True)
   private = models.BooleanField (default=False)
-  tagged = models.BooleanField (default=True)
+  tagged = models.BooleanField (default=False)
   text = models.TextField (blank=True, null=True)
   image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, null=True, height_field='image_height', width_field='image_width')  
   image_height = models.IntegerField(blank=True, null=True)
@@ -32,14 +32,18 @@ class Status (models.Model):
 
   def render (self):
 
+    print self.id
     # ^mentions
-    result = MENTION_RE.sub( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main', kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
+    result = MENTION_RE.sub( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
+      kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
     # embedding stuff from other sites    
-    result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'], result )
-    result = VIMEO_RE.sub  ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'], result)
+    result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'],
+       result )
+    result = VIMEO_RE.sub  ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'],
+       result)
     # hashtags detected
     if self.tagged:
-      result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(tag=g.group().strip('#'))) ,g.group()), result)
+      result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip('#'))) ,g.group()), result)
 
     # TODO private messages marking
 

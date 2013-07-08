@@ -163,18 +163,22 @@ def status (request, object_id=None, mobile=False):
           status.recipient = get_object_or_404(User, user=recipient)
           if status.text[1] == '>':
             status.private = True
-        status.save()
         
         tag_result = TAG_RE.search(status.text)
         if tag_result:
           status.tagged = True
+        else:
+          status.tagged = False
+        status.save()
+        
+        if status.tagged:
           tag_text = tag_result.group().strip('#').strip()
           
-          tag, create = Tag.objects.get_or_create(tag__exact=tag_text)
+          tag, create = Tag.objects.get_or_create(tag=tag_text)
           tag.status.add(status)
           tag.save()          
-        else:
-          status.tagged = True            
+
+
         
       else:
         HTTPResponseBadRequest()
@@ -187,10 +191,10 @@ def status (request, object_id=None, mobile=False):
     return HTTPResponseBadRequest()
 
 def tag(request, text):
-  tag_object = get_object_or_404(Tag, tag__exact=text)
+  tag_object = get_object_or_404(Tag, tag=text)
   
   statuses = tag_object.status.all().order_by('-date')
   
-  template = loader.get_template("tag.html")
+  template = loader.get_template("feed.html")
   
-  return HTTPResponse (RequestContext(request, dict(feed=statuses)))
+  return HTTPResponse (template.render(RequestContext(request, dict(feed=statuses))))
