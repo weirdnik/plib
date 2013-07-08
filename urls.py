@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     (r'^status/?$', 'cockpit.views.status'),  
     (r'^statusm/?$', 'cockpit.views.status', dict(mobile=True), 'mobile_status'),    
 
-    (r'^tag/(?P<tag>\w+)/$', 'cockpit.views.tag'),
+    (r'^tag/(?P<text>\w+)/$', 'cockpit.views.tag'),
     
     # user management stuff
     (r'^account/login/$', 'django.contrib.auth.views.login',
