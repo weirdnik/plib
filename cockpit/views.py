@@ -21,7 +21,7 @@ from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 
-from models import Status, StatusForm
+from models import Status, StatusForm, Tag, TAG_RE
 from profile.models import User
 
 MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
@@ -87,11 +87,18 @@ def main (request, username=None):
 @login_required
 def feed (request, username=None, mobile=False):  
 
-  user = get_object_or_404(DjangoUser, pk=request.user.id)
-  user_profile = get_object_or_404 (User, user__exact=user)
-  profile = get_object_or_404 (User, user__username__exact=username) if username else user_profile
+  user = get_object_or_404(User, user__id__exact=request.user.id) 
 
-  statuses = feed_lookup (user_profile, profile, user==profile)  
+#  if username: 
+#    profile = get_object_or_404(User, user__username__exact=username)
+#  else:
+#    profile = user  ## FIXME
+#  user = get_object_or_404(DjangoUser, pk=request.user.id)
+#  user_profile = get_object_or_404 (User, user__exact=user)
+
+  profile = get_object_or_404 (User, user__username__exact=username) if username else user
+
+  statuses = feed_lookup (user, profile, user==profile)  
   if mobile:
     template = loader.get_template("mobile.html")
     form = StatusForm()
@@ -155,8 +162,17 @@ def status (request, object_id=None, mobile=False):
           if status.text[1] == '>':
             status.private = True
         status.save()
-
-        # convert txt.png -resize 400\> 200.png
+        
+        tag_result = TAG_RE.search(status.text)
+        if tag_result:
+          status.tagged = True
+          tag_text = tag_result.group().strip('#').strip()
+          
+          tag, create = Tag.objects.get_or_create(tag__exact=tag)
+          tag.status.add(status)
+          tag.save()          
+        else:
+          status.tagged = True            
         
       else:
         HTTPResponseBadRequest()
@@ -168,6 +184,11 @@ def status (request, object_id=None, mobile=False):
   else:
     return HTTPResponseBadRequest()
 
-def tag(request, tag):
-  pass    
+def tag(request, text):
+  tag_object = get_object_or_404(Tag, tag__exact=text)
   
+  statuses = tag_object.status.all().order_by('-date')
+  
+  template = loader.get_template("tag.html")
+  
+  return HTTPResponse (RequestContext(request, dict(feed=statuses)))
