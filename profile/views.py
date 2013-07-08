@@ -45,7 +45,7 @@ def follow (request, username):
     user.watches.add(follow)
     user.save()
   
-    return HTTPResponseRedirect (reverse('cockpit.views.main'))
+    return HTTPResponseRedirect (reverse('mobile_dashboard'))
   else:
     return HTTPResponseNotAllowed ()
 
@@ -62,7 +62,7 @@ def unfollow (request, username):
       user.watches.remove(follow)
       user.save()
   
-    return HTTPResponseRedirect (reverse('cockpit.views.main'))
+    return HTTPResponseRedirect (reverse('mobile_dashboard'))
   else:
     return HTTPResponseNotAllowed ()
 
