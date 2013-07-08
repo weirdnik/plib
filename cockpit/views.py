@@ -170,7 +170,7 @@ def status (request, object_id=None, mobile=False):
           status.tagged = True
           tag_text = tag_result.group().strip('#').strip()
           
-          tag, create = Tag.objects.get_or_create(tag__exact=tag)
+          tag, create = Tag.objects.get_or_create(tag__exact=tag_text)
           tag.status.add(status)
           tag.save()          
         else:
