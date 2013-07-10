@@ -85,17 +85,10 @@ def main (request, username=None):
 
 
 @login_required
-def feed (request, username=None, mobile=False):  
+def feed (request, username=None, mobile=False, quote=None, reply=None):  
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
   follow = True
-#  if username: 
-#    profile = get_object_or_404(User, user__username__exact=username)
-#  else:
-#    profile = user  ## FIXME
-#  user = get_object_or_404(DjangoUser, pk=request.user.id)
-#  user_profile = get_object_or_404 (User, user__exact=user)
-
   profile = get_object_or_404 (User, user__username__exact=username) if username else user
 
   statuses = feed_lookup (user, profile, user==profile)  
@@ -103,7 +96,14 @@ def feed (request, username=None, mobile=False):
     if profile in user.watches.all():
       follow=False
     template = loader.get_template("mobile.html")
-    form = StatusForm()
+    if quote:
+      text = '%s ' % reverse('cockpit.views.status', kwargs=dict(object_id=quote))
+      form = StatusForm(initial=dict(text=text))
+    elif reply:
+      text = '>%s: ' % reply
+      form = StatusForm(initial=dict(text=text))    
+    else:
+      form = StatusForm()
   else:
     template = loader.get_template("feed.html")
     form = None
