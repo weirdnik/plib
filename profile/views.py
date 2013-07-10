@@ -44,6 +44,10 @@ def follow (request, username):
   
     user.watches.add(follow)
     user.save()
+
+    action = Status(owner=follow, recipient=user, action='follow')
+    action.save()
+    
   
     return HTTPResponseRedirect (reverse('mobile_dashboard'))
   else:
@@ -61,6 +65,9 @@ def unfollow (request, username):
     if follow in user.watches.all():
       user.watches.remove(follow)
       user.save()
+
+    action = Status(owner=follow, recipient=user, action='unfollow')
+    action.save()
   
     return HTTPResponseRedirect (reverse('mobile_dashboard'))
   else:
