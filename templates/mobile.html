@@ -11,7 +11,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="plib!"/>
-      </form>{% if feed %}{% for status in feed %}{% if not profile.user.username = user.username %}
+      </form>{% if not profile.user.username = user.username %}
       <div id="follow-block">{% if follow %}
         <form method="POST" action="{% url profile.views.follow username=profile.user.username %}">
           {% csrf_token %}
@@ -21,13 +21,17 @@
            {% csrf_token %}
            <input type="submit" value="nie obserwuj"/>
         </form>{% endif %}
-      </div>                                                                               
-      {% endif %}            
+      </div>{% endif %}{% if feed %}{% for status in feed %}{% if status.action %}
+      <div class="status-info">
+        <p>(i) {% if user.username == status.recipient.user.username %}
+          dodales <a href="{% url mobile_user username=status.owner.user.username %}">^{{ status.owner.user.username }}</a> do obserwowanych{% else %}
+          <a href="{% url mobile_user username=status.owner.user.username %}">^{{ status.owner.user.username          }}</a> cie obserwuje{% endif %}
+      </div>{% else %}
       <div class="{% if status.private %}private {% endif %}status">
         <img class="avatar" src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar{% endif %}" />
         <p class="status"><span title="{{ status.date }}">[&#x231A;]</span>
         <strong><a href="{% url mobile_user username=status.owner.user.username %}">{{ status.owner.user.username }}</a></strong>: {{ status.render|safe }}</p>
-      </div>
+      </div>{% endif %}
       <hr />{% endfor %}{% else %}
       <p class="message">Kokpit jest pusty!</p>{% endif %}
     </div>

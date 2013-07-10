@@ -3,7 +3,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="{% trans "pl" %}">
   <head>
-    <title>{% if user.is_authenticated %}kokpit uzytkownika {{ user.username }}{% else %}Plan B{% endif %}</title>
+    <title>{% if user.is_authenticated %}kokpit uzytkownika {% if profile %}{{ profile.user.username }}{% else %}{{ user.user.username }}{% endif %}{% else %}Plan B{% endif %}</title>
     <link rel="stylesheet" type="text/css" href="/static/style.css" />{% if javascripts %}{% for script in javascripts %}
     <script type="text/javascript" src="/static/{{ script }}.js"></script>{% endfor %}{% endif %}
   </head>
