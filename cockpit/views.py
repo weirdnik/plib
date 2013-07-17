@@ -21,7 +21,7 @@ from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 
-from models import Status, StatusForm, Tag, TAG_RE
+from models import Status, StatusForm, Tag, TAG_RE, Like
 from profile.models import User
 
 MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
@@ -198,3 +198,24 @@ def tag(request, text):
   template = loader.get_template("feed.html")
   
   return HTTPResponse (template.render(RequestContext(request, dict(feed=statuses))))
+
+
+@login_required
+def like (request, object_id, mobile=False):
+
+  if request.method == 'POST':
+    
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
+    status =  get_object_or_404(Status, id=object_id)      
+
+    likes, create = Like.objects.get_or_create(user=user)
+    if status not in likes.status.all():
+      likes.status.add(status)
+      likes.save()
+    
+      action = Status(owner=user, recipient=status.owner, action='like')
+      action.save()
+
+    return HTTPResponseRedirect (reverse('mobile_dashboard'))
+  else:
+    return HTTPResponseNotAllowed ()
