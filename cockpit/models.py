@@ -30,6 +30,10 @@ class Status (models.Model):
   icon = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
   action = models.CharField (max_length=16, choices=(('like', 'like'), ('follow', 'dodal/a cie do obserwowanych'), ('unfollow', 'przestal/a cie obserwowac') ), blank=True, null=True)
 
+  def likes (self):
+  
+    return Like.objects.filter(status__exact=self).distinct().count()
+
   def render (self):
 
     print self.id
@@ -40,7 +44,8 @@ class Status (models.Model):
         result = 'uzytkownik %s dodal cie do obserwowanych' % self.recipient.user.username
       elif self.action == 'unfollow':
         result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
-        
+      elif self.action == 'like':
+        result = '^%s polubi³ status '
     else:
       result = MENTION_RE.sub( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
