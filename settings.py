@@ -107,14 +107,14 @@ INSTALLED_APPS = (
     'profile', 
     'cockpit',
     'main',
-#    'plib.profile',
-#    'plib.cockpit',
-#    'plib.main',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    # appserver
     'gunicorn',
+    # model migrations
+    'south',
 )
 
 AUTH_PROFILE_MODULE = 'profile.User'

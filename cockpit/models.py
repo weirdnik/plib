@@ -45,7 +45,7 @@ class Status (models.Model):
       elif self.action == 'unfollow':
         result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
       elif self.action == 'like':
-        result = '^%s polubi³ status '
+        result = '^%s polubil status '
     else:
       result = MENTION_RE.sub( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
