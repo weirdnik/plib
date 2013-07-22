@@ -31,15 +31,22 @@
         <img class="avatar" src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar{% endif %}" />
         <p class="status"><span title="{{ status.date }}">[&#x231A;][</span>
         <strong><a href="{% url mobile_user username=status.owner.user.username %}">{{ status.owner.user.username }}</a></strong>: {{ status.render|safe }}</p>
-        <p>
-          [&hearts; {{ status.likes|safe }} ]
+        <div class="status-meta">
+          [&hearts; {{ status.likes.distinct.count|safe }} ] {{ user.username }} {{ status.owner.user.username }}
           <a href="{% url mobile_dashboard quote=status.id %}">cytuj</a>{% if not user.username = status.owner.user.username %}
           <a href="{% url mobile_dashboard reply=status.owner.user.username %}">odpowiedz</a>{% endif %}</p>
-          {% if status.private or status.recipient or  user.username == status.owner.user.username %}
-          {% else %}<form method="POST" action="{% url cockpit.views.like object_id=status.id %}">         
-            {% csrf_token %} 
-            <input type="submit" value="polub"/>
-          </form>{% endif %}          
+           {% if status.private or status.recipient or user.username == status.owner.user.username %}
+           {% if not status.action %}usun{% endif %}{% else %}<div class="likebox">            
+           {% if user.username in status.liking %}<form method="POST" action="{% url cockpit.views.unlike object_id=status.id %}">         
+              {% csrf_token %} 
+              <input type="submit" value="nie lub"/>
+            </form>{% else %}          
+            <form method="POST" action="{% url cockpit.views.like object_id=status.id %}">         
+              {% csrf_token %} 
+              <input type="submit" value="polub"/>
+            </form>{% endif %}          
+          </div>
+        </div>{% endif %}
       </div>{% endif %}
       <hr />{% endfor %}{% else %}
       <p class="message">Kokpit jest pusty!</p>{% endif %}

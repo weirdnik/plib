@@ -21,6 +21,7 @@ class Status (models.Model):
   owner = models.ForeignKey ('profile.User', related_name="sender_set")
   recipient = models.ForeignKey ('profile.User', related_name="recipient_set", blank=True, null=True)
   private = models.BooleanField (default=False)
+#  visible = models.BooleanField (default=False)  
   tagged = models.BooleanField (default=False)
   text = models.TextField (blank=True, null=True)
   image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, null=True, height_field='image_height', width_field='image_width')  
@@ -30,10 +31,20 @@ class Status (models.Model):
   icon = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
   action = models.CharField (max_length=16, choices=(('like', 'like'), ('follow', 'dodal/a cie do obserwowanych'), ('unfollow', 'przestal/a cie obserwowac') ), blank=True, null=True)
 
-  def likes (self):
-  
-    return Like.objects.filter(status__exact=self).distinct().count()
 
+  def likes (self):
+    # .distinct().count()
+    
+    return Like.objects.filter(status__exact=self)
+    
+
+  def liking (self):
+
+    l = self.likes()
+    if l:
+      return [ f.user.user.username for f in l ]    
+    
+    
   def render (self):
 
     print self.id

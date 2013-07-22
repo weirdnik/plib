@@ -21,7 +21,7 @@ from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 
-from models import Status, StatusForm, Tag, TAG_RE, Like
+from models import Status, StatusForm, Tag, Like, TAG_RE
 from profile.models import User
 
 MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
@@ -219,3 +219,31 @@ def like (request, object_id, mobile=False):
     return HTTPResponseRedirect (reverse('mobile_dashboard'))
   else:
     return HTTPResponseNotAllowed ()
+
+@login_required
+def unlike (request, object_id, mobile=False):
+
+  if request.method == 'POST':
+    
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
+    status =  get_object_or_404(Status, id=object_id)      
+    
+    likes, create = Like.objects.get_or_create(user=user)
+    if status in likes.status.all():
+      likes.status.remove(status)
+      likes.save()
+    
+#      action = Status(owner=user, recipient=status.owner, action='unlike')
+#      action.save()
+
+    return HTTPResponseRedirect (reverse('mobile_dashboard'))
+  else:
+    return HTTPResponseNotAllowed ()
+
+@login_required
+def delete (request, object_id, mobile=False):
+
+  if request.method == 'POST':
+    
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
+    status =  get_object_or_404(Status, id=object_id)      
