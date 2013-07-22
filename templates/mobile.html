@@ -33,7 +33,7 @@
         <strong><a href="{% url mobile_user username=status.owner.user.username %}">{{ status.owner.user.username }}</a></strong>{% if not status.recipient %}:{% endif %}
         {{ status.render|safe }}</p>
         <div class="status-meta">
-          [&hearts; {{ status.likes.distinct.count|safe }} ] {{ user.username }} {{ status.owner.user.username }}
+          [&hearts; {{ status.likes.distinct.count|safe }} ]
           <a href="{% url mobile_dashboard quote=status.id %}">cytuj</a>{% if not user.username = status.owner.user.username %}
           <a href="{% url mobile_dashboard reply=status.owner.user.username %}">odpowiedz</a>{% endif %}</p>
            {% if status.private or status.recipient or user.username == status.owner.user.username %}
