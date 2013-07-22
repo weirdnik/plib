@@ -12,6 +12,8 @@ TAG_RE = re.compile('#(?P<tag>\w+)')
 MENTION_RE = re.compile('\^(?P<username>\w+)')
 YOUTUBE_RE = re.compile ('http://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
+MESSAGE_RE = re.compile('^\>\>?(?P<recipient>\w+):?')
+MSG_PREFIX_RE = re.compile('^\>')
 
 # Create your models here.
 
@@ -41,8 +43,7 @@ class Status (models.Model):
   def liking (self):
 
     l = self.likes()
-    if l:
-      return [ f.user.user.username for f in l ]    
+    return [ f.user.user.username for f in l ] if l else []
     
     
   def render (self):
@@ -50,32 +51,41 @@ class Status (models.Model):
     print self.id
     # ^mentions
     # template this time?
-    if self.action:
-      if self.action == 'follow':
-        result = 'uzytkownik %s dodal cie do obserwowanych' % self.recipient.user.username
-      elif self.action == 'unfollow':
-        result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
-      elif self.action == 'like':
-        result = '^%s polubil status '
+#    if self.action:
+    if self.action == 'follow':
+      result = 'uzytkownik %s dodal cie do obserwowanych' % self.recipient.user.username
+    elif self.action == 'unfollow':
+      result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
+    elif self.action == 'like':
+      result = '^%s polubil status '
     else:
-      result = MENTION_RE.sub( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
+      result = MENTION_RE.sub ( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
+
+      # message prefix display mangling        
+      if self.recipient:        
+        result = MESSAGE_RE.sub ( '> <a href="%s" target="_top">%s</a>:' % ( reverse('cockpit.views.main',
+          kwargs=dict(username=self.recipient)), self.recipient), result)
+        if self.private:
+          result = MSG_PREFIX_RE.sub('&raquo;', result)
+        else:
+          result = MSG_PREFIX_RE.sub('&rsaquo;', result)
+              
       # embedding stuff from other sites    
       result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'],
         result )
       result = VIMEO_RE.sub  ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'],
         result)
-     # hashtags detected
+
+      # hashtags detected
       if self.tagged:
         result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip('#'))) ,g.group()), result)
 
-    # TODO private messages marking
-
+      # image handling
       if self.image:
         if os.path.exists(self.image.path):
           path = self.image.url + '_preview.jpg'
-#         '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling
-        
+#         '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
           result = result + '<div class="status-image"><img src="%s"></div>' % path
 
     return result

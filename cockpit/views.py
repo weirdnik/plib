@@ -21,10 +21,10 @@ from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 
-from models import Status, StatusForm, Tag, Like, TAG_RE
+from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE
 from profile.models import User
 
-MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
+#MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
 MENTION_RE = re.compile('\^(?P<nickname>\w+)')
 
 ###
