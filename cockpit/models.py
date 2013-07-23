@@ -31,7 +31,10 @@ class Status (models.Model):
   image_width = models.IntegerField(blank=True, null=True)  
   preview = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
   icon = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
-  action = models.CharField (max_length=16, choices=(('like', 'like'), ('follow', 'dodal/a cie do obserwowanych'), ('unfollow', 'przestal/a cie obserwowac') ), blank=True, null=True)
+  action = models.CharField (max_length=16, choices=(('like', 'like'), 
+   ('follow', 'dodal/a cie do obserwowanych'), 
+   ('unfollow', 'przestal/a cie obserwowac'),
+   ('mention', 'o Tobie mowi') ), blank=True, null=True)
 
 
   def likes (self):
@@ -57,7 +60,13 @@ class Status (models.Model):
     elif self.action == 'unfollow':
       result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
     elif self.action == 'like':
-      result = '^%s polubil status '
+      result = '^%s lubi status ' % self.owner.user.username
+    elif self.action == 'mention':    
+      u = self.owner.user.username
+      d = dict(user=u, 
+        profile=reverse('mobile_user', kwargs=dict(username=u, mobile=True)), 
+        url=self.text)
+      result = '<a href="%(profile)s">^%(user)s</a> o tobie mowi: <a href="%(url)s">[^%(user)s]</a>' % d
     else:
       result = MENTION_RE.sub ( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
@@ -88,6 +97,8 @@ class Status (models.Model):
 #         '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
           result = result + '<div class="status-image"><img src="%s"></div>' % path
 
+    if self.action:
+      print result
     return result
 
   
