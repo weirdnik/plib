@@ -21,11 +21,8 @@ from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 
-from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE
+from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE
 from profile.models import User
-
-#MESSAGE_RE = re.compile('^>>?(?P<recipient>\w+)')
-MENTION_RE = re.compile('\^(?P<nickname>\w+)')
 
 ###
 
@@ -36,8 +33,13 @@ def feed_lookup (user, profile, private):
   following = user.watches.all()
   if private:
     result = Status.objects.filter(
-      (Q(owner__in=following) & Q(recipient__exact=None)) |
-      Q(owner__exact=profile) | Q(recipient__exact=profile)).order_by('-date')      
+      ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and own
+       ( Q(owner__in=following) & Q(recipient__exact=None)) | # all followed public statuses
+       (Q(owner__exact=profile) | Q(recipient__exact=profile))
+       ).order_by('-date')
+ 
+#      (Q(owner__in=following) & Q(recipient__exact=None)) |
+#      Q(owner__exact=profile) | Q(recipient__exact=profile)).order_by('-date')      
   else:
      result = Status.objects.filter(
        ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and own
@@ -125,7 +127,7 @@ def status (request, object_id=None, mobile=False):
           image.save(instance.image.path + '_preview' + '.jpg', 'JPEG')
 #        icon.save(instance.image.path + '.preview.', 'JPEG')
         
-  post_save.connect(process_image, sender=Status)
+  post_save.connect(process_image, sender=Status)  
   
   user = get_object_or_404(DjangoUser, pk=request.user.id)
   profile = get_object_or_404 (User, user__exact=user)
@@ -136,8 +138,8 @@ def status (request, object_id=None, mobile=False):
       
     status = get_object_or_404 (Status, pk=object_id)
     
-    if request.user in (status.owner.user, status.recipient.user):
-      
+    if request.user in (status.owner.user, 
+      status.recipient.user if status.recipient else None):      
       return HTTPResponse (status)
     else:
       return HTTPResponseForbidden () 
@@ -145,8 +147,8 @@ def status (request, object_id=None, mobile=False):
   elif request.method == 'POST':
     if object_id:
       return HTTPResponseNotAllowed ()
-    else:
-    
+    else:    
+
       form = StatusForm (request.POST, request.FILES)
       if form.is_valid():
         status=form.save(commit=False)
@@ -154,7 +156,7 @@ def status (request, object_id=None, mobile=False):
 
         #ESCAPE CONTENT - CRITICAL  XXX
         
-        # tag assignment
+        # message detection
         
         msg = MESSAGE_RE.match(status.text)
         
@@ -164,22 +166,27 @@ def status (request, object_id=None, mobile=False):
           if status.text[1] == '>':
             status.private = True
         
-        tag_result = TAG_RE.search(status.text)
-        if tag_result:
-          status.tagged = True
-        else:
-          status.tagged = False
-        status.save()
-        
-        if status.tagged:
-          tag_text = tag_result.group().strip('#').strip()
+        # tag assignment
+        tag_result = TAG_RE.findall(status.text)
+        status.tagged = True if tag_result else False
+        status.save()        
           
-          tag, create = Tag.objects.get_or_create(tag=tag_text)
-          tag.status.add(status)
-          tag.save()          
-
-
+        if status.tagged:
+          for tag_text in tag_result:    
+            tag, create = Tag.objects.get_or_create(tag=tag_text)
+            tag.status.add(status)
+            tag.save()          
         
+        # mention notification       
+        mention_result = MENTION_RE.findall(status.text)
+        print mention_result
+        if mention_result:
+          for u in mention_result:
+            recipient = User.objects.get(user__username__exact=u)
+            action = Status(owner=profile, recipient=recipient, action='mention',
+              text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
+            action.save()
+
       else:
         HTTPResponseBadRequest()
       if mobile:
