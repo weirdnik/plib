@@ -21,7 +21,7 @@ from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 
-from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE
+from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE, STATUS_RE
 from profile.models import User
 
 ###
@@ -165,7 +165,7 @@ def status (request, object_id=None, mobile=False):
           status.recipient = get_object_or_404(User, user=recipient)
           if status.text[1] == '>':
             status.private = True
-        
+            
         # tag assignment
         tag_result = TAG_RE.findall(status.text)
         status.tagged = True if tag_result else False
@@ -179,7 +179,6 @@ def status (request, object_id=None, mobile=False):
         
         # mention notification       
         mention_result = MENTION_RE.findall(status.text)
-        print mention_result
         if mention_result:
           for u in mention_result:
             recipient = User.objects.get(user__username__exact=u)
@@ -187,6 +186,13 @@ def status (request, object_id=None, mobile=False):
               text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
             action.save()
 
+        # quote notification
+        quote_result = STATUS_RE.findall(status.text)        
+        for q in quote_result:
+          action = Status (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
+            text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
+          action.save()
+          
       else:
         HTTPResponseBadRequest()
       if mobile:

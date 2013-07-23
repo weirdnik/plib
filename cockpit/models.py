@@ -35,7 +35,8 @@ class Status (models.Model):
   action = models.CharField (max_length=16, choices=(('like', 'like'), 
    ('follow', 'dodal/a cie do obserwowanych'), 
    ('unfollow', 'przestal/a cie obserwowac'),
-   ('mention', 'o Tobie mowi') ), blank=True, null=True)
+   ('mention', 'o Tobie mowi'),
+   ('quote', 'cie cytuje') ), blank=True, null=True)
 
 
   def likes (self):
@@ -58,13 +59,17 @@ class Status (models.Model):
       result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
     elif self.action == 'like':
       result = '^%s lubi status ' % self.owner.user.username
-    elif self.action == 'mention':    
+    # mention & quoting
+    elif self.action in ('mention', 'quote'):    
       u = self.owner.user.username
       d = dict(user=u, 
         profile=reverse('mobile_user', kwargs=dict(username=u, mobile=True)), 
         url=self.text)
-      result = '<a href="%(profile)s">^%(user)s</a> o Tobie mowi: <a href="%(url)s">[^%(user)s]</a>' % d
-      # mention quoting
+      if self.action == 'mention':
+        result = '<a href="%(profile)s">^%(user)s</a> o Tobie mowi: <a href="%(url)s">[^%(user)s]</a>' % d
+      else:
+        result = '<a href="%(profile)s">^%(user)s</a> Cie cytuje: <a href="%(url)s">[^%(user)s]</a>' % d      
+
       # WARNING: depends on status.text format, which depends on urls.py
       object_id = int(self.text.strip('/').split('/')[-1])
       msg = Status.objects.get(pk=object_id)
@@ -72,7 +77,6 @@ class Status (models.Model):
         result = result + ': %s <a href="%s">[cytuj]</a> <a href="%s">[odpowiedz]</a>' % ( msg.render(),
           reverse('mobile_dashboard', kwargs=dict(mobile=True, quote=object_id)),
           reverse('mobile_dashboard', kwargs=dict(mobile=True, reply=msg.owner.user.username)))
-      
     else:
       # mentions and quotes
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
