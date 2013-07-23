@@ -14,6 +14,7 @@ YOUTUBE_RE = re.compile ('http://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 MESSAGE_RE = re.compile('^\>\>?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
+STATUS_RE = re.compile('/status/(?P<status>\d+)/?')
 
 # Create your models here.
 
@@ -51,10 +52,7 @@ class Status (models.Model):
     
   def render (self):
 
-    print self.id
     # ^mentions
-    # template this time?
-#    if self.action:
     if self.action == 'follow':
       result = 'uzytkownik %s dodal cie do obserwowanych' % self.recipient.user.username
     elif self.action == 'unfollow':
@@ -66,19 +64,26 @@ class Status (models.Model):
       d = dict(user=u, 
         profile=reverse('mobile_user', kwargs=dict(username=u, mobile=True)), 
         url=self.text)
-      result = '<a href="%(profile)s">^%(user)s</a> o tobie mowi: <a href="%(url)s">[^%(user)s]</a>' % d
+      result = '<a href="%(profile)s">^%(user)s</a> o Tobie mowi: <a href="%(url)s">[^%(user)s]</a>' % d
+      # mention quoting
+      # WARNING: depends on status.text format, which depends on urls.py
+      object_id = int(self.text.strip('/').split('/')[-1])
+      msg = Status.objects.get(pk=object_id)
+      if msg: 
+        result = result + ': %s <a href="%s">[cytuj]</a> <a href="%s">[odpowiedz]</a>' % ( msg.render(),
+          reverse('mobile_dashboard', kwargs=dict(mobile=True, quote=object_id)),
+          reverse('mobile_dashboard', kwargs=dict(mobile=True, reply=msg.owner.user.username)))
+      
     else:
+      # mentions and quotes
       result = MENTION_RE.sub ( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
-
+      
       # message prefix display mangling        
       if self.recipient:        
         result = MESSAGE_RE.sub ( '> <a href="%s" target="_top">%s</a>:' % ( reverse('cockpit.views.main',
           kwargs=dict(username=self.recipient)), self.recipient), result)
-        if self.private:
-          result = MSG_PREFIX_RE.sub('&raquo;', result)
-        else:
-          result = MSG_PREFIX_RE.sub('&rsaquo;', result)
+        result = MSG_PREFIX_RE.sub('&raquo;', result) if self.private else result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
       # embedding stuff from other sites    
       result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'],
@@ -97,8 +102,6 @@ class Status (models.Model):
 #         '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
           result = result + '<div class="status-image"><img src="%s"></div>' % path
 
-    if self.action:
-      print result
     return result
 
   
