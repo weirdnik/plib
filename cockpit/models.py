@@ -14,7 +14,7 @@ YOUTUBE_RE = re.compile ('http://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 MESSAGE_RE = re.compile('^\>\>?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
-STATUS_RE = re.compile('/status/(?P<status>\d+)/?')
+STATUS_RE = re.compile('(?P<status>/status/(?P<object_id>\d+)/?)')
 
 # Create your models here.
 
@@ -51,8 +51,7 @@ class Status (models.Model):
     
     
   def render (self):
-
-    # ^mentions
+    print self.id
     if self.action == 'follow':
       result = 'uzytkownik %s dodal cie do obserwowanych' % self.recipient.user.username
     elif self.action == 'unfollow':
@@ -76,14 +75,20 @@ class Status (models.Model):
       
     else:
       # mentions and quotes
-      result = MENTION_RE.sub ( lambda g: '<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
+      result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
-      
+      result = STATUS_RE.sub( lambda g: u'<a href="%s">[%s]</a>' % (reverse('cockpit.views.status', 
+        kwargs=dict(object_id=g.groupdict()['object_id'])),
+        Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username), result)
+
       # message prefix display mangling        
       if self.recipient:        
         result = MESSAGE_RE.sub ( '> <a href="%s" target="_top">%s</a>:' % ( reverse('cockpit.views.main',
           kwargs=dict(username=self.recipient)), self.recipient), result)
-        result = MSG_PREFIX_RE.sub('&raquo;', result) if self.private else result = MSG_PREFIX_RE.sub('&rsaquo;', result)
+        if self.private:
+          result = MSG_PREFIX_RE.sub('&raquo;', result)
+        else:
+          result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
       # embedding stuff from other sites    
       result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'],
