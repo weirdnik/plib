@@ -30,9 +30,9 @@ urlpatterns = patterns('',
     (r'^status/(?P<object_id>\d+)/?$', 'cockpit.views.status'),
     (r'^status/?$', 'cockpit.views.status'),  
     (r'^statusm/?$', 'cockpit.views.status', dict(mobile=True), 'mobile_status'),    
-    (r'^status(?P<object_id>\d+)/like/?$', 'cockpit.views.like', dict(mobile=True)),    
-    (r'^status(?P<object_id>\d+)/unlike/?$', 'cockpit.views.unlike', dict(mobile=True)),        
-    (r'^status(?P<object_id>\d+)/delete/?$', 'cockpit.views.delete', dict(mobile=True)),        
+    (r'^status/(?P<object_id>\d+)/like/?$', 'cockpit.views.like', dict(mobile=True)),    
+    (r'^status/(?P<object_id>\d+)/unlike/?$', 'cockpit.views.unlike', dict(mobile=True)),        
+    (r'^status/(?P<object_id>\d+)/delete/?$', 'cockpit.views.delete', dict(mobile=True)),        
     (r'^tag/(?P<text>\w+)/$', 'cockpit.views.tag'),
     
     # user management stuff
