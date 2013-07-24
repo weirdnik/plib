@@ -54,7 +54,8 @@ class Status (models.Model):
   def render (self):
     print self.id
     if self.action == 'follow':
-      result = 'uzytkownik %s dodal cie do obserwowanych' % self.recipient.user.username
+      result = 'uzytkownik <a href="%s">^%s</a> dodal cie do obserwowanych' % ( reverse('cockpit.views.main',
+          kwargs=dict(username=self.recipient.user.username)), self.recipient.user.username)
     elif self.action == 'unfollow':
       result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
     elif self.action == 'like':
@@ -81,8 +82,9 @@ class Status (models.Model):
       # mentions and quotes
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
-      result = STATUS_RE.sub( lambda g: u'<a href="%s">[%s]</a>' % (reverse('cockpit.views.status', 
-        kwargs=dict(object_id=g.groupdict()['object_id'])),
+      # TODO add flat_render for onmouseover display
+      result = STATUS_RE.sub( lambda g: u'<a title="%s" href="%s">[%s]</a>' % (Status.objects.get(pk=g.groupdict()['object_id']).text,
+        reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
         Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username), result)
 
       # message prefix display mangling        
