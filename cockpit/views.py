@@ -262,4 +262,12 @@ def delete (request, object_id, mobile=False):
   if request.method == 'POST':
     
     user =  get_object_or_404(User, user__id__exact=request.user.id)  
-    status =  get_object_or_404(Status, id=object_id)      
+    status =  get_object_or_404(Status, id=object_id)
+    
+    if user == status.owner or user == status.recipient:
+      status.delete()
+      return HTTPResponseRedirect (reverse('mobile_dashboard'))
+    else:
+      return HTTPResponseNotAllowed ()      
+  else:
+    return HTTPResponseBadRequest()
