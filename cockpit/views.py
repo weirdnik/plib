@@ -87,7 +87,7 @@ def main (request, username=None):
 
 
 @login_required
-def feed (request, username=None, mobile=False, quote=None, reply=None):  
+def feed (request, username=None, mobile=False, quote=None, reply=None, private=False):  
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
   follow = True
@@ -102,7 +102,10 @@ def feed (request, username=None, mobile=False, quote=None, reply=None):
       text = '%s ' % reverse('cockpit.views.status', kwargs=dict(object_id=quote))
       form = StatusForm(initial=dict(text=text))
     elif reply:
-      text = '>%s: ' % reply
+      if private:
+        text = '>>%s: ' % reply
+      else:
+        text = '>%s: ' % reply      
       form = StatusForm(initial=dict(text=text))    
     else:
       form = StatusForm()
