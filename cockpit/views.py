@@ -93,7 +93,9 @@ def feed (request, username=None, mobile=False, quote=None, reply=None, private=
   follow = True
   profile = get_object_or_404 (User, user__username__exact=username) if username else user
 
-  statuses = feed_lookup (user, profile, user==profile)  
+  statuses = feed_lookup (user, profile, user==profile)
+  last_id = statuses [0].id if statuses else '0'
+
   if mobile:
     if profile in user.watches.all():
       follow=False
@@ -113,7 +115,8 @@ def feed (request, username=None, mobile=False, quote=None, reply=None, private=
     template = loader.get_template("feed.html")
     form = None
   return HTTPResponse (template.render(RequestContext(request,
-     dict(feed=statuses, profile=profile, form=form, javascripts=('enter',), follow=follow))))
+    dict(feed=statuses, profile=profile, form=form, follow=follow, last_id=last_id,
+      javascripts=('enter', 'refresh')))))
  
  
 @login_required  
@@ -271,3 +274,21 @@ def delete (request, object_id, mobile=False):
       return HTTPResponseNotAllowed ()      
   else:
     return HTTPResponseBadRequest()
+    
+@login_required
+def feed_count_since (request, object_id, username=None, private=False):
+
+  user = get_object_or_404(User, user__id__exact=request.user.id) 
+  profile = get_object_or_404 (User, user__username__exact=username) if username else user
+
+
+  if request.method == 'GET':
+    query = feed_lookup(user, profile, private)
+    try:
+      status = Status.objects.get(pk=object_id)
+      result = query.filter(date__gt=status.date)
+    except Status.DoesNotExist:
+      result = query.filter(id__gt=object_id)
+    return HTTPResponse(result.count())
+  
+  return HTTPResponseBadRequest()
