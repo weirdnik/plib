@@ -33,6 +33,9 @@ urlpatterns = patterns('',
     (r'^status/(?P<object_id>\d+)/like/?$', 'cockpit.views.like', dict(mobile=True)),    
     (r'^status/(?P<object_id>\d+)/unlike/?$', 'cockpit.views.unlike', dict(mobile=True)),        
     (r'^status/(?P<object_id>\d+)/delete/?$', 'cockpit.views.delete', dict(mobile=True)),        
+    (r'^status/(?P<object_id>\d+)/count/private/?$', 'cockpit.views.feed_count_since', dict(private=True), 'count_private'),            
+    (r'^status/(?P<object_id>\d+)/count/?$', 'cockpit.views.feed_count_since', dict(private=False), 'count_public'),            
+
     (r'^tag/(?P<text>\w+)/$', 'cockpit.views.tag'),
     
     # user management stuff

@@ -5,9 +5,13 @@
         <a href="{% url edit_account %}">konto</a> |
         <a href="{% url logout_user %}">wyloguj</a></p>
     </div>
+      <div>
+        (<span id="statuses">0</span>)
+      </div>
     <div id="cockpit">
       <h1>kokpit</h1>
-      <form method="POST" action="{% url mobile_status %}" enctype="multipart/form-data"> 
+      <form method="POST" action="{% url mobile_status %}" enctype="multipart/form-data"
+        onkeyup="if(isEnterPressed(event)){ document.status_form.submit();};"> 
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="plib!"/>
@@ -38,21 +42,25 @@
              {% if not status.action %}<form method="POST" action="{% url cockpit.views.delete object_id=status.id %}">
                 {% csrf_token %} 
                 <input type="submit" value="usun"/>
-              </form>  
+             </form>  
              {% endif %}{% else %}<div class="likebox">            
              {% if user.username in status.liking %}<form method="POST" action="{% url cockpit.views.unlike object_id=status.id %}">         
                 {% csrf_token %} 
                 <input type="submit" value="nie lub"/>
-              </form>{% else %}          
-              <form method="POST" action="{% url cockpit.views.like object_id=status.id %}">         
-                {% csrf_token %} 
-                <input type="submit" value="polub"/>
-              </form>{% endif %}          
-            </div>
-          </p>
-        </div>{% endif %}
+             </form>{% else %}          
+             <form method="POST" action="{% url cockpit.views.like object_id=status.id %}">         
+               {% csrf_token %} 
+               <input type="submit" value="polub"/>
+             </form>{% endif %}          
+          </div>
+        </p>
       </div>{% endif %}
+    </div>{% endif %}
       <hr />{% endfor %}{% else %}
       <p class="message">Kokpit jest pusty!</p>{% endif %}
     </div>
+    <script type="text/javascript">
+      var lastID  = "{{ last_id }}";
+      var IntervalID = setInterval (function() { feed_count_check(lastID);}, 2000);
+    </script>
 {% endblock body %}
