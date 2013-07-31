@@ -5,7 +5,10 @@
   <head>
     <title>{% if user.is_authenticated %}kokpit uzytkownika {% if profile %}{{ profile.user.username }}{% else %}{{ user.user.username }}{% endif %}{% else %}Plan B{% endif %}</title>
     <link rel="stylesheet" type="text/css" href="/static/style.css" />{% if javascripts %}{% for script in javascripts %}
-    <script type="text/javascript" src="/static/js/{{ script }}.js"></script>{% endfor %}{% endif %}
+    <script type="text/javascript" src="/static/js/{{ script }}.js"></script>{% endfor %}{% endif %}{% if user.is_authenticated %}
+    <style type="text/css">
+    {% if profile.background %}body { background-image: url('{{ profile.background.url }}');}{% endif %}
+    </style>{% endif %}
   </head>
   <body>{% block body %}{% endblock body %}  
   </body>
