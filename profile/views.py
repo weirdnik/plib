@@ -159,15 +159,21 @@ def confirm (request, slug=None):
 def edit (request):
 
   def process_images(**kwargs):
+    import os
+    
     instance = kwargs.get('instance', None)
-#    print instance.avatar.path
-#    print instance.background.path
-
     if instance.avatar:
       avatar = Image.open(instance.avatar.path)
       avatar.thumbnail((256,256), Image.ANTIALIAS)
       avatar.save(instance.avatar.path + '.jpg', 'JPEG')
-                                                                        
+
+  # works but unnecessary
+  
+#    if instance.background:
+#      background = Image.open(instance.background.path)
+#      path = os.path.join((lambda p:'/'.join(p.split('/')[:-1]))(instance.background.path), 'background-%s.jpg' % instance.user.username)
+#      background.save(path,'JPEG')
+      
   post_save.connect(process_images, sender=User)
   template = loader.get_template ("account.html")                                                                          
   user =  get_object_or_404(User, user__id__exact=request.user.id)  
