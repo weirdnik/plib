@@ -25,7 +25,8 @@
            {% csrf_token %}
            <input type="submit" value="nie obserwuj"/>
         </form>{% endif %}
-      </div>{% endif %}{% if feed %}{% for status in feed %}{% if status.action %}
+      </div>{% endif %}
+      {% if feed %}<!-- feed -->{% for status in feed %}{% if status.action %}
       <div class="status-info">
         <p>(i) {{ status.render|safe }}</p>
       </div>{% else %}
@@ -34,28 +35,25 @@
         <p class="status"><span title="{{ status.date }}">[&#x231A;][</span>
           <strong><a href="{% url mobile_user username=status.owner.user.username %}">{{ status.owner.user.username }}</a></strong>{% if not status.recipient %}:{% endif %}
           {{ status.render|safe }}</p>
-          <div class="status-meta">
-            [&hearts; {{ status.likes.distinct.count|safe }} ]
-            <a href="{% url mobile_dashboard quote=status.id %}">cytuj</a>{% if not user.username = status.owner.user.username %}
-            <a href="{% if status.private %}{% url private_dashboard reply=status.owner.user.username %}{% else %}{% url reply_dashboard reply=status.owner.user.username %}{% endif %}">odpowiedz</a>{% endif %}</p>
-             {% if status.private or status.recipient or user.username == status.owner.user.username %}
-             {% if not status.action %}<form method="POST" action="{% url cockpit.views.delete object_id=status.id %}">
-                {% csrf_token %} 
-                <input type="submit" value="usun"/>
-             </form>  
-             {% endif %}{% else %}<div class="likebox">            
-             {% if user.username in status.liking %}<form method="POST" action="{% url cockpit.views.unlike object_id=status.id %}">         
-                {% csrf_token %} 
-                <input type="submit" value="nie lub"/>
-             </form>{% else %}          
-             <form method="POST" action="{% url cockpit.views.like object_id=status.id %}">         
-               {% csrf_token %} 
-               <input type="submit" value="polub"/>
-             </form>{% endif %}          
-          </div>
-        </p>
-      </div>{% endif %}
-    </div>{% endif %}
+        <div class="status-meta">
+          [&hearts; {{ status.likes.distinct.count|safe }} ]
+          <a href="{% url mobile_dashboard quote=status.id %}">cytuj</a>{% if not user.username = status.owner.user.username %}<a href="{% if status.private %}{% url private_dashboard reply=status.owner.user.username %}{% else %}{% url reply_dashboard reply=status.owner.user.username %}{% endif %}">odpowiedz</a>{% endif %}
+          {% if status.private or status.recipient or user.username == status.owner.user.username %}<form method="POST" action="{% url cockpit.views.delete object_id=status.id %}">
+            {% csrf_token %} 
+            <input type="submit" value="usun"/>
+          </form>{% else %}
+          <div class="likebox">            
+            {% if user.username in status.liking %}<form method="POST" action="{% url cockpit.views.unlike object_id=status.id %}">         
+              {% csrf_token %} 
+              <input type="submit" value="nie lub"/>
+            </form>{% else %}          
+            <form method="POST" action="{% url cockpit.views.like object_id=status.id %}">         
+              {% csrf_token %} 
+              <input type="submit" value="polub"/>
+            </form>
+          </div><!-- end status-likebox -->{% endif %}                {% endif %}
+        </div><!-- end status-meta -->
+      </div><!-- end status -->{% endif %}
       <hr />{% endfor %}{% else %}
       <p class="message">Kokpit jest pusty!</p>{% endif %}
     </div>
