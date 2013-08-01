@@ -23,6 +23,7 @@ def front(request):
     week = datetime.timedelta(weeks=1)
     since = now-week
     
+    # this is bad
     liked = Like.objects.filter(status__private__exact=False, 
       status__recipient__exact=None, 
       status__date__gte=since).annotate(likes=Count('user')).order_by('likes')
