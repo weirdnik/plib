@@ -6,28 +6,25 @@
         <a href="{% url edit_account %}">konto</a> |
         <a href="{% url logout_user %}">wyloguj</a></p>
     </div>
-      <div>
-        (<span id="statuses">0</span>)
-      </div>
     <div id="cockpit">
       <div id="cockpit-head">
-        <h1>kokpit</h1>
-        <form method="POST" action="{% url mobile_status %}" enctype="multipart/form-data"
+        <form method="post" action="{% url mobile_status %}" enctype="multipart/form-data"
           onkeyup="if(isEnterPressed(event)){ document.status_form.submit();};"> 
           {% csrf_token %}
           {{ form.as_p }}
           <input type="submit" value="plib!"/>
         </form>{% if not profile.user.username = user.username %}
         <div id="follow-block">{% if follow %}
-          <form method="POST" action="{% url profile.views.follow username=profile.user.username %}">
+          <form method="post" action="{% url profile.views.follow username=profile.user.username %}">
             {% csrf_token %}
             <input type="submit" value="obserwuj"/>
           </form>{% else %}
-          <form method="POST" action="{% url profile.views.unfollow username=profile.user.username %}">
+          <form method="post" action="{% url profile.views.unfollow username=profile.user.username %}">
              {% csrf_token %}
              <input type="submit" value="nie obserwuj"/>
           </form>{% endif %}
         </div>{% endif %}
+      <div id="queue-counter">czeka <span id="statuses">0</span></div>
       </div><!-- end cockpit-head -->
       {% if feed %}<!-- feed start -->{% for status in feed %}{% if status.action %}
       <div class="status-info">
@@ -61,5 +58,4 @@
     <script type="text/javascript">
       var lastID  = "{{ last_id }}";
       // var IntervalID = setInterval (function() { feed_count_check(lastID);}, 2000);
-    </script>
-{% endblock body %}
+    </script>{% endblock body %}
