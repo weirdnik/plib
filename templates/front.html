@@ -1,22 +1,25 @@
-<html>
-  <head>
-    <title>{{ app_name|safe }}</title>
-    <meta http-equiv="refresh" content="30">
-    <link rel="stylesheet" type="text/css" href="/static/style.css" />
-  </head>
-  <body>
+{% extends "xhtml.html" %}{% block body %}
     <div class="menu">
-      <a href="{% url login_user %}">zaloguj sie</a> | <a href="{% url create_user %}">zaloz konto</a>
+      {% if user.is_authenticated %}<a href="{% url mobile_dashboard %}">kokpit</a>{% else %}<a href="{% url login_user %}">zaloguj sie</a> | <a href="{% url create_user %}">zaloz konto</a>{% endif %}
     </div>
     <div id="frontpage-intro">
       <h1>{{ app_name|safe }}</h1>  
-    </div>{% if feed %}
-    <div id="frontpage-feed">
-      <ul>{% for status in feed %}
-        <li>
-{% include "status.inc" %}
-        </li>{% endfor %}
-      </ul>{% else %}<p>Nie ma jeszcze zadnych statusow!</p>{% endif %}
     </div>
-  </body>
-</html>
+    <div id="frontpage-mainframe">
+      <h2>ostatnie</h2>
+      <div id="frontpage-feed">{% if feed %}
+        <ul>{% for status in feed %}
+          <li>
+{% include "status.inc" %}
+          </li>{% endfor %}
+        </ul>{% else %}<p>Nie ma jeszcze zadnych statusow!</p>{% endif %}
+      </div><!--
+      <div id="frontpage-likes">{% if feed %}
+        <h2>najpopularniejsze</h2>
+        <ul>{% for status in likes %}
+          <li>
+{% include "status.inc" %}
+          </li>{% endfor %}
+        </ul>{% else %}<p>Nie ma jeszcze zadnych statusow!</p>{% endif %}
+      </div>     -->  
+    </div>{% endblock body %}
