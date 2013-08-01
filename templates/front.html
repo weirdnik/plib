@@ -10,16 +10,10 @@
       <div id="frontpage-feed">{% if feed %}
         <ul>{% for status in feed %}
           <li>
-{% include "status.inc" %}
+            <p><img class="avatar" src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar.png{% endif %}" /></p>      
+            <p class="status"><a href="{% url mobile_user username=status.owner.user.username %}">{{ status.owner.user.username}}</a>: {{ status.render|safe }}</p>
+            <p class="status-date">{{ status.date }}</p>
           </li>{% endfor %}
         </ul>{% else %}<p>Nie ma jeszcze zadnych statusow!</p>{% endif %}
-      </div><!--
-      <div id="frontpage-likes">{% if feed %}
-        <h2>najpopularniejsze</h2>
-        <ul>{% for status in likes %}
-          <li>
-{% include "status.inc" %}
-          </li>{% endfor %}
-        </ul>{% else %}<p>Nie ma jeszcze zadnych statusow!</p>{% endif %}
-      </div>     -->  
+      </div>
     </div>{% endblock body %}
