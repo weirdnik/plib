@@ -1,12 +1,28 @@
 
 h1 { font-size: large; }
-body { color: green; background: light-gray; font-family: Verdana, sans; }
+body { color: green; background: light-gray; font-family: Verdana, sans;
+ padding: 0px; }
+html { padding: 0px; }
 
 .private { background: gray; }
 
-div.status { background: white;
-   padding: 0.2em;
-   align: bottom; }
+div#menu {
+  width: 100%;
+  background: black;
+  color: green;
+}
+
+div#cockpit-head {
+   background: white;
+   margin-left: 1em;
+   width: 30em;
+   padding: 1ex;
+}
+
+div.status,div.status-info { background: white;
+   width: 45em;
+   margin-left: 1em;
+}
 
 
 .status-image { padding-top: 1ex; padding-left: 1em; }
@@ -17,6 +33,8 @@ div.status-date { font-size: xx-small; vertical-align: superscript; }
 
 iframe { display: inline-block;
  vertical-align: text-top;
+ margin-left: 1ex;
+ margin-top: 0.2ex;
 }
 
 img.background {
