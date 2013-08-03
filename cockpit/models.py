@@ -10,7 +10,7 @@ from django.forms import ModelForm, Textarea
 
 TAG_RE = re.compile('#(?P<tag>\w+)')
 MENTION_RE = re.compile('\^(?P<username>\w+)')
-YOUTUBE_RE = re.compile ('http://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
+YOUTUBE_RE = re.compile ('https?://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 MESSAGE_RE = re.compile('^\>\>?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
@@ -111,7 +111,7 @@ class Status (models.Model):
         if os.path.exists(self.image.path):
           path = self.image.url + '_preview.jpg'
 #         '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
-          result = result + '<div class="status-image"><img src="%s"></div>' % path
+          result = result + '<div class="status-image"><img src="%s" /></div>' % path
 
     return result
 
