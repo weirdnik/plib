@@ -61,17 +61,29 @@ class Status (models.Model):
       cockpit = reverse(view, kwargs=dict(username=user.user.username))
       return template % ( cockpit, user.user.username)
       
-    print self.id
+    def status_mention():
+      pass
+      
+#    print self.id
     if self.action == 'follow':
-      result = u'%s zaczął obserwować %s' % (user_cockpit(self.recipient), user_cockpit(self.owner)) 
-#         (reverse('cockpit.views.main', kwargs=dict(username=self.recipient.user.username)),
-#        self.recipient.user.username,
-#        reverse('cockpit.views.main', kwargs=dict(username=self.owner.user.username)),
-#        self.owner.user.username)
+      result = u'%s zaczął obserwować %s' % (user_cockpit(self.recipient),
+        user_cockpit(self.owner)) 
     elif self.action == 'unfollow':
-      result = u'%s już nie obserwuje %s' % (user_cockpit(self.recipient), user_cockpit(self.owner))
+      result = u'%s już nie obserwuje %s' % (user_cockpit(self.recipient),
+        user_cockpit(self.owner))
     elif self.action == 'like':
-      result = u'^%s lubi status ' % self.owner.user.username
+      match = STATUS_RE.match(self.text).groups() if self.text else None        
+      if match:
+        status_id = match[1]
+        status = Status.objects.get(pk=status_id)
+        result = u'%s lubi <a href="%s" title="%s" >status</a> %s' % ( user_cockpit(self.owner),
+          reverse('cockpit.views.status', kwargs=dict(object_id=status_id)),
+          status.text,
+          user_cockpit(self.recipient))        
+      else:
+        result = u'%s lubi status %s' % ( user_cockpit(self.owner),
+          user_cockpit(self.recipient))        
+
     # mention & quoting
     elif self.action in ('mention', 'quote'):    
       u = self.owner.user.username
