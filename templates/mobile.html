@@ -1,6 +1,7 @@
 {% extends "xhtml.html" %}{% block body %}
     <div id="menu">
-      <p><a href="{% url mobile_dashboard %}">kokpit</a> | 
+      <p>[ logo ] | 
+        <a href="{% url mobile_dashboard %}">kokpit</a> | 
         <a href="{% url front_page %}">front</a> |
         <a href="{% url profile.views.blog username=user.username %}">blog</a> |
         <a href="{% url edit_account %}">konto</a> |
