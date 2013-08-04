@@ -62,10 +62,25 @@ class Status (models.Model):
       cockpit = reverse(view, kwargs=dict(username=user.user.username))
       return template % ( cockpit, user.user.username)
       
-    def status_mention():
-      pass
+
+    def insert_embeds (result):
+      'run the status text through embeds parsing'
       
-#    print self.id
+      EMBEDS = ( 
+        ( YOUTUBE_RE, 
+          lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'] ),
+        ( VIMEO_RE, 
+          lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'] ),
+        ( INSTAGRAM_RE, 
+          lambda g: '<iframe src="//instagram.com/p/%s/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>' % g.groupdict()['image'] ),
+      )
+
+      for e in EMBEDS:
+       result = e[0].sub(e[1], result)
+      
+      return result
+
+                   
     if self.action == 'follow':
       result = u'%s zaczął obserwować %s' % (user_cockpit(self.recipient),
         user_cockpit(self.owner)) 
@@ -123,14 +138,8 @@ class Status (models.Model):
           result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
       # embedding stuff from other sites    
-      ## TODO, make this a loop
-      result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'],
-        result )
-      result = VIMEO_RE.sub ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'],
-        result)
-      result = INSTAGRAM_RE.sub  ( lambda g: '<iframe src="//instagram.com/p/%s/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>' % g.groupdict()['image'],
-        result)
-      
+      result = insert_embeds(result)
+
       # hashtags detected
       if self.tagged:
         result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip('#'))) ,g.group()), result)
