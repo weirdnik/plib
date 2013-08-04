@@ -1,4 +1,5 @@
-#
+# /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import re, os
 
@@ -26,8 +27,9 @@ class Status (models.Model):
   private = models.BooleanField (default=False)
 #  visible = models.BooleanField (default=False)  
   tagged = models.BooleanField (default=False)
-  text = models.TextField (blank=True, null=True)
-  image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, null=True, height_field='image_height', width_field='image_width')  
+  text = models.TextField (blank=True, null=True, help_text=None)
+  image = models.ImageField(upload_to="upload/images/%s.%N", blank=True, null=True,
+     height_field='image_height', width_field='image_width')  
   image_height = models.IntegerField(blank=True, null=True)
   image_width = models.IntegerField(blank=True, null=True)  
   preview = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
@@ -52,14 +54,23 @@ class Status (models.Model):
     
     
   def render (self):
+  
+    def user_cockpit(view, user):
+      template = '<a href="%s">^%s</a>'
+      cockpit = reverse(view, kwargs=dict(username=user.user.username))
+      return template % ( cockpit, user.user.username)
+      
     print self.id
     if self.action == 'follow':
-      result = 'uzytkownik <a href="%s">^%s</a> dodal cie do obserwowanych' % ( reverse('cockpit.views.main',
-          kwargs=dict(username=self.recipient.user.username)), self.recipient.user.username)
+      result = u'%s zaczął obserwować %s' % (user_cockpit ('cockpit.views.main', self.recipient), user_cockpit ('cockpit.views.main', self.owner)) 
+#         (reverse('cockpit.views.main', kwargs=dict(username=self.recipient.user.username)),
+#        self.recipient.user.username,
+#        reverse('cockpit.views.main', kwargs=dict(username=self.owner.user.username)),
+#        self.owner.user.username)
     elif self.action == 'unfollow':
-      result = 'uzytkownik %s przestal cie obserwowac' % self.recipient.user.username
+      result = u'%s już nie obserwuje %s' % ( self.recipient.user.username, self.owner.user.username)
     elif self.action == 'like':
-      result = '^%s lubi status ' % self.owner.user.username
+      result = u'^%s lubi status ' % self.owner.user.username
     # mention & quoting
     elif self.action in ('mention', 'quote'):    
       u = self.owner.user.username
@@ -67,9 +78,9 @@ class Status (models.Model):
         profile=reverse('mobile_user', kwargs=dict(username=u, mobile=True)), 
         url=self.text)
       if self.action == 'mention':
-        result = '<a href="%(profile)s">^%(user)s</a> o Tobie mowi: <a href="%(url)s">[^%(user)s]</a>' % d
+        result = u'<a href="%(profile)s">^%(user)s</a> o Tobie mówi: <a href="%(url)s">[^%(user)s]</a>' % d
       else:
-        result = '<a href="%(profile)s">^%(user)s</a> Cie cytuje: <a href="%(url)s">[^%(user)s]</a>' % d      
+        result = u'<a href="%(profile)s">^%(user)s</a> Cię cytuje: <a href="%(url)s">[^%(user)s]</a>' % d      
 
       # WARNING: depends on status.text format, which depends on urls.py
       object_id = int(self.text.strip('/').split('/')[-1])
@@ -85,11 +96,12 @@ class Status (models.Model):
       # TODO add flat_render for onmouseover display
       result = STATUS_RE.sub( lambda g: u'<a title="%s" href="%s">[%s]</a>' % (Status.objects.get(pk=g.groupdict()['object_id']).text,
         reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
-        Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username), result)
+        Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username),
+        result)
 
       # message prefix display mangling        
-      if self.recipient:        
-        result = MESSAGE_RE.sub ( '> <a href="%s" target="_top">%s</a>:' % ( reverse('cockpit.views.main',
+      if self.recipient:
+        result = MESSAGE_RE.sub ( u'> <a href="%s" target="_top">%s</a>:' % ( reverse('cockpit.views.main',
           kwargs=dict(username=self.recipient)), self.recipient), result)
         if self.private:
           result = MSG_PREFIX_RE.sub('&raquo;', result)
