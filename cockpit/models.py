@@ -13,6 +13,7 @@ TAG_RE = re.compile('#(?P<tag>\w+)')
 MENTION_RE = re.compile('\^(?P<username>\w+)')
 YOUTUBE_RE = re.compile ('https?://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
+INSTAGRAM_RE = re.compile('https?://instagram.com/<?P<image>[\w\d]+)')
 MESSAGE_RE = re.compile('^\>\>?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
 STATUS_RE = re.compile('(?P<status>/status/(?P<object_id>\d+)/?)')
@@ -122,11 +123,14 @@ class Status (models.Model):
           result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
       # embedding stuff from other sites    
+      ## TODO, make this a loop
       result = YOUTUBE_RE.sub ( lambda g: '<iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'],
         result )
       result = VIMEO_RE.sub  ( lambda g: '<iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'],
         result)
-
+      result = INSTAGRAM_RE.sub  ( lambda g: '<iframe src="//instagram.com/p/%s/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>' % g.groupdict()['image'],
+        result)
+      
       # hashtags detected
       if self.tagged:
         result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip('#'))) ,g.group()), result)
