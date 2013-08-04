@@ -228,11 +228,13 @@ def like (request, object_id, mobile=False):
     status =  get_object_or_404(Status, id=object_id)      
 
     likes, create = Like.objects.get_or_create(user=user)
-    if status not in likes.status.all():
+#    if status not in likes.status.all():
+    if True:
       likes.status.add(status)
       likes.save()
     
-      action = Status(owner=user, recipient=status.owner, action='like')
+      action = Status(owner=user, recipient=status.owner, action='like', 
+        text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))      
       action.save()
 
     return HTTPResponseRedirect (reverse('mobile_dashboard'))
