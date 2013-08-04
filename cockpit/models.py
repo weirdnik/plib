@@ -23,7 +23,8 @@ class Status (models.Model):
 
   date = models.DateTimeField (auto_now_add=True)
   owner = models.ForeignKey ('profile.User', related_name="sender_set")
-  recipient = models.ForeignKey ('profile.User', related_name="recipient_set", blank=True, null=True)
+  recipient = models.ForeignKey ('profile.User', related_name="recipient_set",
+    blank=True, null=True)
   private = models.BooleanField (default=False)
 #  visible = models.BooleanField (default=False)  
   tagged = models.BooleanField (default=False)
@@ -35,10 +36,10 @@ class Status (models.Model):
   preview = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
   icon = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
   action = models.CharField (max_length=16, choices=(('like', 'like'), 
-   ('follow', 'dodal/a cie do obserwowanych'), 
-   ('unfollow', 'przestal/a cie obserwowac'),
-   ('mention', 'o Tobie mowi'),
-   ('quote', 'cie cytuje') ), blank=True, null=True)
+   ('follow', u'dodał/a Cię do obserwowanych'), 
+   ('unfollow', u'przestal/a cie obserwować'),
+   ('mention', u'o Tobie mówi'),
+   ('quote', u'Cię cytuje') ), blank=True, null=True)
 
 
   def likes (self):
@@ -55,20 +56,20 @@ class Status (models.Model):
     
   def render (self):
   
-    def user_cockpit(view, user):
+    def user_cockpit(user, view='cockpit.views.main'):
       template = '<a href="%s">^%s</a>'
       cockpit = reverse(view, kwargs=dict(username=user.user.username))
       return template % ( cockpit, user.user.username)
       
     print self.id
     if self.action == 'follow':
-      result = u'%s zaczął obserwować %s' % (user_cockpit ('cockpit.views.main', self.recipient), user_cockpit ('cockpit.views.main', self.owner)) 
+      result = u'%s zaczął obserwować %s' % (user_cockpit(self.recipient), user_cockpit(self.owner)) 
 #         (reverse('cockpit.views.main', kwargs=dict(username=self.recipient.user.username)),
 #        self.recipient.user.username,
 #        reverse('cockpit.views.main', kwargs=dict(username=self.owner.user.username)),
 #        self.owner.user.username)
     elif self.action == 'unfollow':
-      result = u'%s już nie obserwuje %s' % ( self.recipient.user.username, self.owner.user.username)
+      result = u'%s już nie obserwuje %s' % (user_cockpit(self.recipient), user_cockpit(self.owner))
     elif self.action == 'like':
       result = u'^%s lubi status ' % self.owner.user.username
     # mention & quoting
