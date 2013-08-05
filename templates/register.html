@@ -1,4 +1,9 @@
 {% extends "xhtml.html" %}{% block body %}
+   <div id="menu">
+     <p>[ logo ] | 
+       <a href="{% url front_page %}">strona główna</a></p>
+    </div>
+                         
     <form method="POST" action="{% url profile.views.register %}">
       <table>
       {% csrf_token %}
