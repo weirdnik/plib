@@ -37,14 +37,13 @@ def feed_lookup (user, profile, private):
        ( Q(owner__in=following) & Q(recipient__exact=None)) | # all followed public statuses
        (Q(owner__exact=profile) | Q(recipient__exact=profile))
        ).order_by('-date')
- 
-#      (Q(owner__in=following) & Q(recipient__exact=None)) |
-#      Q(owner__exact=profile) | Q(recipient__exact=profile)).order_by('-date')      
   else:
      result = Status.objects.filter(
-       ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and own
-       ( ( Q(owner__in=following) & Q(private__exact=False) ) & Q(recipient__exact=None) )| # all followed public statuses
-       ( (Q(owner__exact=profile) | Q(recipient__exact=profile)) & Q(private__exact=False) )
+       ( Q(private__exact=False) & 
+       ( Q(owner__exact=profile) | Q(recipient__exact=profile) ) ) |
+       ( Q(private__exact=True) & 
+       ( ( Q(owner__exact=profile) & Q(recipient__exact=user) ) | 
+       ( Q(owner__exact=user) & Q(recipient__exact=profile) ) ) )
        ).order_by('-date')
  
   return result
