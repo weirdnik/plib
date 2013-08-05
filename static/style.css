@@ -4,13 +4,18 @@ body { color: green; background: light-gray; font-family: Verdana, sans;
  padding: 0px; }
 html { padding: 0px; }
 
+.helptext { display: none; }
+
 .private { background: gray; }
 
 div#menu {
   width: 100%;
   background: black;
   color: green;
+  padding: 0.2ex 0.5ex 0.2ex 0.5ex;
 }
+
+#menu a { color: grey; }
 
 div#cockpit-head {
    background: white;
