@@ -63,7 +63,7 @@ class Status (models.Model):
  * hashtags parsing and presentation
  * embedded media URL-s parsing and presentation
     '''  
-    def user_cockpit(user, view='cockpit.views.main'):
+    def user_cockpit(user, view='mobile_user'):
       template = '<a href="%s">^%s</a>'
       cockpit = reverse(view, kwargs=dict(username=user.user.username))
       return template % ( cockpit, user.user.username)
