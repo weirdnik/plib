@@ -56,7 +56,13 @@ class Status (models.Model):
     
     
   def render (self):
-  
+    '''rendering of status' text to displayable HTML, it involves
+ * interpretation of status' action and presentation with appropriate text or
+ 
+ * mention and quote parsing and presentation
+ * hashtags parsing and presentation
+ * embedded media URL-s parsing and presentation
+    '''  
     def user_cockpit(user, view='cockpit.views.main'):
       template = '<a href="%s">^%s</a>'
       cockpit = reverse(view, kwargs=dict(username=user.user.username))
