@@ -1,8 +1,9 @@
-
-
-<p><form method="POST" action="{% url profile.views.register %}"> </p>
-{% csrf_token %}
-{{ form.as_p }}
-<p><input maxlength="30" type="text" name="email" id="email" /></p>
-<p><input type="submit" value="register!" /></p>
-</form>
+{% extends "xhtml.html" %}{% block body %}
+    <form method="POST" action="{% url profile.views.register %}">
+      <table>
+      {% csrf_token %}
+      {{ form.as_table }}
+      <tr><td> </td><td><input type="submit" value="Zarejestruj się!" /></tr>
+      </table>
+    </form>
+{% endblock body %}
