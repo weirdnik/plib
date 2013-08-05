@@ -40,7 +40,6 @@ class User (models.Model):
   ignores = models.ManyToManyField ('User', related_name='ignored_users_set', blank=True, null=True)  
   watches_tags = models.ManyToManyField ('cockpit.Tag', related_name='watched_tag_set', blank=True, null=True)
   ignores_tags = models.ManyToManyField ('cockpit.Tag', related_name='ignored_tag_set', blank=True, null=True)  
-#  likes = models.ManyToManyField('cockpit.Status')
   
   def __unicode__ (self):
   
