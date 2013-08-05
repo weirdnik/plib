@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import smtplib, re
 
@@ -7,14 +8,14 @@ from email.Header import Header
 from time import gmtime, strftime
 
 FROM_ADDR = 'Plan B <blip@hell.pl>'
-TEMPLATE = '''Aby potwierdzic konto w serwisie kliknij na ponizszy odnosnik:
+TEMPLATE = '''Aby potwierdzić utworzenie konta kliknij w poniższy odnośnik:
 
 %s
 
-Jesli nie rejestrowales sie w Planie B, oznacza to, ze ktos uzyl Twojego adresu.
-W takim wypadku mozesz zignorowac niniejsza wiadomosc.
+Jesli nie rejestrowałes/aś się w Planie B, to ktoś uzył Twojego adresu,
+żeby to zrobić. W takim wypadku mozesz zignorować niniejsza wiadomosc.
 
-Zaloga Planu B
+Załoga Planu B
 '''
 
 
@@ -31,7 +32,7 @@ def sendmail(recipient, message):
   message['X-Mailer'] = 'Plan B'
   message['Message-ID'] = '<%s-planb@hell>' % strftime("%S%M%H%d%m%Y", gmtime())
   message['Date'] = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-  message['Subject'] = Header(u'confirm account', 'utf-8')
+  message['Subject'] = Header(u'Potwierdź utworzenie konta w #nowyblip', 'utf-8')
                           
   smtp = smtplib.SMTP()
   smtp.connect()
