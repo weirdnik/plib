@@ -109,13 +109,16 @@ class Status (models.Model):
     # mention & quoting
     elif self.action in ('mention', 'quote'):    
       u = self.owner.user.username
-      d = dict(user=u, 
-        profile=reverse('mobile_user', kwargs=dict(username=u, mobile=True)), 
+#      p = self.recipient.user.username if self.recipient else None
+      d = dict( user=user_cockpit (self.owner),
+        username=u,
+ #       profilename=p
+        profile=user_cockpit (self.recipient),
         url=self.text)
       if self.action == 'mention':
-        result = u'<a href="%(profile)s">^%(user)s</a> o Tobie mówi: <a href="%(url)s">[^%(user)s]</a>' % d
+        result = u'%(user)s mówi o %(profile)s: <a href="%(url)s">[^%(username)s]</a>' % d
       else:
-        result = u'<a href="%(profile)s">^%(user)s</a> Cię cytuje: <a href="%(url)s">[^%(user)s]</a>' % d      
+        result = u'%(user)s cytuje %(profile)s: <a href="%(url)s">[^%(username)s]</a>' % d      
 
       # WARNING: depends on status.text format, which depends on urls.py
       object_id = int(self.text.strip('/').split('/')[-1])
@@ -123,7 +126,7 @@ class Status (models.Model):
       if msg: 
         result = result + ': %s <a href="%s">[cytuj]</a> <a href="%s">[odpowiedz]</a>' % ( msg.render(),
           reverse('mobile_dashboard', kwargs=dict(mobile=True, quote=object_id)),
-          reverse('mobile_dashboard', kwargs=dict(mobile=True, reply=msg.owner.user.username)))
+          reverse('reply_dashboard', kwargs=dict(mobile=True, reply=msg.owner.user.username)))
     else:
       # mentions and quotes
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
