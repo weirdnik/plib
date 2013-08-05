@@ -139,8 +139,11 @@ class Status (models.Model):
 
       # message prefix display mangling        
       if self.recipient:
-        result = MESSAGE_RE.sub ( u'> <a href="%s" target="_top">%s</a>:' % ( reverse('cockpit.views.main',
-          kwargs=dict(username=self.recipient)), self.recipient), result)
+        result = MESSAGE_RE.sub ( u'> <a href="%s">%s</a>:' % (
+          reverse('mobile_user',kwargs=dict(username=self.recipient.user.username)),
+          self.recipient.user.username), 
+          result)
+        
         if self.private:
           result = MSG_PREFIX_RE.sub('&raquo;', result)
         else:
