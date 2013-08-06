@@ -1,15 +1,25 @@
-{% load i18n %}<? xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="{% trans "pl" %}">
+{% load i18n %}<!DOCTYPE html>
+<html lang="{% trans "pl" %}">
   <head>
+    <meta charset="utf-8">
     <title>{% if user.is_authenticated %}kokpit uzytkownika {% if profile %}{{ profile.user.username }}{% else %}{{ user.user.username }}{% endif %}{% else %}Plan B{% endif %}</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css" />{% if javascripts %}{% for script in javascripts %}
-    <script type="text/javascript" src="/static/js/{{ script }}.js"></script>{% endfor %}{% endif %}{% if user.is_authenticated %}
-    <style type="text/css">
-    {% if profile.background %}body { background-image: url('{{ profile.background.url }}');}{% endif %}
-    </style>{% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/vendor/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+    <script src="/static/vendor/js/html5shiv.js"></script>
+    {% if javascripts %}
+      {% for script in javascripts %}
+        <script src="/static/js/{{ script }}.js"></script>{% endfor %}
+      {% endif %}
+    {% if user.is_authenticated %}
+      <style>
+        {% if profile.background %}body { background-image: url('{{ profile.background.url }}');}{% endif %}
+      </style>
+    {% endif %}
   </head>
-  <body>{% block body %}{% endblock body %}  
+  <body>
+    {% block body %}{% endblock body %}
   </body>
+  <script src="/static/vendor/js/jquery-1.10.2.min.js"></script>
+  <script src="/static/vendor/js/bootstrap.min.js"></script>
 </html>
