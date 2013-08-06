@@ -25,7 +25,7 @@
              <input type="submit" value="nie obserwuj"/>
           </form>{% endif %}
         </div>{% endif %}
-      <div id="queue-counter">czeka <span id="statuses">0</span></div>
+      <div id="queue-counter"><a href="{% url mobile_dashboard %}">nowe statusy: <span id="statuses">0</span></a></div>
       </div><!-- end cockpit-head -->
       {% if feed %}<!-- feed start -->{% for status in feed %}{% if status.action %}
       <div class="status-info">
