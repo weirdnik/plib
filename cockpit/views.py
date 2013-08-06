@@ -20,6 +20,7 @@ from django.shortcuts import get_object_or_404
 from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
+from django.utils.html import escape
 
 from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE, STATUS_RE
 from profile.models import User
@@ -153,16 +154,12 @@ def status (request, object_id=None, mobile=False):
     if object_id:
       return HTTPResponseNotAllowed ()
     else:    
-
       form = StatusForm (request.POST, request.FILES)
       if form.is_valid():
         status=form.save(commit=False)
         status.owner=profile
 
-        #ESCAPE CONTENT - CRITICAL  XXX
-        
         # message detection
-        
         msg = MESSAGE_RE.match(status.text)
         
         if msg:
@@ -174,6 +171,8 @@ def status (request, object_id=None, mobile=False):
         # tag assignment
         tag_result = TAG_RE.findall(status.text)
         status.tagged = True if tag_result else False
+
+        status.text = escape(status.text) # SECURITY !!!!! DO NOT REMOVE!!!
         status.save()        
           
         if status.tagged:
