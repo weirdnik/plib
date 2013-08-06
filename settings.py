@@ -20,8 +20,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'plib',                       # Or path to database file if using sqlite3.
         'USER': 'planb',                      # Not used with sqlite3.
-        'PASSWORD': 'planb',       # Not used with sqlite3.
-        'HOST': '',                    # Set to empty string for localhost. Not used with sqlite3.
+        'PASSWORD': 'blip2.planb.plib',       # Not used with sqlite3.
+        'HOST': 'db.hell',                    # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -58,8 +58,8 @@ MEDIA_ROOT = os.path.join(PROJECT_DIR,'static')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-STATIC_URL = '/foo/'
-MEDIA_URL = '/bar/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/static/'
 
 STATICFILES_DIRS = (
     '/usr/share/pyshared/django/contrib/admin/static/',
@@ -88,7 +88,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'plib.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
