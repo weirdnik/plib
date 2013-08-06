@@ -1,7 +1,35 @@
-h1 { font-size: large; }
-body { color: green; background: light-gray; font-family: Verdana, sans;
- padding: 0px; }
-html { padding: 0px; }
+/*
+ * = General
+ * = Feed 
+ */
+
+/* = General ===============================================================*/
+
+body {
+  padding-top: 50px;
+}
+
+/* = Feed ==================================================================*/
+
+.feed {
+  padding-left: 0;
+  list-style: none;
+}
+
+.feed > li {
+  display: inline;
+}
+
+.feed > li > a {
+  text-decoration: none;
+}
+
+.feed .avatar {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
+}
 
 .helptext { display: none; }
 
@@ -30,8 +58,6 @@ div.status,div.status-info { background: white;
 
 
 .status-image { padding-top: 1ex; padding-left: 1em; }
-
-.avatar { width: 5ex; height: 5ex; flow: right; }
 
 div.status-date { font-size: xx-small; vertical-align: superscript; }
 
