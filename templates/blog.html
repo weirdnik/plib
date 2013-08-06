@@ -5,7 +5,10 @@
   </head>
   <body>
     <div id="profile">
-    
+    <img src="{{ avatar }}" alt="avatar">
+    <br> {{ about }}
+    <br> {{ icbm }}
+    <br> {{ phone }}
     </div>
 {% if statuses %}    
     <div id="content">{% for status in statuses %}
