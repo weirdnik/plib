@@ -1,7 +1,7 @@
 {% extends "xhtml.html" %}
 {% block body %}
     <div id="profile">
-    <img src="{{ profile.avatar }}" alt="avatar">
+    <img src="{{ profile.avatar.url }}" alt="avatar">
     <br> {% if profile.about %}O mnie: {{ profile.about }} {% endif %}
     <br> {% if profile.icbm %}Lokalizacja: {{ profile.icbm }} {% endif %}
     <br> {% if profile.phone %}Numer telefonu: {{ profile.phone }} {% endif %}
