@@ -14,7 +14,7 @@ MENTION_RE = re.compile('\^(?P<username>\w+)')
 YOUTUBE_RE = re.compile ('https?://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
-MESSAGE_RE = re.compile('^\>\>?(?P<recipient>\w+):?')
+MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
 STATUS_RE = re.compile('(?P<status>/status/(?P<object_id>\d+)/?)')
 
@@ -88,7 +88,7 @@ class Status (models.Model):
 
                    
     if self.action == 'follow':
-      result = u'%s zaczął obserwować %s' % (user_cockpit(self.recipient),
+      result = u'%s obserwuje %s' % (user_cockpit(self.recipient),
         user_cockpit(self.owner)) 
     elif self.action == 'unfollow':
       result = u'%s już nie obserwuje %s' % (user_cockpit(self.recipient),
