@@ -158,7 +158,6 @@ def status (request, object_id=None, mobile=False):
       if form.is_valid():
         status=form.save(commit=False)
         status.owner=profile
-        status.text = escape(status.text) # SECURITY !!!!! DO NOT REMOVE!!!
 
         # message detection
         msg = MESSAGE_RE.match(status.text)
@@ -172,6 +171,8 @@ def status (request, object_id=None, mobile=False):
         # tag assignment
         tag_result = TAG_RE.findall(status.text)
         status.tagged = True if tag_result else False
+
+        status.text = escape(status.text) # SECURITY !!!!! DO NOT REMOVE!!!
         status.save()        
           
         if status.tagged:
