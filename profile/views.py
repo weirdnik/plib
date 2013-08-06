@@ -78,26 +78,11 @@ def blog (request, username):
   if request.method == 'GET':
   
 	user =	get_object_or_404(User, user__username__exact=username)
-	userinfo = User.objects.filter(user__username__exact=username)
-	if userinfo[0].about:
-		about = userinfo[0].about
-	else:
-		about = ""
-	if userinfo[0].icbm:
-		icbm = userinfo[0].icbm
-	else:
-		icbm = ""
-	avatar = userinfo[0].avatar
-	if userinfo[0].phone:
-		phone = userinfo[0].phone
-	else:
-		phone = ""
-	
 	statuses = Status.objects.filter(owner__exact=user, recipient__exact=None)
 
 	template = loader.get_template('blog.html')
 	
-	return HTTPResponse(template.render(Context(dict(statuses=statuses, profile=user, about=about, icbm=icbm, phone=phone, avatar=avatar))))
+	return HTTPResponse(template.render(Context(dict(statuses=statuses, profile=user))))
 
 
 def register (request):
