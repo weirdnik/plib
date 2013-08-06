@@ -88,7 +88,7 @@ class Status (models.Model):
 
                    
     if self.action == 'follow':
-      result = u'%s zaczął obserwować %s' % (user_cockpit(self.recipient),
+      result = u'%s obserwuje %s' % (user_cockpit(self.recipient),
         user_cockpit(self.owner)) 
     elif self.action == 'unfollow':
       result = u'%s już nie obserwuje %s' % (user_cockpit(self.recipient),
