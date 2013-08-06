@@ -1,4 +1,5 @@
 {% extends "xhtml.html" %}{% block body %}
+    {% include "parts/menu.html" %}
     <div id="cockpit">
       <h1>Edycja konta</h1>
       <form method="POST" action="{% url profile.views.edit %}" enctype="multipart/form-data"> 
