@@ -1,20 +1,22 @@
 {% extends "xhtml.html" %}
 {% block body %}
+<div class="container">
     <div id="profile">
-    <img src="{{ profile.avatar.url }}" alt="avatar">
-    <br> {% if profile.about %}O mnie: {{ profile.about }} {% endif %}
-    <br> {% if profile.icbm %}Lokalizacja: {{ profile.icbm }} {% endif %}
-    <br> {% if profile.phone %}Numer telefonu: {{ profile.phone }} {% endif %}
+        <img src="{{ profile.avatar.url }}" alt="avatar">
+        <br> {% if profile.about %}O mnie: {{ profile.about }} {% endif %}
+        <br> {% if profile.icbm %}Lokalizacja: {{ profile.icbm }} {% endif %}
+        <br> {% if profile.phone %}Numer telefonu: {{ profile.phone }} {% endif %}
     </div>
-{% if statuses %}    
+    {% if statuses %}
     <div id="content">
-{% for status in statuses %}
-      <div id="entry-{{ status.id }}" class="status">
-        <p class="status">{{ status.text }}</p>
-      </div>
+        {% for status in statuses %}
+        <div id="entry-{{ status.id }}" class="status">
+            <p class="status">{{ status.text }}</p>
+        </div>
     </div>
-{% endfor %}
-{% else %}
+    {% endfor %}
+    {% else %}
     <p>nic tu jeszcze nie ma</p>
-{% endif %}
+    {% endif %}
+</div>
 {% endblock body %}

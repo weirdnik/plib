@@ -1,17 +1,27 @@
 <html>
-  <head>
+<head>
     <title>dgasgsfdgfsg></title>
     <meta http-equiv="refresh" content="30">
-    <link rel="stylesheet" type="text/css" href="/static/style.css" />
-  </head>
-  <body>{% if feed %}
+    <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+</head>
+<body>
+<div class="container">
+    {% if feed %}
     <ul>{% for status in feed %}
-      <li>
-        <p><img class="avatar" src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}{% else %}/static/gfx/avatar{% endif %}.jpg" /></p>      
-        <p class="status"><a href="{% url mobile_user username=status.owner.user.username %}">{{ status.owner.user.username}}</a>: {{ status.render|safe }}</p>
-        <p class="status-date">{{ status.date }}</p>
-      </li>{% endfor %}
-    </ul>{% else %}<p>Uzytkownik jeszcze niczego nie napisal</p>{% endif %}
-    <!-- feed.html -->
-  </body>
+        <li>
+            <p><img class="avatar"
+                    src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}{% else %}/static/gfx/avatar{% endif %}.jpg"/>
+            </p>
+
+            <p class="status"><a href="{% url mobile_user username=status.owner.user.username %}">{{
+                status.owner.user.username}}</a>: {{ status.render|safe }}</p>
+
+            <p class="status-date">{{ status.date }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}<p>Uzytkownik jeszcze niczego nie napisal</p>{% endif %}
+</div>
+<!-- feed.html -->
+</body>
 </html>
