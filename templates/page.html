@@ -1,6 +1,6 @@
 {% extends "xhtml.html" %}{% block body %}
     <div id="menubar">{% if user.is_authenticated %} 
-      <a href="{% url cockpit.views.main %}">^</a> |
+      <a href="{% url mobile_dashboard %}">^</a> |
       <a href="{% url django.contrib.auth.views.logout %}">logout</a>{% endif %}
     </div>{% block content %} {% endblock content %}
 {% endblock body %}
