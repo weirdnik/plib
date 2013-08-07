@@ -14,12 +14,12 @@ urlpatterns = patterns('',
 
     (r'^/?$', 'main.views.front', None, 'front_page'  ),    # front page
     
-    (r'^dashboard/?$', 'cockpit.views.main', None, 'desktop_dashboard'),
+#    (r'^dashboard/?$', 'cockpit.views.main', None, 'desktop_dashboard'),
 
     (r'^dashboard/m/?$', 'cockpit.views.feed', dict(mobile=True), 'mobile_dashboard'),
     (r'^dashboard/m/quote/(?P<quote>\d+)/?$', 'cockpit.views.feed', dict(mobile=True), 'mobile_dashboard'),
     (r'^dashboard/m/reply/(?P<reply>\w+)/?$', 'cockpit.views.feed', dict(mobile=True, private=False), 'reply_dashboard'),
-    (r'^dashboard/m/private/(?P<reply>\w+)/?$', 'cockpit.views.feed', dict(mobile=True, private=True), 'private_dashboard'),    
+    (r'^dashboard/m/private/(?P<reply>\w+)/?$', 'cockpit.views.feed', dict(mobile=True, private=True), 'private_dashboard'),
     (r'^user/(?P<username>\w+)/mobile/?$', 'cockpit.views.feed', dict(mobile=True), 'mobile_user'),  
     (r'^user/(?P<username>\w+)/dashboard/?$', 'cockpit.views.main' ),
     (r'^user/(?P<username>\w+)/feed/?$', 'cockpit.views.feed' ),    
