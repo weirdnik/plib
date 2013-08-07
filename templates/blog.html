@@ -11,7 +11,7 @@
     <div id="content">
         {% for status in statuses %}
         <div id="entry-{{ status.id }}" class="status">
-            <p class="status">{{ status.text }}</p>
+            <p class="status">{{ status.render|safe }}</p>
         </div>
     </div>
     {% endfor %}
