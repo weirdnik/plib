@@ -1,11 +1,14 @@
 {% extends "xhtml.html" %}{% block body %}
-    {% include "parts/menu.html" %}
+{% include "parts/menu.html" %}
+<div class="container">
     <div id="cockpit">
-      <h1>Edycja konta</h1>
-      <form method="POST" action="{% url profile.views.edit %}" enctype="multipart/form-data"> 
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="zapisz!"/>
-      </form>
+        <h1>Edycja konta</h1>
+
+        <form method="POST" action="{% url profile.views.edit %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="zapisz!"/>
+        </form>
     </div>
+</div>
 {% endblock body %}

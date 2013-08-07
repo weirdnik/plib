@@ -8,98 +8,107 @@
 /* = General ============================================================== */
 
 body {
-  padding-top: 50px;
+    padding-top: 50px;
+    background: #fafafa;
 }
+
+#menu {
+    width: 100%;
+    background: #7251a4;
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzcyNTFhNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM1NjNkN2MiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top, #7251a4 0%, #563d7c 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #7251a4), color-stop(100%, #563d7c));
+    background: -webkit-linear-gradient(top, #7251a4 0%, #563d7c 100%);
+    background: -o-linear-gradient(top, #7251a4 0%, #563d7c 100%);
+    background: -ms-linear-gradient(top, #7251a4 0%, #563d7c 100%);
+    background: linear-gradient(to bottom, #7251a4 0%, #563d7c 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7251a4', endColorstr='#563d7c', GradientType=0);
+}
+
+#menu a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
 
 /* = Feed ================================================================= */
 
 .feed {
-  padding-left: 0;
-  list-style: none;
+    padding-left: 0;
+    list-style: none;
 }
 
 .feed > li {
-  display: inline;
+    display: inline;
 }
 
 .feed > li > a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .feed .avatar {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  vertical-align: middle;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
 }
 
 /* = Forms ================================================================ */
 
 /* == Login =============================================================== */
-
-.form-signin {
-  max-width: 330px;
-  padding: 15px;
-  margin: 0 auto;
+.helptext {
+    display: none;
 }
 
-.form-signin label {
-  width: 154px;
-  text-align: right;
+.private {
+    background: gray;
 }
-
-
-.helptext { display: none; }
-
-.private { background: gray; }
-
-div#menu {
-  width: 100%;
-  background: black;
-  color: green;
-  padding: 0.2ex 0.5ex 0.2ex 0.5ex;
-}
-
-#menu a { color: grey; }
 
 div#cockpit-head {
-   background: white;
-   margin-left: 1em;
-   width: 30em;
-   padding: 1ex;
+    background: white;
+    margin-left: 1em;
+    width: 30em;
+    padding: 1ex;
 }
 
-div.status,div.status-info { background: white;
-   width: 45em;
-   margin-left: 1em;
+div.status, div.status-info {
+    background: white;
+    width: 45em;
+    margin-left: 1em;
 }
 
+.status-image {
+    padding-top: 1ex;
+    padding-left: 1em;
+}
 
-.status-image { padding-top: 1ex; padding-left: 1em; }
+div.status-date {
+    font-size: xx-small;
+    vertical-align: superscript;
+}
 
-div.status-date { font-size: xx-small; vertical-align: superscript; }
-
-iframe { display: inline-block;
- vertical-align: text-top;
- margin-left: 1ex;
- margin-top: 0.2ex;
+iframe {
+    display: inline-block;
+    vertical-align: text-top;
+    margin-left: 1ex;
+    margin-top: 0.2ex;
 }
 
 img.background {
-  min-height: 100%;
-  min-width: 1600px;
-      
-  width: 100%;
-  height: auto;
-      
-  position: fixed;
-  top: 0;
-  left: 0;
+    min-height: 100%;
+    min-width: 1600px;
+
+    width: 100%;
+    height: auto;
+
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 @media screen and (max-width: 1600px) {
-  img.background {
-     left: 50%;
-      margin-left: -800px;
-  }
+    img.background {
+        left: 50%;
+        margin-left: -800px;
+    }
 }
