@@ -72,8 +72,6 @@ div#cockpit-head {
 }
 
 div.status, div.status-info {
-    background: white;
-    width: 45em;
     margin-left: 1em;
 }
 

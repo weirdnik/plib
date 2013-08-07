@@ -1,5 +1,6 @@
 {% extends "xhtml.html" %}
 {% block body %}
+{% include "parts/menu.html" %}
 <div class="container">
     <div id="profile">
         <img src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar.png{% endif %}" alt="avatar">
