@@ -2,7 +2,7 @@
 {% block body %}
 <div class="container">
     <div id="profile">
-        <img src="{{ profile.avatar.url }}" alt="avatar">
+        <img src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar.png{% endif %}" alt="avatar">
         <br> {% if profile.about %}O mnie: {{ profile.about }} {% endif %}
         <br> {% if profile.icbm %}Lokalizacja: {{ profile.icbm }} {% endif %}
         <br> {% if profile.phone %}Numer telefonu: {{ profile.phone }} {% endif %}
