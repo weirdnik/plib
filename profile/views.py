@@ -179,7 +179,8 @@ def edit (request):
   user =  get_object_or_404(User, user__id__exact=request.user.id)	
 
   if request.method == 'GET':
-	initial = { 'name': user.name, 'about': user.about, 'icbm': user.icbm }
+	initial = { 'name': user.name, 'about': user.about, 'icbm': user.icbm,
+	            'sex': user.sex }
 	result = dict(form=UserForm(initial))
 	
   elif request.method == 'POST':
