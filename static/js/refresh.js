@@ -10,15 +10,21 @@ function feed_count_check (status_id) {
   }
                                         
   xmlhttp.onreadystatechange = function() {
-                                            
-    var frame = document.getElementById('statuses');
-      
+    var response;                                       
+    var frame = document.getElementById('statuses')
     if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-      // document.title = ''
-      frame.innerHTML=xmlhttp.responseText;
+      response = xmlhttp.responseText;
+      // document.title = ''        
+
+      if (Number(response) > 0) { 
+        frame.innerHTML = response;
+        if ($('#queue-counter').is(':hidden')) {
+          $('#queue-counter').show(200);
+        }
+      }
     }
   }
-                                                                                    
+                                                                                        
   xmlhttp.open('GET', url, true);
   xmlhttp.send();
 }
