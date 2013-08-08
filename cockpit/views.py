@@ -144,9 +144,10 @@ def status (request, object_id=None, mobile=False):
       
     status = get_object_or_404 (Status, pk=object_id)
     
-    if request.user in (status.owner.user, 
-      status.recipient.user if status.recipient else None):      
-      return HTTPResponse (status)
+    if not status.private or request.user in (status.owner.user, 
+      status.recipient.user if status.recipient else None):
+      template = loader.get_template("status.html")
+      return HTTPResponse (template.render(RequestContext(request, dict(status=status))))
     else:
       return HTTPResponseForbidden () 
      
