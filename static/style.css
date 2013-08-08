@@ -75,6 +75,10 @@ div.status, div.status-info {
     margin-left: 1em;
 }
 
+.status-background div.status, .status-background div.status-info{
+    background: rgba(255,255,255,0.7);
+}
+
 .status-image {
     padding-top: 1ex;
     padding-left: 1em;
