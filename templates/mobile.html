@@ -1,6 +1,6 @@
 {% extends "xhtml.html" %}{% block body %}
 {% include "parts/menu.html" %}
-<div id="cockpit" class="container">
+<div id="cockpit" class="container{% if profile.background %} status-background{% endif %}}">
     <div id="cockpit-head">
         <form method="post" action="{% url mobile_status %}" enctype="multipart/form-data"
               onkeyup="if(isEnterPressed(event)){ document.status_form.submit();};">
@@ -27,10 +27,10 @@
         </div>
     </div>
     <!-- end cockpit-head -->
-    {% if feed %}<!-- feed start -->{% for status in feed %}{% if profile.background %}
-    <div class="status-container">{% endif %}{% include "status.inc" %}
+    {% if feed %}<!-- feed start -->{% for status in feed %}
+    {% include "status.inc" %}
       <!-- end status -->{% if profile.background %}
-    </div><!-- end status-container -->{% endif %}
+    {% endif %}
     <hr/>
     {% endfor %}{% else %}
     <p class="message">Kokpit jest pusty!</p>{% endif %}
