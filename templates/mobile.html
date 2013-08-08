@@ -22,7 +22,8 @@
             {% endif %}
         </div>
         {% endif %}
-        <div id="queue-counter" style="display: hidden;"><a href="{% url mobile_dashboard %}">nowe statusy: <span id="statuses">0</span></a>
+        <div id="queue-counter" style="text-align: center; display: none;"><a href="{% url mobile_dashboard %}">nowe statusy: <span id="statuses">0</span>
+        (kliknij, żeby odświeżyć kokpit)</a>
         </div>
     </div>
     <!-- end cockpit-head -->
@@ -72,5 +73,5 @@
 </div>
 <script type="text/javascript">
     var lastID = "{{ last_id }}";
-    // var IntervalID = setInterval (function() { feed_count_check(lastID);}, 2000);
+    var IntervalID = setInterval (function() { feed_count_check(lastID);}, 5000);
 </script>{% endblock body %}
