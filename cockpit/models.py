@@ -53,9 +53,12 @@ class Status (models.Model):
 
     l = self.likes()
     return [ f.user.user.username for f in l ] if l else []
+
+  def show(self):
+    '''Wrapper method to make simplified render(simple=True) avaliable in templates.'''
+    return self.render(simple=True)
     
-    
-  def render (self):
+  def render (self, simple=False):
     '''rendering of status' text to displayable HTML, it involves
  * interpretation of status' action and presentation with appropriate text or
  
@@ -150,18 +153,22 @@ class Status (models.Model):
           result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
       # embedding stuff from other sites    
-      result = insert_embeds(result)
+      if simple:
+        pass # image icon 
+      else:
+        result = insert_embeds(result)
+
+        if self.image:
+          if os.path.exists(self.image.path):
+            path = self.image.url + '_preview.jpg'
+#           '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
+            result = result + '<div class="status-image"><img src="%s" /></div>' % path
 
       # hashtags detected
       if self.tagged:
         result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip('#'))) ,g.group()), result)
 
       # image handling
-      if self.image:
-        if os.path.exists(self.image.path):
-          path = self.image.url + '_preview.jpg'
-#         '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
-          result = result + '<div class="status-image"><img src="%s" /></div>' % path
 
     return result
 
