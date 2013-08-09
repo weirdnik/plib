@@ -30,11 +30,6 @@ body {
     text-decoration: none;
 }
 
-#cockpit-message {
-    text-align : center;
-    background : white;
-    color : red;
-}
 /* = Feed ================================================================= */
 
 .feed {
