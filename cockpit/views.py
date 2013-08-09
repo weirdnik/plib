@@ -27,6 +27,14 @@ from profile.models import User
 
 ###
 
+MESSAGES = { '0': '',
+             'IOImage': 'Nie można zamieścić statusu: niedobry obrazek.',
+             'UEImage': 'Nie można zamieścić statusu: niedobra nazwa obrazka.' }
+
+
+###
+
+
 def feed_lookup (user, profile, private):
   ''' This is the core function of the service. It takes logged user's profile,
   current displayed user's profile, and private [?] parameter.
@@ -87,7 +95,8 @@ def main (request, username=None):
 
 
 @login_required
-def feed (request, username=None, mobile=False, quote=None, reply=None, private=False):  
+def feed (request, username=None, mobile=False, quote=None, reply=None,
+          private=False, slug=None):  
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
   follow = True
@@ -114,9 +123,15 @@ def feed (request, username=None, mobile=False, quote=None, reply=None, private=
   else:
     template = loader.get_template("feed.html")
     form = None
-  return HTTPResponse (template.render(RequestContext(request,
-    dict(feed=statuses, profile=profile, form=form, follow=follow, last_id=last_id,
-      javascripts=('enter', 'refresh')))))
+    
+  result = dict(feed=statuses, profile=profile, form=form, follow=follow, last_id=last_id,
+    javascripts=('enter', 'refresh'))
+
+  if slug:
+    if slug in MESSAGES.keys():
+      result['message'] = MESSAGES[slug]
+      
+  return HTTPResponse (template.render(RequestContext(request,result)))
  
  
 @login_required  
@@ -127,11 +142,15 @@ def status (request, object_id=None, mobile=False):
     if kwargs.get('created', False):
       if instance:
         if instance.image:
-          image = Image.open(instance.image.path)
-          image.thumbnail((640,480), Image.ANTIALIAS)
+          try:
+            image = Image.open(instance.image.path)
+            image.thumbnail((640,480), Image.ANTIALIAS)
 #        icon = image.thumbnail((256,256), Image.ANTIALIAS)
-          image.save(instance.image.path + '_preview' + '.jpg', 'JPEG')
+            image.save(instance.image.path + '_preview' + '.jpg', 'JPEG')
 #        icon.save(instance.image.path + '.preview.', 'JPEG')
+          except IOError:
+            return HTTPResponseRedirect(reverse('message_dashboard', 
+              kwargs=dict(slug='IOImage')))
         
   post_save.connect(process_image, sender=Status)  
   
@@ -155,26 +174,31 @@ def status (request, object_id=None, mobile=False):
     if object_id:
       return HTTPResponseNotAllowed ()
     else:    
-      form = StatusForm (request.POST, request.FILES)
-      if form.is_valid():
-        status=form.save(commit=False)
-        status.owner=profile
+      try:
+        form = StatusForm (request.POST, request.FILES)
+        if form.is_valid():
+          status=form.save(commit=False)
+          status.owner=profile
 
         # message detection
-        msg = MESSAGE_RE.match(status.text)
+          msg = MESSAGE_RE.match(status.text)
         
-        if msg:
-          recipient = get_object_or_404(DjangoUser, username=msg.groupdict()['recipient'])
-          status.recipient = get_object_or_404(User, user=recipient)
-          if status.text[1] == '>':
-            status.private = True
+          if msg:
+            recipient = get_object_or_404(DjangoUser, username=msg.groupdict()['recipient'])
+            status.recipient = get_object_or_404(User, user=recipient)
+            if status.text[1] == '>':
+              status.private = True
             
         # tag assignment
-        tag_result = TAG_RE.findall(status.text)
-        status.tagged = True if tag_result else False
+          tag_result = TAG_RE.findall(status.text)
+          status.tagged = True if tag_result else False
 
-        status.text = escape(status.text) # SECURITY !!!!! DO NOT REMOVE!!!
-        status.save()        
+          status.text = escape(status.text) # SECURITY !!!!! DO NOT REMOVE!!!
+          status.save()        
+      except UnicodeEncodeError:
+        return HTTPResponseRedirect(reverse('message_dashboard',
+          kwargs=dict(slug='UEImage')))
+                           
           
         if status.tagged:
           for tag_text in tag_result:    

@@ -1,6 +1,7 @@
 {% extends "xhtml.html" %}{% block body %}
 {% include "parts/menu.html" %}
 <div id="cockpit" class="container{% if profile.background %} status-background{% endif %}">
+{% if message %}    <div id="cockpit-message">{{ message }}</div>{% endif %}
     <div id="cockpit-head">
         <form method="post" action="{% url mobile_status %}" enctype="multipart/form-data"
               onkeyup="if(isEnterPressed(event)){ document.status_form.submit();};">
