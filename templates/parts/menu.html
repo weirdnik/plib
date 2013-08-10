@@ -1,15 +1,11 @@
 <div id="menu" class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
     <div class="container">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-        </button>
+        <a class="logo" href="{% url front_page %}">Plum</a>
         <nav class="nav-collapse bs-navbar-collapse collapse">
-            {% if user.is_authenticated %}
             <ul class="nav navbar-nav">
+                {% if user.is_authenticated %}
                 <li>
                     <a href="{% url mobile_dashboard %}">kokpit</a>
-                </li>
-                <li>
-                    <a href="{% url front_page %}">strona główna</a>
                 </li>
                 <li>
                     <a href="{% url profile.views.blog username=user.username %}">blog</a>
@@ -20,9 +16,7 @@
                 <li>
                     <a href="{% url logout_user %}">wyloguj</a>
                 </li>
-            </ul>
-            {% else %}
-            <ul class="nav navbar-nav">
+                {% else %}
                 <li>
                     <a href="{% url login_user %}">zaloguj się</a>
                 </li>
@@ -31,6 +25,7 @@
                 </li>
             </ul>
             {% endif %}
+            </ul>
         </nav>
     </div>
 </div>

@@ -7,8 +7,10 @@
     <div id="frontpage-mainframe">
         <h2>Ostatnie statusy:</h2>
 
-        <div id="frontpage-feed">{% if feed %}
-            <ul class="feed">{% for status in feed %}
+        <div id="frontpage-feed">
+            {% if feed %}
+            <ul class="feed">
+                {% for status in feed %}
                 <li>
                     <a href="{% url mobile_user username=status.owner.user.username %}">
                         <img class="avatar"
@@ -16,11 +18,13 @@
                              title="{{ status.owner.user.username}} @ {{ status.date }}" width="32"
                              height="32"></a>
                         <span class="status">{{ status.show|safe }}</span>
-                    </a>
+                    <span class="status">{{ status.render|safe }}</span>
                 </li>
                 {% endfor %}
             </ul>
-            {% else %}<p>Nie ma jeszcze zadnych statusow!</p>{% endif %}
+            {% else %}
+            <p>Nie ma jeszcze zadnych statusow!</p>
+            {% endif %}
         </div>
     </div>
 </div>
