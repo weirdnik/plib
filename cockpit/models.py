@@ -70,18 +70,17 @@ class Status (models.Model):
       template = '<a href="%s">^%s</a>'
       cockpit = reverse(view, kwargs=dict(username=user.user.username))
       return template % ( cockpit, user.user.username)
-      
 
     def insert_embeds (result):
       'run the status text through embeds parsing'
       
       EMBEDS = ( 
         ( YOUTUBE_RE, 
-          lambda g: '<br /><iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'] ),
+          lambda g: '<img src="/static/img/movie.png" />' if simple else '<br /><iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'] ),
         ( VIMEO_RE, 
-          lambda g: '<br /><iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'] ),
+          lambda g: '<img src="/static/img/movie.png" />' if simple else '<br /><iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'] ),
         ( INSTAGRAM_RE, 
-          lambda g: '<br /><iframe src="//instagram.com/p/%s/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>' % g.groupdict()['image'] ),
+          lambda g: '<img src="/static/img/movie.png" />' if simple else '<br /><iframe src="//instagram.com/p/%s/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>' % g.groupdict()['image'] ),
       )
 
       for e in EMBEDS:
@@ -125,7 +124,10 @@ class Status (models.Model):
 
       # WARNING: depends on status.text format, which depends on urls.py
       object_id = int(self.text.strip('/').split('/')[-1])
-      msg = Status.objects.get(pk=object_id)
+      try:
+        msg = Status.objects.get(pk=object_id)
+      except Status.DoesNotExist:
+        msg = None
       if msg: 
         result = result + ': %s <a href="%s">[cytuj]</a> <a href="%s">[odpowiedz]</a>' % ( msg.render(),
           reverse('mobile_dashboard', kwargs=dict(mobile=True, quote=object_id)),
@@ -153,17 +155,18 @@ class Status (models.Model):
           result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
       # embedding stuff from other sites    
-      if simple:
-        if self.image:
-          pass # image icon 
-      else:
-        result = insert_embeds(result)
+      result = insert_embeds(result)      
 
-        if self.image:
-          if os.path.exists(self.image.path):
-            path = self.image.url + '_preview.jpg'
+      try:
+        if simple:
+          if self.image:
+            result = result + '<img src="/static/img/image.png" />'
+        elif os.path.exists(self.image.path):
+          path = self.image.url + '_preview.jpg'
 #           '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
-            result = result + '<div class="status-image"><img src="%s" /></div>' % path
+          result = result + '<div class="status-image"><img src="%s" /></div>' % path
+      except ValueError:
+        pass 
 
       # hashtags detected
       if self.tagged:
