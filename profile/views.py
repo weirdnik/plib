@@ -2,7 +2,7 @@
 
 import string, random
 
-from Image import Image
+from PIL import Image
 
 import sendmail
 
@@ -151,7 +151,7 @@ def confirm (request, slug=None):
 #	   login (request, user.user)
 	  template = loader.get_template('confirmed.html')
 	  
-	  return HTTPResponse(template.render(Context(dict(user=user))))
+	  return HTTPResponse(template.render(RequestContext(request, dict(user=user))))
 	  
   return HTTPResponseRedirect(reverse('cockpit.views.main'))
 
