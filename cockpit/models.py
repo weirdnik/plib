@@ -154,7 +154,8 @@ class Status (models.Model):
               
       # embedding stuff from other sites    
       if simple:
-        pass # image icon 
+        if self.image:
+          pass # image icon 
       else:
         result = insert_embeds(result)
 
