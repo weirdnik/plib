@@ -105,6 +105,12 @@ div#cockpit-head {
 img.avatar{
     float: left;
     padding-right: 10px;
+    display: inline-block;
+    width: 40px;
+    height: 32px;
+    vertical-align: middle;
+
+
 }
 
 div.status, div.status-info {
