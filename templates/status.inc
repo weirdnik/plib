@@ -5,7 +5,7 @@
       {% else %}
       <div class="{% if status.private %}private {% endif %}status">
           <img class="avatar"
-               src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar.png{% endif %}"/>
+               src="{% if status.owner.avatar %}/{{ status.owner.avatar.url }}{% else %}static/img/avatar.png{% endif %}"/>
 
           <p class="status"><span title="{{ status.date }}">[&#x231A;]</span>
               <strong><a href="{% url mobile_user username=status.owner.user.username %}">{{ status.owner.user.username }}</a></strong>{% if not status.recipient %}:{% endif %}
