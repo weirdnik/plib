@@ -17,19 +17,19 @@
               {% if status.private or status.recipient or user.username == status.owner.user.username %}
               <form method="POST" action="{% url cockpit.views.delete object_id=status.id %}">
                   {% csrf_token %}
-                  <div><input type="submit" value="usun"/></div>
+                  <div><input type="submit" value="usun" class="btn btn-small btn-link"/></div>
               </form>
               {% else %}
               <div class="likebox">
                   {% if user.username in status.liking %}
                   <form method="POST" action="{% url cockpit.views.unlike object_id=status.id %}">
                       {% csrf_token %}
-                      <div><input type="submit" value="nie lub"/></div>
+                      <div><input type="submit" value="nie lub" class="btn btn-small btn-link"/></div>
                   </form>
                   {% else %}
                   <form method="post" action="{% url cockpit.views.like object_id=status.id %}">
                       {% csrf_token %}
-                      <div><input type="submit" value="polub"/></div>
+                      <div><input type="submit" value="polub" class="btn btn-small btn-link"/></div>
                   </form>
                   {% endif %}
               </div>
