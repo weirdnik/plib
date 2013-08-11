@@ -47,7 +47,8 @@ urlpatterns = patterns('',
       {'template_name': 'logout.html', 'next_page': '/'}, 'logout_user'),
     (r'^account/register/$', 'profile.views.register', None, 'create_user'),
     (r'^account/$', 'profile.views.edit', None, 'edit_account'),    
-    (r'^account/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),    
+    (r'^account/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),        
+    (r'^account/import/?$', 'blip.views.importer', {}, 'import_blip'),        
 
     # legacy paths, hardcoded somewhere
     (r'^accounts/login/$', 'django.contrib.auth.views.login',

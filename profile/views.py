@@ -197,4 +197,4 @@ def edit (request):
 	result = dict(form=form)
 	  
   return HTTPResponse(template.render(RequestContext(request, result)))
-  
+
