@@ -11,7 +11,10 @@
 
             <textarea id="id_text" onkeydown="pressed(event)" name="text" cols="60" rows="2"></textarea>
             <script type="text/javascript">
-                $('textarea#id_text').maxlength({
+                $('textarea#id_text').attr({
+                    'maxlength':'160',
+                    'placeholder': 'Plumknij co porabiasz...'
+                }).maxlength({
                     alwaysShow: true,
                     threshold: 10,
                     warningClass: "label label-success",
