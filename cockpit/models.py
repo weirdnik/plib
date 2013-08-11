@@ -180,9 +180,10 @@ class Status (models.Model):
 class StatusForm (ModelForm):
   class Meta:
     model = Status
-    fields = ['text', 'image']
+#    fields = ['text', 'image']
+    fields = ['text']
     widgets = {
-      'text': Textarea(attrs={'cols': 60, 'rows': 2, 'onkeydown': 'pressed(event)'}),
+      'text': Textarea(attrs={'cols': 80, 'rows': 2, 'onkeydown': 'pressed(event)'}),
     }
 
 
