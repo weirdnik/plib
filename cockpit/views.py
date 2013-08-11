@@ -149,6 +149,8 @@ def status (request, object_id=None, mobile=False):
             image.save(instance.image.path + '_preview' + '.jpg', 'JPEG')
 #        icon.save(instance.image.path + '.preview.', 'JPEG')
           except IOError:
+            os.remove(instance.image.path)
+            instance.delete()
             return HTTPResponseRedirect(reverse('message_dashboard', 
               kwargs=dict(slug='IOImage')))
         
