@@ -10,7 +10,7 @@
 body {
     padding-top: 50px;
     background: #fafafa;
-    font-family: 'Cabin', sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 #menu {
@@ -28,6 +28,7 @@ body {
 }
 
 #menu .logo {
+    font-family: 'Cabin', sans-serif;
     color: #FFFFFF;
     float: left;
     font-size: 28px;
