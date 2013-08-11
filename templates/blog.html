@@ -12,7 +12,7 @@
     <div id="content">
         {% for status in statuses %}
         <div id="entry-{{ status.id }}" class="status">
-            <p class="status">{{ status.render|safe }}</p>
+        {% include "status.inc" %}
         </div>
     </div>
     {% endfor %}
