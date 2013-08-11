@@ -1,0 +1,12 @@
+{% extends "xhtml.html" %}{% block body %}
+
+<h1>Import konta z Blipa</h1>
+
+<div>
+<p>Do importu zawartości konta potrzebne jest hasło.</p>
+<form action="" method="post">
+{% csrf_token %}
+{{ form.as_p }}
+</form>
+</div>
+{% endblock body %}

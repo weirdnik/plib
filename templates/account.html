@@ -3,7 +3,8 @@
 <div class="container">
     <div id="cockpit">
         <h1>Edycja konta</h1>
-        <h2><a href="{% url import_blip %}">Zaimportuj konto z Blipa (JESZCZE NIE DZIALA!)</a></h2>
+        <h2><a href="{% url import_blip %}">Zaimportuj konto z Blipa<br
+        />(jeszcze nie działa!)</a></h2>
         <form method="POST" action="{% url profile.views.edit %}" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
