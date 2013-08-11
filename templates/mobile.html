@@ -9,7 +9,7 @@
               onkeyup="if(isEnterPressed(event)){ document.status_form.submit();}">
             {% csrf_token %}
 
-            <textarea id="id_text" onkeydown="pressed(event)" name="text" cols="60" rows="2"></textarea>
+            {{ form.as_p }}
             <script type="text/javascript">
                 $('textarea#id_text').attr({
                     'maxlength':'160',
