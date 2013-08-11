@@ -1,9 +1,12 @@
 {% extends "xhtml.html" %}
-{% block body %}
 {% include "parts/menu.html" %}
+
+
 <div class="container">
+    {% block body %}
     <div id="profile">
-        <img src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar.png{% endif %}" alt="avatar">
+        <img src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}.jpg{% else %}/static/img/avatar.png{% endif %}"
+             alt="avatar">
         <br> {% if profile.about %}O mnie: {{ profile.about }} {% endif %}
         <br> {% if profile.icbm %}Lokalizacja: {{ profile.icbm }} {% endif %}
         <br> {% if profile.phone %}Numer telefonu: {{ profile.phone }} {% endif %}
@@ -12,12 +15,13 @@
     <div id="content">
         {% for status in statuses %}
         <div id="entry-{{ status.id }}" class="status">
-        {% include "status.inc" %}
+            {% include "status.inc" %}
         </div>
     </div>
     {% endfor %}
     {% else %}
     <p>nic tu jeszcze nie ma</p>
     {% endif %}
+    {% endblock body %}
 </div>
-{% endblock body %}
+
