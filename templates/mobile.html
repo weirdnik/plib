@@ -28,18 +28,18 @@
 
 
             <!--Add photo-->
-            <input id="id_image" type="file" style="display:none">
-            <div class="input-group addPhoto">
+            <input id="id_image" type="file" name="image">
+            <!-- div class="input-group addPhoto" style="display:none">
                 <input type="text" class="form-control" id="photoCover">
                   <span class="input-group-btn">
                     <button class="btn btn-default btn-small" type="button" onclick="$('input[id=id_image]').click();">Przeglądaj</button>
                   </span>
-            </div>
-            <script type="text/javascript">
+            </div -->
+            <!-- script type="text/javascript">
                 $('input[id=id_image]').change(function () {
                     $('#photoCover').val($(this).val());
                 });
-            </script>
+            </script -->
             <!--End add photo-->
         </form>
         {% if not profile.user.username = user.username %}
