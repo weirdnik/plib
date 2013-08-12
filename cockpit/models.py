@@ -37,12 +37,13 @@ class Status (models.Model):
   preview = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
   icon = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
   action = models.CharField (max_length=16, choices=(('like', 'like'), 
-   ('follow', u'dodał/a Cię do obserwowanych'), 
-   ('unfollow', u'przestal/a cie obserwować'),
-   ('mention', u'o Tobie mówi'),
-   ('quote', u'Cię cytuje') ), blank=True, null=True)
-
-
+    ('follow', u'dodał/a Cię do obserwowanych'), 
+    ('unfollow', u'przestal/a cie obserwować'),
+    ('mention', u'o Tobie mówi'),
+    ('quote', u'Cię cytuje') ), blank=True, null=True)
+  likes = models.ManyToManyField ('profile.User', through='Like')
+  blip = models.ForeignKey('blip.Info', null=True)
+  
   def likes (self):
     # .distinct().count()
     
@@ -59,13 +60,17 @@ class Status (models.Model):
     return self.render(simple=True)
     
   def render (self, simple=False):
+  
     '''rendering of status' text to displayable HTML, it involves
  * interpretation of status' action and presentation with appropriate text or
  
  * mention and quote parsing and presentation
  * hashtags parsing and presentation
  * embedded media URL-s parsing and presentation
-    '''  
+    '''
+    
+    ### utility functions
+      
     def user_cockpit(user, view='mobile_user'):
       template = '<a href="%s">^%s</a>'
       cockpit = reverse(view, kwargs=dict(username=user.user.username))
@@ -87,7 +92,8 @@ class Status (models.Model):
        result = e[0].sub(e[1], result)
       
       return result
-
+    
+    ###
                    
     if self.action == 'follow':
       result = u'%s obserwuje %s' % (user_cockpit(self.recipient),
@@ -195,5 +201,6 @@ class Tag (models.Model):
 
 class Like (models.Model):
 
-  user = models.OneToOneField ('profile.User')
-  status = models.ManyToManyField (Status)
+  user = models.ForeignKey ('profile.User')
+  status = models.ForeignKey (Status)
+  date = models.DateTimeField (auto_now_add=True)
