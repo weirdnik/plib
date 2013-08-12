@@ -187,7 +187,7 @@ def status (request, object_id=None, mobile=False):
           if msg:
             recipient = get_object_or_404(DjangoUser, username=msg.groupdict()['recipient'])
             status.recipient = get_object_or_404(User, user=recipient)
-            if status.text[1] == '>':
+            if status.text.startswith('>>'):
               status.private = True
             
         # tag assignment
