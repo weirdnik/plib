@@ -17,7 +17,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'plib',                       # Or path to database file if using sqlite3.
         'USER': 'planb',                      # Not used with sqlite3.
         'PASSWORD': 'blip2.planb.plib',       # Not used with sqlite3.
@@ -58,8 +58,8 @@ MEDIA_ROOT = os.path.join(PROJECT_DIR,'static')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-STATIC_URL = './static/'
-MEDIA_URL = './media/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/static/'
 
 STATICFILES_DIRS = (
     '/usr/share/pyshared/django/contrib/admin/static/',
@@ -107,6 +107,7 @@ INSTALLED_APPS = (
     'profile', 
     'cockpit',
     'main',
+    'blip',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
