@@ -1,12 +1,6 @@
 #! /usr/bin/env python
 
 '''Blip importer based on Robert Maron's scripts.
-
-
-class BlipInfo(models.Model):
-
-  
-
 '''
 
 import os
@@ -18,7 +12,10 @@ WORKDIR = '/srv/www/plib.hell.pl/plib'
 
 RE = re.compile('^blip-\w+-(?P<file_id>\d+)-full.txt$')
 
-def update_profile(username):
+YEARS = tuple(range(2007,2014))
+MONTHS = tuple(range (1,13))
+
+def update_account(username, blipname):
 
   '''Feeds the data gathered by the script to the user
   
@@ -37,47 +34,70 @@ def update_profile(username):
       if os.path.exists(path):
         return path
 
-  def import_month (year, month):
-  
-  #  from cockpit.models import Status
-  
-#    def parse_status(text):
- 
-#     text =    
- #    date = 
-#    from cockpit.models import TAG_RE, MESSAGE_RE
+  def import_month (user, year, month):
+    '''Reads single month data dump and puts into the database.'''
     
-
-#          tag_result = TAG_RE.findall(status.text)
-#                    status.tagged = True if tag_result else False
-                    
-#                              status.text = escape(status.text) # SECURITY !!!!! DO NOT REMOVE!!!
-#                                        status.save()
-                                        
-  #  pass
-    
-    path = os.path.join(datadir(), str(year), str(month))  
-    for f in  [ file(os.path.join(path,f)).read() for f in os.listdir(path) if RE.match(f) ][:2]:
-      data = json.loads(f)
-      print data    
+    from cockpit.models import Status, Tag, TAG_RE, MESSAGE_RE
+    from models import Info
       
-      text = data.get('body', None)
-      date = data.get('created_at', None)
+#  def parse_status(text):
 
-#  from django.shortcuts import get_object_or_404
-#  from django.contrib.auth.models import User as User
-#  
-#  from models import User as Profile
+    path = os.path.join(datadir(), str(year), str(month))  
+    if os.path.exists(path):
+      print 'Importing %s/%s' % (month, year)
+      for f in  [ file(os.path.join(path,f)).read()
+                  for f in os.listdir(path) if RE.match(f) ]:
+        blip = json.loads(f)      
+        text = blip.get('body', None)
+        date = blip.get('created_at', None)
+              
+      # TODO robienie blipinfo
 
-#  user = get_object_or_404(User, username__exact=username)
-#  profile = get_object_or_404(Profile, user__exact=user)
+        blip_id = blip.get('id', None)
+        blip_type = blip.get('type', None)
+        transport = blip.get('transport_description', '')
+        likes = blip.get('likes_count', 0)
+        liked = blip.get('likes_user', tuple())
+        
+        info = Info(blip=blip_id, type-type, transport=transport, likes=likes)
+
+        status = Status(owner=user, text=text, date=date)
+        tag_result = TAG_RE.findall(status.text)
+        status.tagged = True if tag_result else False
+                    
+        status.text = escape(status.text) # SECURITY !!!!! DO NOT REMOVE!!!
+        status.save()       
+      
+        if status.tagged:
+          for tag_text in tag_result:
+            print tag_text
+            tag, create = Tag.objects.get_or_create(tag=tag_text.lower())
+            tag.status.add(status)
+            tag.save()
+                                                            
+
+  from django.shortcuts import get_object_or_404
+  from django.contrib.auth.models import User as User
+  from django.utils.html import escape
   
-  print avatar(username)  
+  from profile.models import User as Profile
+  
+  user = get_object_or_404(User, username__exact=username)
+  profile = get_object_or_404(Profile, user__exact=user)
 
-  print import_month(2009,12)
+  for year in YEARS:
+    for month in MONTHS:
+      import_month(profile, year, month)
+  
+#  print avatar(username)  
+
+#  print import_month(2009,12)
+
+# TODO puszczanie robmar-skryptu
+
 
 if __name__ == '__main__':
 
   print "This file should be run as a part of PLIB."
-  update_profile('alex')
+  update_account('alex', 'alex')
   sys.exit(1)
