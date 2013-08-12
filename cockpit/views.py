@@ -181,7 +181,6 @@ def status (request, object_id=None, mobile=False):
         if form.is_valid():
           status=form.save(commit=False)
           status.owner=profile
-
         # message detection
           msg = MESSAGE_RE.match(status.text)
         
