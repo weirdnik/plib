@@ -143,8 +143,40 @@ def update_account(username, blipname):
 # TODO puszczanie robmar-skryptu
 
 
+def check_running():
+  '''test if other instances are running'''
+  
+  RUN = '/var/tmp'
+  
+
+
+  files = [ f for f in os.listdir(RUN) if f.startswith('blip.') ]
+
+  blips = []
+  
+  for f in files:
+    try:
+      filename = os.path.join(RUN, f)
+      pid = int(file(filename,'r').read())
+      os.kill(pid,0)
+    except OSError:
+      os.remove(filename)
+      print 'Stale file %s deleted.' % filename
+    except ValueError:
+      continue
+    else:
+      blipname = f.split('.')[1]
+      blips.append(blipname)
+      
+  return blips
+
 if __name__ == '__main__':
 
+  file('/var/tmp/blip.test','w').write(str(os.getpid()))
+  print check_running()
+
+  mypid = os.getpid()
+
   print "This file should be run as a part of PLIB."
-  update_account('alex', 'alex')
+#  update_account('alex', 'alex')
   sys.exit(1)
