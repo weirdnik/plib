@@ -8,7 +8,11 @@ import sys
 import re
 import json
 import subprocess
+import zipfile
+import string
+import random
 
+from shutil import rmtree
 global WORKDIR
 
 DEBUG = True
@@ -20,9 +24,9 @@ JOBS = 2
 
 RE = re.compile('^blip-\w+-(?P<file_id>\d+)-full.txt$')
 
-YEARS = ('2013', ) # tuple(range(2007,2014))
+YEARS = tuple(range(2007,2014))
 
-MONTHS = ('07', ) # tuple(range (1,13))
+MONTHS = tuple(range (1,13))
 
 def update_account(username, blipname):
 
@@ -49,12 +53,14 @@ def update_account(username, blipname):
     from cockpit.models import Status, Tag, TAG_RE, MESSAGE_RE
     from models import Info
       
-    path = os.path.join(datadir(), str(year), str(month))  
+    path = os.path.join(datadir(), str(year), '%02d'% month)  
     if os.path.exists(path):
+      
       print 'Importing %s/%s' % (month, year)
-      for f in  [ os.path.join(path,f)
-                  for f in os.listdir(path) if RE.match(f) ]:
-
+      flist=  [ os.path.join(path,f) for f in os.listdir(path) if RE.match(f) ]
+      print flist
+      for f in flist:
+        print f
         blip = json.loads(file(f).read())      
         text = blip.get('body', None)
         date = blip.get('created_at', None)
@@ -69,9 +75,8 @@ def update_account(username, blipname):
         
         info = Info(blip=blip_id, type=type, transport=transport, likes=likes)
         info.save()        
-        if DEBUG:
-          print info
 
+ 
         status = Status(owner=user, text=text, date=date, blip=info)
         tag_result = TAG_RE.findall(status.text)
         status.tagged = True if tag_result else False
@@ -117,11 +122,12 @@ def update_account(username, blipname):
             tag.save()
           profile.watches_tags.add(tag)
       profile.save()
+    else:
+      print 'tags fail'
 
     tags_filename = os.path.join(datadir(),'tags-ignored-%s.txt' % username)
     print tags_filename   
     if os.path.exists(tags_filename):
-
       ignored_tags = json.loads(file(tags_filename, 'r').read())
       for t in ignored_tags:
         tag_path = t.get('tag_path', None)
@@ -133,6 +139,8 @@ def update_account(username, blipname):
             tag.save()
           profile.ignores_tags.add(tag)
       profile.save()
+    else:
+      print 'tags fail'
 
   from django.shortcuts import get_object_or_404
   from django.contrib.auth.models import User as User
@@ -144,19 +152,12 @@ def update_account(username, blipname):
   user = get_object_or_404(User, username__exact=username)
   profile = get_object_or_404(Profile, user__exact=user)
 
-  update_profile(profile, username)
+  update_profile(profile, blipname)
 
-#  for year in YEARS:
-#    for month in MONTHS:
-#      import_month(profile, year, month)
+  for year in YEARS:
+    for month in MONTHS:
+      import_month(profile, year, month)
   
-#  print avatar(username)  
-
-#  print import_month(2009,12)
-
-# TODO puszczanie robmar-skryptu
-
-
 def check_running():
   '''test if other instances are running'''
 
@@ -220,6 +221,25 @@ def robmar(blipname, blippassword):
     
   return tmpdir
 
+def zipdir(workdir, blip):
+  from settings import MEDIA_ROOT
+
+  slug = ''.join([ random.choice(string.letters) for s in xrange(64) ])
+  
+  blip.slug=slug
+  blip.save()
+  
+  directory = os.path.join(MEDIA_ROOT,'backups','slug')
+  if not os.path.exists(directory):
+    os.makedirs(directory)
+  zipfilename = os.path.join(directory, 'blip-%s-archive.zip' % blip.blip)
+
+  os.chdir(workdir)  
+  zip = zipfile.ZipFile(zipfilename, 'w')
+  for root, dirs, files in os.walk('.'):
+    for file in files:
+      zip.write(os.path.join(root, file))
+  zip.close()
   
 if __name__ == '__main__':
 
@@ -232,9 +252,7 @@ if __name__ == '__main__':
     blips = queue()
     q = set([i[0] for i in blips])
     print q
-    waiting=list(q-r)
-
-        
+    waiting=list(q-r)        
     if waiting:
       job = dict(blips).get(waiting[0])    
       username = job.user.user.username
@@ -248,13 +266,14 @@ if __name__ == '__main__':
       print WORKDIR
       
       update_account (username, blipname)
-      #os.remove(pidfilename)
       
-      # TODO zipping
-      
-  
+      zipdir (WORKDIR, job)
+      job.imported = True
+      job.save()
+              
+      rmtree(WORKDIR)
 
-  
+      os.remove(pidfilename)
 
   print "This file should be run as a part of PLIB."
 #  update_account('alex', 'alex')
