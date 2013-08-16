@@ -22,6 +22,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.views.generic.date_based import archive_week
 
 import django.forms as forms
 
@@ -75,16 +77,26 @@ def unfollow (request, username):
 
 
 def blog (request, username):
-  if request.method == 'GET':
-  
-	user =	get_object_or_404(User, user__username__exact=username)
-	statuses = Status.objects.filter(owner__exact=user, recipient__exact=None)
-
-	template = loader.get_template('blog.html')
-	
-	return HTTPResponse(template.render(Context(dict(statuses=statuses, profile=user))))
 
 
+  user = get_object_or_404(User, user__username__exact=username)
+  statuses = Status.objects.filter(owner__exact=user, recipient__exact=None,
+    private__exact=False).order_by('-date')
+
+  d=datetime.datetime.today()
+  today=False
+  if not year:
+    year=str(d.year)
+    today=True
+  if not week:
+    week=str(d.isocalendar()[1])
+    today=True
+  template = loader.get_template('blog.html')
+
+  return archive_week(request, year, week, statuses, 'date', 
+    template_name='blog.html', 
+    extra_context={'profile': user, 'week': int(week), 'year': int(year), 'today': today})
+                  
 def register (request):
 
   template = loader.get_template ('register.html')
@@ -133,7 +145,6 @@ def register (request):
 		  template = loader.get_template ('confirm.html')
 		  return HTTPResponse (template.render(RequestContext(request, dict(email=email))))
 	  else:
-		print 'bad passwords'
 		return HTTPResponseBadRequest()
 	else:
 	  return HTTPResponse (template.render(RequestContext(request, dict(form=form))))

@@ -181,14 +181,13 @@ def status (request, object_id=None, mobile=False):
         if form.is_valid():
           status=form.save(commit=False)
           status.owner=profile
-
         # message detection
           msg = MESSAGE_RE.match(status.text)
         
           if msg:
             recipient = get_object_or_404(DjangoUser, username=msg.groupdict()['recipient'])
             status.recipient = get_object_or_404(User, user=recipient)
-            if status.text[1] == '>':
+            if status.text.startswith('>>'):
               status.private = True
             
         # tag assignment

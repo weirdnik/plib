@@ -10,6 +10,8 @@ informowany o postępach w imporcie konta.</p>
 <form action="" method="post">
 {% csrf_token %}
 {{ form.as_p }}
+<input type="submit" value="importuj"/>
+            
 </form>
 </div>
 {% endblock body %}

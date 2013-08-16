@@ -81,11 +81,11 @@ class Status (models.Model):
       
       EMBEDS = ( 
         ( YOUTUBE_RE, 
-          lambda g: '<img src="/static/img/movie.png" />' if simple else '<br /><iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'] ),
+          lambda g: ' <img src="/static/img/movie.png" />' if simple else '<br /><iframe width="480" height="270" src="http://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % g.groupdict()['video'] ),
         ( VIMEO_RE, 
-          lambda g: '<img src="/static/img/movie.png" />' if simple else '<br /><iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'] ),
+          lambda g: ' <img src="/static/img/movie.png" />' if simple else '<br /><iframe src="http://player.vimeo.com/video/%s" width="480" height="270" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>' % g.groupdict()['video'] ),
         ( INSTAGRAM_RE, 
-          lambda g: '<img src="/static/img/movie.png" />' if simple else '<br /><iframe src="//instagram.com/p/%s/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>' % g.groupdict()['image'] ),
+          lambda g: ' <img src="/static/img/movie.png" />' if simple else '<br /><iframe src="//instagram.com/p/%s/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>' % g.groupdict()['image'] ),
       )
 
       for e in EMBEDS:
@@ -166,7 +166,7 @@ class Status (models.Model):
       try:
         if simple:
           if self.image:
-            result = result + '<img src="/static/img/image.png" />'
+            result = result + ' <img src="/static/img/image.png" />'
         elif os.path.exists(self.image.path):
           path = self.image.url + '_preview.jpg'
 #           '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
