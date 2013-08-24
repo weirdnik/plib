@@ -1,6 +1,6 @@
 # Create your views here.
 
-import string, random
+import string, random, datetime
 
 from PIL import Image
 
@@ -78,7 +78,10 @@ def unfollow (request, username):
 
 def blog (request, username):
 
-
+  year = None
+  month = None
+  week = None
+  day = None
   user = get_object_or_404(User, user__username__exact=username)
   statuses = Status.objects.filter(owner__exact=user, recipient__exact=None,
     private__exact=False).order_by('-date')
@@ -102,19 +105,14 @@ def register (request):
   template = loader.get_template ('register.html')
 
   class RegistrationForm(UserCreationForm):
-#	 pass
-	email = forms.EmailField(max_length=128)
+    email = forms.EmailField(max_length=128)
 	   
   if request.method == 'GET':
-
-	return HTTPResponse (template.render(RequestContext(request, dict(form=RegistrationForm()))))
+   return HTTPResponse (template.render(RequestContext(request, dict(form=RegistrationForm()))))
 	
   elif request.method == 'POST':
-
-	form = RegistrationForm(request.POST)
-	
-	if form.is_valid():
-	
+    form = RegistrationForm(request.POST)
+    if form.is_valid():	
 	  print	 dir(form['password1']),  form['password2'].data
 	  if  form['password1'].data == form['password2'].data:
 		username = form['username'].data.strip()
@@ -146,8 +144,8 @@ def register (request):
 		  return HTTPResponse (template.render(RequestContext(request, dict(email=email))))
 	  else:
 		return HTTPResponseBadRequest()
-	else:
-	  return HTTPResponse (template.render(RequestContext(request, dict(form=form))))
+    else:
+      return HTTPResponse (template.render(RequestContext(request, dict(form=form))))
 
 def confirm (request, slug=None):
 
