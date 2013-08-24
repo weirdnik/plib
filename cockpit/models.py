@@ -46,8 +46,8 @@ class Status (models.Model):
   
   def likes (self):
     # .distinct().count()
-    
-    return Like.objects.filter(status__exact=self)
+    return 0   
+#    return Like.objects.filter(status__exact=self)
     
 
   def liking (self):
