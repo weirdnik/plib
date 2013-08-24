@@ -12,6 +12,8 @@ import zipfile
 import string
 import random
 
+from cockpit.views import notify
+
 from shutil import rmtree
 global WORKDIR
 
@@ -57,6 +59,7 @@ def update_account(username, blipname):
     if os.path.exists(path):
       
       print 'Importing %s/%s' % (month, year)
+      notify (user, 'Importowanie %s/%s.' % (month, year))
       flist=  [ os.path.join(path,f) for f in os.listdir(path) if RE.match(f) ]
       print flist
       for f in flist:
@@ -64,20 +67,17 @@ def update_account(username, blipname):
         blip = json.loads(file(f).read())      
         text = blip.get('body', None)
         date = blip.get('created_at', None)
-                      
-      # TODO zapisywanie bliplajkow
-
         blip_id = blip.get('id', None)
         blip_type = blip.get('type', None)
         transport = blip.get('transport_description', '')
         likes = blip.get('likes_count', 0)
         liked = blip.get('likes_user', tuple())
-        
-        info = Info(blip=blip_id, type=type, transport=transport, likes=likes)
-        info.save()        
 
+        
+        info = Info(blip=blip_id, type=type, transport=transport,
+           likes=likes, liked=','.join(liked))
  
-        status = Status(owner=user, text=text, date=date, blip=info)
+        status = Status(owner=user, text=text, date=date) # blip=info)
         tag_result = TAG_RE.findall(status.text)
         status.tagged = True if tag_result else False
                     
@@ -87,12 +87,20 @@ def update_account(username, blipname):
         for suffix in ('jpg', 'png', 'gif'):
           filename = '.'.join((core, suffix))
           if os.path.exists(filename): # jest obrazek
-            if DEBUG:
-              print filename
-            status.image.save(filename, File(file(filename)))
+            try:
+              if os.stat(filename)[5]:
+                if DEBUG:
+                  print filename
+                status.image.save(filename, File(file(filename)))
+            except TypeError:
+              if DEBUG:
+                print 'bad image file %s' % filename
         
         status.save()       
-      
+
+        info.status = status
+        info.save()        
+           
         if status.tagged:
           for tag_text in tag_result:
             tag, create = Tag.objects.get_or_create(tag=tag_text.lower())
@@ -260,7 +268,8 @@ if __name__ == '__main__':
       pid = os.getpid()
       pidfilename = os.path.join(RUN, 'blip.%s' % blipname)
       file(pidfilename, 'w').write(str(pid))
-      
+      notify (job.user,'Pobieranie z Blip.pl.')      
+
       WORKDIR = robmar(blipname, job.password)
           
       print WORKDIR
@@ -272,7 +281,7 @@ if __name__ == '__main__':
       job.save()
               
       rmtree(WORKDIR)
-
+      notify (job.user,'Import zakonczony.')  
       os.remove(pidfilename)
 
   print "This file should be run as a part of PLIB."
