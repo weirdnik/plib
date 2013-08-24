@@ -34,7 +34,6 @@ MESSAGES = { '0': '',
 
 ###
 
-
 def feed_lookup (user, profile, private):
   ''' This is the core function of the service. It takes logged user's profile,
   current displayed user's profile, and private [?] parameter.
@@ -57,7 +56,19 @@ def feed_lookup (user, profile, private):
  
   return result
 
+
+def notify(recipient, message, sender='blip'):
+ 
+   '''sends a private message from user blip to given user '''
+   blip = get_object_or_404(User, user__username__exact=sender)      
+   rcpt = get_object_or_404(User, user__username__exact=recipient)
+   body = '>>%s %s' % (recipient, message)
+   status = Status(owner=blip, recipient=rcpt, text=body, private=True)
+   status.save()      
+        
 ###
+# views start here
+
 @login_required
 def main (request, username=None):
 
