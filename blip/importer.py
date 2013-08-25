@@ -13,6 +13,7 @@ import string
 import random
 
 from cockpit.views import notify
+from settings import MEDIA_ROOT
 
 from shutil import rmtree
 global WORKDIR
@@ -73,12 +74,14 @@ def update_account(username, blipname):
         likes = blip.get('likes_count', 0)
         liked = blip.get('likes_user', tuple())
 
-        info, created_info = Info.objects.get_or_create(blip=blip_id, type=type,
-          transport=transport, likes=likes, liked=','.join(liked))
- 
         status, created_status = Status.objects.get_or_create(owner=user,
           text=text, date=date) # blip=info)
           
+        status.save()
+          
+        info, created_info = Info.objects.get_or_create(blip=blip_id, type=blip_type,
+          transport=transport, likes=likes, liked=','.join(liked), status=status)
+ 
         if not created_info and not created_info:
           if DEBUG:
             print 'status and info exist, skipping'
@@ -260,19 +263,23 @@ def unpack(blip):
   if blip.slug:
     zipfilename = os.path.join(MEDIA_ROOT,'backups', blip.slug,
       'blip-%s-archive.zip' % blip.blip)
-    if os.path.exists(filename):
+    if os.path.exists(zipfilename):
       from tempfile import mkdtemp
       tmpdir = mkdtemp(suffix=blip.blip)
       os.chdir(tmpdir)     
-      zip = zipfile.ZipFile(ziprilename,'r')
+      zip = zipfile.ZipFile(zipfilename,'r')
+      print 'namelist, ', zip.namelist()
       for name in zip.namelist():
+        print name
         (dirname, filename) = os.path.split(name)
         print "Decompressing " + filename + " on " + dirname
-        if not os.path.exists(dirname):
-           os.makdirs(dirname)
-           fd = open(name,"w")
-           fd.write(zfile.read(name))
-           fd.close()
+        if name:
+          if not os.path.exists(dirname) and dirname:
+            print dirname
+            os.makedirs(dirname)
+          fd = open(name,"w")
+          fd.write(zip.read(name))
+          fd.close()
            
     return tmpdir
       
@@ -288,6 +295,7 @@ if __name__ == '__main__':
     q = set([i[0] for i in blips])
     print q
     waiting=list(q-r)        
+    print waiting
     if waiting:
       job = dict(blips).get(waiting[0])    
       username = job.user.user.username
