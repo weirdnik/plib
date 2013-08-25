@@ -73,11 +73,17 @@ def update_account(username, blipname):
         likes = blip.get('likes_count', 0)
         liked = blip.get('likes_user', tuple())
 
-        
-        info = Info(blip=blip_id, type=type, transport=transport,
-           likes=likes, liked=','.join(liked))
+        info, created_info = Info.objects.get_or_create(blip=blip_id, type=type,
+          transport=transport, likes=likes, liked=','.join(liked))
  
-        status = Status(owner=user, text=text, date=date) # blip=info)
+        status, created_status = Status.objects.get_or_create(owner=user,
+          text=text, date=date) # blip=info)
+          
+        if not created_info and not created_info:
+          if DEBUG:
+            print 'status and info exist, skipping'
+          continue # status and info already exist
+          
         tag_result = TAG_RE.findall(status.text)
         status.tagged = True if tag_result else False
                     
@@ -88,7 +94,7 @@ def update_account(username, blipname):
           filename = '.'.join((core, suffix))
           if os.path.exists(filename): # jest obrazek
             try:
-              if os.stat(filename)[5]:
+              if os.stat(filename)[6]:
                 if DEBUG:
                   print filename
                 status.image.save(filename, File(file(filename)))
@@ -237,7 +243,7 @@ def zipdir(workdir, blip):
   blip.slug=slug
   blip.save()
   
-  directory = os.path.join(MEDIA_ROOT,'backups','slug')
+  directory = os.path.join(MEDIA_ROOT,'backups',slug)
   if not os.path.exists(directory):
     os.makedirs(directory)
   zipfilename = os.path.join(directory, 'blip-%s-archive.zip' % blip.blip)
@@ -248,7 +254,28 @@ def zipdir(workdir, blip):
     for file in files:
       zip.write(os.path.join(root, file))
   zip.close()
+
+def unpack(blip):
   
+  if blip.slug:
+    zipfilename = os.path.join(MEDIA_ROOT,'backups', blip.slug,
+      'blip-%s-archive.zip' % blip.blip)
+    if os.path.exists(filename):
+      from tempfile import mkdtemp
+      tmpdir = mkdtemp(suffix=blip.blip)
+      os.chdir(tmpdir)     
+      zip = zipfile.ZipFile(ziprilename,'r')
+      for name in zip.namelist():
+        (dirname, filename) = os.path.split(name)
+        print "Decompressing " + filename + " on " + dirname
+        if not os.path.exists(dirname):
+           os.makdirs(dirname)
+           fd = open(name,"w")
+           fd.write(zfile.read(name))
+           fd.close()
+           
+    return tmpdir
+      
 if __name__ == '__main__':
 
   file('/var/tmp/blip.test','w').write(str(os.getpid()))
@@ -270,13 +297,16 @@ if __name__ == '__main__':
       file(pidfilename, 'w').write(str(pid))
       notify (job.user,'Pobieranie z Blip.pl.')      
 
-      WORKDIR = robmar(blipname, job.password)
-          
-      print WORKDIR
-      
+      WORKDIR = unpack(job)
+      if not WORKDIR:
+        if DEBUG:
+          print 'no archive to unpack, calling robmar'    
+        WORKDIR = robmar(blipname, job.password)        
+        if DEBUG:
+          print WORKDIR
+        zipdir (WORKDIR, job)      
       update_account (username, blipname)
       
-      zipdir (WORKDIR, job)
       job.imported = True
       job.save()
               
