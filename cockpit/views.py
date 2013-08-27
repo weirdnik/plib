@@ -29,7 +29,8 @@ from profile.models import User
 
 MESSAGES = { '0': '',
              'IOImage': 'Nie można zamieścić statusu: niedobry obrazek.',
-             'UEImage': 'Nie można zamieścić statusu: niedobra nazwa obrazka.' }
+             'UEImage': 'Nie można zamieścić statusu: niedobra nazwa obrazka.',
+             'TOOLarge': 'Zbyt duzy status.' }
 
 
 ###
