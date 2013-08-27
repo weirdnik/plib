@@ -34,7 +34,7 @@ def importer(request):
       blip = form.save(commit=False)
       blip.user = user
       blip.save()
-      notify(user.user.username, 'Parametry Twojego Blipa zostały zapisane, za chwilę zostanie on zaimportowany.')
+      notify(user.user.username, 'Parametry Twojego Blipa zostały zapisane, za chwilę zostanie on zaimportowany')
       return HTTPResponseRedirect(reverse('mobile_dashboard'))        
     
   return HTTPResponse(template.render(RequestContext(request, dict(form=form))))    
