@@ -20,10 +20,10 @@ global WORKDIR
 
 DEBUG = True
 RUN = '/var/tmp'
-WORKDIR = '/srv/www/plib.hell.pl/plib'
+WORKDIR = '/dev/null'
 SRC_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 
-JOBS = 2
+JOBS = 8
 
 RE = re.compile('^blip-\w+-(?P<file_id>\d+)-full.txt$')
 
@@ -305,15 +305,16 @@ if __name__ == '__main__':
       file(pidfilename, 'w').write(str(pid))
       notify (job.user,'Pobieranie z Blip.pl.')      
 
-      WORKDIR = unpack(job)
-      if not WORKDIR:
+      if True:
+#      WORKDIR = unpack(job)
+#      if not WORKDIR:
         if DEBUG:
           print 'no archive to unpack, calling robmar'    
         WORKDIR = robmar(blipname, job.password)        
         if DEBUG:
           print WORKDIR
         zipdir (WORKDIR, job)      
-      update_account (username, blipname)
+#      update_account (username, blipname)
       
       job.imported = True
       job.save()
@@ -324,4 +325,4 @@ if __name__ == '__main__':
 
   print "This file should be run as a part of PLIB."
 #  update_account('alex', 'alex')
-  sys.exit(1)
+#  sys.exit(1)
