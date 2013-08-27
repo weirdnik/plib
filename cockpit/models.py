@@ -140,8 +140,13 @@ class Status (models.Model):
           reverse('reply_dashboard', kwargs=dict(mobile=True, reply=msg.owner.user.username)))
     else:
       # mentions and quotes
+      
+      # size limit
+      
+      text = self.text[:160] if len(self.text) > 160 else self.text
+      
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
-        kwargs=dict(username=g.group().strip('^'))), g.group()), self.text)
+        kwargs=dict(username=g.group().strip('^'))), g.group()), text)
       # TODO add flat_render for onmouseover display
       result = STATUS_RE.sub( lambda g: u'<a title="%s" href="%s">[%s]</a>' % (Status.objects.get(pk=g.groupdict()['object_id']).text,
         reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
@@ -189,9 +194,8 @@ class StatusForm (ModelForm):
 #    fields = ['text', 'image']
     fields = ['text']
     widgets = {
-      'text': Textarea(attrs={'cols': 80, 'rows': 2, 'onkeydown': 'pressed(event)'}),
+      'text': Textarea(attrs={'maxlength': 160, 'size': 160, 'cols': 80, 'rows': 2, 'onkeydown': 'pressed(event)'}),
     }
-
 
 class Tag (models.Model):
 
