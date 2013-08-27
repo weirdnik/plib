@@ -7,7 +7,7 @@ from django.forms.widgets import TextInput, PasswordInput
 
 class Blip (models.Model):
   user = models.ForeignKey('profile.User', null=False, blank=False)
-  blip = models.TextField(null=False, blank=False)
+  blip = models.CharField(max_length=64,null=False, blank=False, unique=True)
   password = models.TextField(null=False, blank=False)
   imported = models.BooleanField (default=False)  
   slug = models.SlugField(max_length=64,blank=True, null=True) # security slug
