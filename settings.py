@@ -18,7 +18,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'plib',                       # Or path to database file if using sqlite3.
+        'NAME': 'plum',                       # Or path to database file if using sqlite3.
         'USER': 'planb',                      # Not used with sqlite3.
         'PASSWORD': 'blip2.planb.plib',       # Not used with sqlite3.
         'HOST': 'db.hell',                    # Set to empty string for localhost. Not used with sqlite3.
