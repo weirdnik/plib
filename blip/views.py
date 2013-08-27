@@ -14,6 +14,7 @@ from django.http import HttpResponseForbidden as HTTPResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
 from django.template import RequestContext, loader, Template
 
 @login_required
@@ -22,9 +23,9 @@ def importer(request):
   '''This view accepts data from the import blip account form and puts them
   in the database for the importer to use.
   '''
-
+  template = loader.get_template("import.html")
   if request.method == 'GET':
-    template = loader.get_template("import.html")
+
     form = BlipForm()
 
   elif request.method == 'POST':
@@ -34,7 +35,7 @@ def importer(request):
       blip = form.save(commit=False)
       blip.user = user
       blip.save()
-      notify(user.user.username, u'Parametry Twojego Blipa zostały zapisane, za chwilę zostanie on zaimportowany')
+      notify(user.user.username, u'Parametry Twojego Blipa zostały zapisane i zostanie on zaimportowany.')
       return HTTPResponseRedirect(reverse('mobile_dashboard'))        
     
   return HTTPResponse(template.render(RequestContext(request, dict(form=form))))    
