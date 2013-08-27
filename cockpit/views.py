@@ -114,7 +114,7 @@ def feed (request, username=None, mobile=False, quote=None, reply=None,
   follow = True
   profile = get_object_or_404 (User, user__username__exact=username) if username else user
 
-  statuses = feed_lookup (user, profile, user==profile)
+  statuses = feed_lookup (user, profile, user==profile)[:32]
   last_id = statuses [0].id if statuses else '0'
 
   if mobile:
@@ -263,11 +263,9 @@ def like (request, object_id, mobile=False):
     user =  get_object_or_404(User, user__id__exact=request.user.id)  
     status =  get_object_or_404(Status, id=object_id)      
 
-    likes, create = Like.objects.get_or_create(user=user)
-#    if status not in likes.status.all():
-    if True:
-      likes.status.add(status)
-      likes.save()
+    like, create = Like.objects.get_or_create(user=user, status=status)
+    if create:
+      like.save()
     
       action = Status(owner=user, recipient=status.owner, action='like', 
         text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))      
@@ -285,11 +283,9 @@ def unlike (request, object_id, mobile=False):
     user =  get_object_or_404(User, user__id__exact=request.user.id)  
     status =  get_object_or_404(Status, id=object_id)      
     
-    likes, create = Like.objects.get_or_create(user=user)
-    if status in likes.status.all():
-      likes.status.remove(status)
-      likes.save()
-    
+    like, create = Like.objects.get_or_create(user=user)
+    if not create:
+      like.delete()    
 #      action = Status(owner=user, recipient=status.owner, action='unlike')
 #      action.save()
 
