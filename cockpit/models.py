@@ -34,8 +34,8 @@ class Status (models.Model):
      height_field='image_height', width_field='image_width')  
   image_height = models.IntegerField(blank=True, null=True)
   image_width = models.IntegerField(blank=True, null=True)  
-  preview = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
-  icon = models.ImageField(upload_to="images/%s.%N", blank=True, null=True)
+  preview = models.ImageField(upload_to="images/%s", blank=True, null=True)
+  icon = models.ImageField(upload_to="images/%s", blank=True, null=True)
   action = models.CharField (max_length=16, choices=(('like', 'like'), 
     ('follow', u'dodał/a Cię do obserwowanych'), 
     ('unfollow', u'przestal/a cie obserwować'),
@@ -46,8 +46,8 @@ class Status (models.Model):
   
   def likes (self):
     # .distinct().count()
-    return 0   
-#    return Like.objects.filter(status__exact=self)
+#    return 0   
+    return Like.objects.filter(status__exact=self)
     
 
   def liking (self):
