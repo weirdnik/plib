@@ -1,6 +1,7 @@
 # Create your views here.
 
 import string, random, datetime
+import os
 
 from PIL import Image
 
@@ -30,6 +31,7 @@ import django.forms as forms
 from models import User, UserForm
 from cockpit.models import Status
 
+from settings import MEDIA_ROOT
 ###
 
 HOST_URL = 'http://plib.hell.pl'
@@ -188,9 +190,14 @@ def edit (request):
   user =  get_object_or_404(User, user__id__exact=request.user.id)	
 
   if request.method == 'GET':
+        from blip.models import Blip
+        blips = [ (blip.blip, os.path.join('backups', blip.slug, 'blip-%s-archive.zip' % blip.blip))
+          for blip in Blip.objects.filter(user__exact=user)
+          if blip.slug and os.path.exists(os.path.join(MEDIA_ROOT, 'backups', blip.slug, 'blip-%s-archive.zip' % blip.blip))]
+        
 	initial = { 'name': user.name, 'about': user.about, 'icbm': user.icbm,
 	            'sex': user.sex }
-	result = dict(form=UserForm(initial))
+	result = dict(form=UserForm(initial), blips=blips)
 	
   elif request.method == 'POST':
 	form = UserForm(request.POST, request.FILES)
