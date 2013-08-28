@@ -9,7 +9,7 @@ from django.forms import ModelForm, Textarea
 
 # RE-s
 
-TAG_RE = re.compile(ur'(?:\A|\s)#(?P<tag>\w+)(?:\Z|\s)',re.UNICODE)
+TAG_RE = re.compile(ur'#(?P<tag>\w+)',re.UNICODE)
 MENTION_RE = re.compile('\^(?P<username>\w+)')
 YOUTUBE_RE = re.compile ('https?://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
@@ -190,8 +190,7 @@ class Status (models.Model):
 class StatusForm (ModelForm):
   class Meta:
     model = Status
-#    fields = ['text', 'image']
-    fields = ['text']
+    fields = ['text', 'image']
     widgets = {
       'text': Textarea(attrs={'maxlength': 160, 'size': 160, 'cols': 80, 'rows': 2, 'onkeydown': 'pressed(event)'}),
     }
