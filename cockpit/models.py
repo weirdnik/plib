@@ -9,7 +9,7 @@ from django.forms import ModelForm, Textarea
 
 # RE-s
 
-TAG_RE = re.compile('#(?P<tag>\w+)')
+TAG_RE = re.compile(u'#(?P<tag>\w+)',re.UNICODE)
 MENTION_RE = re.compile('\^(?P<username>\w+)')
 YOUTUBE_RE = re.compile ('https?://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
