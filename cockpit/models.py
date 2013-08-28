@@ -9,14 +9,14 @@ from django.forms import ModelForm, Textarea
 
 # RE-s
 
-TAG_RE = re.compile(u'#(?P<tag>\w+)',re.UNICODE)
+TAG_RE = re.compile(ur'(?:\A|\s)#(?P<tag>\w+)(?:\Z|\s)',re.UNICODE)
 MENTION_RE = re.compile('\^(?P<username>\w+)')
 YOUTUBE_RE = re.compile ('https?://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
-STATUS_RE = re.compile('(?P<status>/status/(?P<object_id>\d+)/?)')
+STATUS_RE = re.compile(ur'(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
 
 # Create your models here.
 
@@ -148,10 +148,9 @@ class Status (models.Model):
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), text)
       # TODO add flat_render for onmouseover display
-      result = STATUS_RE.sub( lambda g: u'<a title="%s" href="%s">[%s]</a>' % (Status.objects.get(pk=g.groupdict()['object_id']).text,
-        reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
-        Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username),
-        result)
+      result = STATUS_RE.sub( lambda g: u'<a title="%(text)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
+        url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
+        user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username), result)
 
       # message prefix display mangling        
       if self.recipient:
@@ -181,7 +180,7 @@ class Status (models.Model):
 
       # hashtags detected
       if self.tagged:
-        result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip('#'))) ,g.group()), result)
+        result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip().strip('#'))) ,g.group().strip()), result)
 
       # image handling
 
