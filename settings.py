@@ -7,7 +7,7 @@ PROJECT_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-APP_NAME = 'Plan B 0.0.3&alpha; (&bdquo;bejcowanie&rdquo;)'
+APP_NAME = 'Plan B 0.0.4&alpha; (&bdquo;szalupa&rdquo;)'
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -59,7 +59,7 @@ MEDIA_ROOT = os.path.join(PROJECT_DIR,'static')
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 STATIC_URL = '/static/'
-MEDIA_URL = '/static/'
+MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = (
     '/usr/share/pyshared/django/contrib/admin/static/',
