@@ -16,7 +16,7 @@ VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
-STATUS_RE = re.compile(ur'(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
+STATUS_RE = re.compile(ur'(?:https?://(?:\w+.?)+)?(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
 
 # Create your models here.
 
