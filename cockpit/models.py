@@ -102,9 +102,9 @@ class Status (models.Model):
       result = u'%s już nie obserwuje %s' % (user_cockpit(self.recipient),
         user_cockpit(self.owner))
     elif self.action == 'like':
-      match = STATUS_RE.match(self.text).groups() if self.text else None        
+      match = STATUS_RE.match(self.text) if self.text else None        
       if match:
-        status_id = match[1]
+        status_id = match.groupdict().get('object_id')
         status = Status.objects.get(pk=status_id)
         result = u'%s lubi <a href="%s" title="%s" >status</a> %s' % ( user_cockpit(self.owner),
           reverse('cockpit.views.status', kwargs=dict(object_id=status_id)),
