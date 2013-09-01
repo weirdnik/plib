@@ -13,7 +13,8 @@ urlpatterns = patterns('',
     # (r'^blip/', include('blip.foo.urls')),
 
     (r'^/?$', 'main.views.front', None, 'front_page'  ),    # front page
-    
+    (r'^health/?', 'main.views.health'),
+        
 #    (r'^dashboard/?$', 'cockpit.views.main', None, 'desktop_dashboard'),
 
     (r'^dashboard/m/?$', 'cockpit.views.feed', dict(mobile=True), 'mobile_dashboard'),
