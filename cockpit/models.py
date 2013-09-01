@@ -16,7 +16,7 @@ VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
-STATUS_RE = re.compile(ur'(?:(https?://(plum\.me|plib\.hell\.pl))|\A|\s)(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
+STATUS_RE = re.compile(ur'(?:(?:https?://(?:plum\.me|plib\.hell\.pl))|\A|\s)(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
 
 # Create your models here.
 
@@ -105,11 +105,14 @@ class Status (models.Model):
       match = STATUS_RE.match(self.text) if self.text else None        
       if match:
         status_id = match.groupdict().get('object_id')
-        status = Status.objects.get(pk=status_id)
-        result = u'%s lubi <a href="%s" title="%s" >status</a> %s' % ( user_cockpit(self.owner),
-          reverse('cockpit.views.status', kwargs=dict(object_id=status_id)),
-          status.text,
-          user_cockpit(self.recipient))        
+        try:
+          status = Status.objects.get(pk=status_id)
+          result = u'%s lubi <a href="%s" title="%s" >status</a> %s' % ( user_cockpit(self.owner),
+            reverse('cockpit.views.status', kwargs=dict(object_id=status_id)),
+            status.text,
+            user_cockpit(self.recipient))        
+        except Status.DoesNotExist:
+          result = u'%s lubi [usuniety]' % user_cockpit(self.owner)
       else:
         result = u'%s lubi status %s' % ( user_cockpit(self.owner),
           user_cockpit(self.recipient))        
