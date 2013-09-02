@@ -76,6 +76,22 @@
     {% else %}
     <p class="message">Kokpit jest pusty!</p>
     {% endif %}
+    {% if watches %}
+    <h4>Obserwowani</h4>
+    <div id="watched">
+      <ul>{% for w in watches %}
+        <li>{{ w.cockpit|safe }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}    {% if watchers %}
+    <h4>Obserwujacy</h4>
+    <div id="watchers">
+      <ul>{% for w in watchers %}
+        <li>{{ w.cockpit|safe }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
 </div>
 <script type="text/javascript">
     var lastID = "{{ last_id }}";
