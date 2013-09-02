@@ -108,15 +108,19 @@ def main (request, username=None):
 
 @login_required
 def feed (request, username=None, mobile=False, quote=None, reply=None,
-          private=False, slug=None):  
+          private=False, slug=None, skip=0):  
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
   follow = True
   profile = get_object_or_404 (User, user__username__exact=username) if username else user
 
-  statuses = feed_lookup (user, profile, user==profile)[:32]
+  if skip:
+    skip = int(skip)
+    statuses = feed_lookup (user, profile, user==profile)[skip:skip+33]
+  else:
+    statuses = feed_lookup (user, profile, user==profile)[:32]
   last_id = statuses [0].id if statuses else '0'
-  
+    
   watched = profile.watches.all()
   watchers = profile.watched_users_set.all()
   
@@ -140,8 +144,12 @@ def feed (request, username=None, mobile=False, quote=None, reply=None,
     form = None
     
   result = dict(feed=statuses, profile=profile, form=form, follow=follow, last_id=last_id,
-    watches=watched, watchers=watchers,
+    watches=watched, watchers=watchers, 
     javascripts=('enter', 'refresh'))
+
+  if skip:
+    result['skip_prev'] = skip-32 if skip-32 > 0 else 0
+  result['skip_next'] = skip+33
 
   if slug:
     if slug in MESSAGES.keys():
