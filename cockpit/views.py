@@ -116,7 +116,10 @@ def feed (request, username=None, mobile=False, quote=None, reply=None,
 
   statuses = feed_lookup (user, profile, user==profile)[:32]
   last_id = statuses [0].id if statuses else '0'
-
+  
+  watched = profile.watches.all()
+  watchers = profile.watched_users_set.all()
+  
   if mobile:
     if profile in user.watches.all():
       follow=False
@@ -137,6 +140,7 @@ def feed (request, username=None, mobile=False, quote=None, reply=None,
     form = None
     
   result = dict(feed=statuses, profile=profile, form=form, follow=follow, last_id=last_id,
+    watches=watched, watchers=watchers,
     javascripts=('enter', 'refresh'))
 
   if slug:

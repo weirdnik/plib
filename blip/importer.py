@@ -23,7 +23,7 @@ RUN = '/var/tmp'
 WORKDIR = '/dev/null'
 SRC_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 
-JOBS = 8
+JOBS = 10
 
 RE = re.compile('^blip-\w+-(?P<file_id>\d+)-full.txt$')
 
@@ -204,7 +204,7 @@ def queue():
   from models import Blip
     
   blips =  [ (i.blip, i) for i in Blip.objects.filter(imported__exact=False)]
-    
+  
   print 'q,', blips
   return blips
   
@@ -292,12 +292,15 @@ if __name__ == '__main__':
   print r  
   if len(r) < JOBS+2:
     blips = queue()
-    q = set([i[0] for i in blips])
-    print q
+    q = set([i[0] for i in blips if i[0] not in ('semprini', 'LuKocur', 'ewcikson','gatto') ])
+    
+    print 'queue',q
     waiting=list(q-r)        
-    print waiting
+    print 'wait',waiting
     if waiting:
       job = dict(blips).get(waiting[0])    
+      print dict(blips)
+      print job
       username = job.user.user.username
       blipname = job.blip
       pid = os.getpid()

@@ -2,7 +2,7 @@
 <html lang="{% trans "pl" %}">
   <head>
     <meta charset="utf-8">
-    <title>{% if page_title %}{{ page_title %}{% else %}{% if user.is_authenticated %}kokpit uzytkownika {% if profile %}{{ profile.user.username }}{% else %}{{ user.user.username }}{% endif %}{% else %}PLUM.me{% endif %}{% endif %}</title>
+    <title>{% if user.is_authenticated %}kokpit uzytkownika {% if profile %}{{ profile.user.username }}{% else %}{{ user.user.username }}{% endif %}{% else %}PLUM.me{% endif %}</title> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='http://fonts.googleapis.com/css?family=Cabin:400,400italic,600italic,600' rel='stylesheet' type='text/css'>
     <link href="/static/vendor/css/bootstrap.css" rel="stylesheet">

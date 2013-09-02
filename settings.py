@@ -4,7 +4,7 @@ import os
 
 PROJECT_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 APP_NAME = 'Plan B 0.0.4&alpha; (&bdquo;szalupa&rdquo;)'

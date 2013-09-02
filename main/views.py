@@ -32,3 +32,6 @@ def front(request):
     template = loader.get_template('front.html')
     return HTTPResponse(template.render(RequestContext(request, dict(feed=feed,likes=likes,app_name=APP_NAME))))
       
+def health(request):
+
+  return HTTPResponse('OK')
