@@ -3,15 +3,18 @@
       <div id="profile">{% if profile.avatar %}
         <img src="{{ profile.avatar.url }}" alt="avatar">{% else %}
         <img src="/static/img/avatar.png" alt="avatar">{% endif %}
-        <br> {% if profile.about %}O mnie: {{ profile.about }} {% endif %}
-        <br> {% if profile.icbm %}Lokalizacja: {{ profile.icbm }} {% endif %}
+        <div id="about">
+          <p><strong>{{ profile.user.username }}</strong></p>
+          {% if profile.about %}<p>O mnie: {{ profile.about }}</p>{% endif %}
+          {% if profile.icbm %}<p>Lokalizacja: {{ profile.icbm }}</p>{% endif %}
+        </div>
       </div>{% if object_list %}     
       <div id="content">{% for status in object_list %}
         <div id="entry-{{ status.id }}" class="status">
           <p><strong>{{ status.date|date:"Y-n-j G:i" }}</strong>
           {{ status.render|safe }}</p>
         </div>
-      </div>{% endfor %}{% else %}
+      {% endfor %}</div>{% else %}
       <p>Nic tu jeszcze nie ma</p>{% endif %}
       <div id="pages"> {% if today %}
         {% if week > 1 %}<a href="{{ year }}/{{ week|add:-1 }}" class="pagelink">Poprzedni tydzień</a> | {% endif %}
