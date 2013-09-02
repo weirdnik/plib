@@ -78,12 +78,8 @@ def unfollow (request, username):
 	return HTTPResponseNotAllowed ()
 
 
-def blog (request, username):
+def blog (request, username, year=None, month=None, week=None, day=None):
 
-  year = None
-  month = None
-  week = None
-  day = None
   user = get_object_or_404(User, user__username__exact=username)
   statuses = Status.objects.filter(owner__exact=user, recipient__exact=None,
     private__exact=False).order_by('-date')
@@ -94,7 +90,7 @@ def blog (request, username):
     year=str(d.year)
     today=True
   if not week:
-    week=str(d.isocalendar()[1])
+    week=str(d.isocalendar()[1]-1)
     today=True
   template = loader.get_template('blog.html')
 
