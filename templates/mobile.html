@@ -76,6 +76,12 @@
     {% else %}
     <p class="message">Kokpit jest pusty!</p>
     {% endif %}
+    {% if skip %}
+    <div id="prevnext">
+      {% if skip_prev %}<a href="{% url mobile_dashboard skip=skip_prev %}">&Larr;</a>{% endif %}
+      {% if skip_next %}<a href="{% url mobile_dashboard skip=skip_next %}">&Rarr;</a>{% endif %}
+    </div>
+    {% endif %}
 </div>
 <script type="text/javascript">
     var lastID = "{{ last_id }}";
