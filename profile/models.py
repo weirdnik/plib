@@ -5,6 +5,7 @@
 from django.db import models
 from django.forms import ModelForm
 from django.contrib.auth.models import User as AuthUser
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 
@@ -44,6 +45,14 @@ class User (models.Model):
   def __unicode__ (self):
   
     return self.user.username
+    
+  def cockpit (self,view='mobile_user'):
+    'returns HTML link to user cockpit'
+        
+    template = '<a href="%s">^%s</a>'
+    cockpit = reverse(view, kwargs=dict(username=self.user.username))
+    return template % ( cockpit, self.user.username)
+                         
 
 class UserForm (ModelForm):
   class Meta:
