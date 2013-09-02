@@ -1,4 +1,4 @@
-{% extends "xhtml.html" %}{% include "parts/menu.html" %}{% block body %}
+{% extends "xhtml.html" %}{% block body %}{% include "parts/menu.html" %}
     <div class="container">
       <div id="profile">{% if profile.avatar %}
         <img src="{{ profile.avatar.url }}" alt="avatar">{% else %}
