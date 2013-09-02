@@ -177,3 +177,10 @@ img.background {
 #watch { background: rgba(255, 255, 255, 0.7); }
 #watch ul { list-style-type: none; }
 #watch ul li { display: inline; }
+
+.container .status { background: white; }
+#pages { background: white; }
+
+.container #profile { background: rgba(255, 255, 255, 0.7); flow: left;}
+
+.container #profile img { flow: right; }
