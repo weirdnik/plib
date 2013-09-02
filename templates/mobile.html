@@ -82,16 +82,14 @@
       {% if skip_next %}<a href="{% url mobile_dashboard skip=skip_next %}">&Rarr;</a>{% endif %}
     </div>
     {% endif %}
-    {% if watches %}
-    <h4>Obserwowani</h4>
-    <div id="watched">
+    {% if watches %}    <div id="watch">
+      <h4>Obserwowani</h4>    
       <ul>{% for w in watches %}
         <li>{{ w.cockpit|safe }}</li>{% endfor %}
       </ul>
-    </div>
-    {% endif %}    {% if watchers %}
-    <h4>Obserwujacy</h4>
-    <div id="watchers">
+    </div>{% endif %}{% if watchers %}
+    <div id="watch">
+      <h4>Obserwujacy</h4>
       <ul>{% for w in watchers %}
         <li>{{ w.cockpit|safe }}</li>{% endfor %}
       </ul>
