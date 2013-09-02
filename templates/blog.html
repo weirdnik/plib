@@ -8,7 +8,8 @@
       </div>{% if object_list %}     
       <div id="content">{% for status in object_list %}
         <div id="entry-{{ status.id }}" class="status">
-           <p class="status">{{ status.show }}</p>
+          <p><strong>{{ status.date|date:"Y-n-j G:i" }}</strong>
+          {{ status.render|safe }}</p>
         </div>
       </div>{% endfor %}{% else %}
       <p>Nic tu jeszcze nie ma</p>{% endif %}
