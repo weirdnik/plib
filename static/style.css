@@ -172,6 +172,8 @@ img.background {
     }
 }
 
-#watch { background: rgba(255, 255, 255, 0.7); }}
+#prevnext { background: rgba(255, 255, 255, 0.7); }
+
+#watch { background: rgba(255, 255, 255, 0.7); }
 #watch ul { list-style-type: none; }
 #watch ul li { display: inline; }
