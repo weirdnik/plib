@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     (r'^user/(?P<username>\w+)/follow/?$', 'profile.views.follow' ),    
     (r'^user/(?P<username>\w+)/unfollow/?$', 'profile.views.unfollow' ),    
     (r'^user/(?P<username>\w+)/blog/?$', 'profile.views.blog' ),    
+    (r'^user/(?P<username>\w+)/blog/(?P<year>\w+)/(?P<week>\w+)?$', 'profile.views.blog' ),
     
     (r'^status/(?P<object_id>\d+)/?$', 'cockpit.views.status'),
     (r'^status/?$', 'cockpit.views.status'),  
