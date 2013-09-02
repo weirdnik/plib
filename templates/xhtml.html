@@ -2,7 +2,7 @@
 <html lang="{% trans "pl" %}">
   <head>
     <meta charset="utf-8">
-    <title>{% if user.is_authenticated %}kokpit uzytkownika {% if profile %}{{ profile.user.username }}{% else %}{{ user.user.username }}{% endif %}{% else %}Plan B{% endif %}</title>
+    <title>{% if page_title %}{{ page_title %}{% else %}{% if user.is_authenticated %}kokpit uzytkownika {% if profile %}{{ profile.user.username }}{% else %}{{ user.user.username }}{% endif %}{% else %}PLUM.me{% endif %}{% endif %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='http://fonts.googleapis.com/css?family=Cabin:400,400italic,600italic,600' rel='stylesheet' type='text/css'>
     <link href="/static/vendor/css/bootstrap.css" rel="stylesheet">
@@ -15,8 +15,9 @@
     {% if user.is_authenticated %}
       <style>
         {% if profile.background %}body { background-image: url('{{ profile.background.url }}');}{% endif %}
-      </style>
+      </style>      
     {% endif %}
+      {% include "ga.inc" %}
   </head>
   <body>
     {% block body %}{% endblock body %}
@@ -25,4 +26,5 @@
   <script src="/static/vendor/js/bootstrap.min.js"></script>
   <script src="/static/js/bootstrap-maxlength.min.js"></script>
   {% include "piwik.inc" %}
+
 </html>
