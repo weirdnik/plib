@@ -116,10 +116,12 @@ def feed (request, username=None, mobile=False, quote=None, reply=None,
 
   if skip:
     skip = int(skip)
-    statuses = feed_lookup (user, profile, user==profile)[skip:skip+33]
+    statuses = feed_lookup (user, profile, user==profile)
+    last_id = statuses [0].id if statuses else '0'    
+    statuses = statuses [skip:skip+33]
   else:
     statuses = feed_lookup (user, profile, user==profile)[:32]
-  last_id = statuses [0].id if statuses else '0'
+    last_id = statuses [0].id if statuses else '0'
     
   watched = profile.watches.all()
   watchers = profile.watched_users_set.all()
