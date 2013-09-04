@@ -44,7 +44,7 @@ class Status (models.Model):
   likes = models.ManyToManyField ('profile.User', through='Like')
 #  blip = models.ForeignKey('blip.Info', null=True)
   
-  def likes (self):
+  def num_likes (self):
     # .distinct().count()
 #    return 0   
     return Like.objects.filter(status__exact=self)
