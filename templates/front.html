@@ -5,6 +5,27 @@
         <h1>{{ app_name|safe }}</h1>
     </div>
     <div id="frontpage-mainframe">
+        <h2>Najpopularniejsze statusy ostatniego tygodnia:</h2>
+          <div id="frontpage-likes">
+            {% if likes %}
+            <ul class="feed">
+                {% for status in likes %}
+                <li>
+                    <a href="{% url mobile_user username=status.owner.user.username %}">
+                        <img class="avatar"
+                             src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}{% else %}/static/img/avatar.png{% endif %}"
+                             title="{{ status.owner.user.username}} @ {{ status.date }}"
+                             width="32"
+                             height="32"></a>
+                        <span class="status">{{ status.show|safe }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Nie ma jeszcze zadnych statusow!</p>
+            {% endif %}
+        </div>
+      
         <h2>Ostatnie statusy:</h2>
 
         <div id="frontpage-feed">
@@ -12,7 +33,7 @@
             <ul class="feed">
                 {% for status in feed %}
                 <li>
-                    <a href="{% url mobile_user username=status.owner.user.username %}">
+[A                    <a href="{% url mobile_user username=status.owner.user.username %}">
                         <img class="avatar"
                              src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}{% else %}/static/img/avatar.png{% endif %}"
                              title="{{ status.owner.user.username}} @ {{ status.date }}"
