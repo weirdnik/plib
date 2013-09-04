@@ -33,7 +33,7 @@
             <ul class="feed">
                 {% for status in feed %}
                 <li>
-[A                    <a href="{% url mobile_user username=status.owner.user.username %}">
+                    <a href="{% url mobile_user username=status.owner.user.username %}">
                         <img class="avatar"
                              src="{% if status.owner.avatar %}{{ status.owner.avatar.url }}{% else %}/static/img/avatar.png{% endif %}"
                              title="{{ status.owner.user.username}} @ {{ status.date }}"
