@@ -39,13 +39,27 @@ def feed_lookup (user, profile, private):
   ''' This is the core function of the service. It takes logged user's profile,
   current displayed user's profile, and private [?] parameter.
   '''
+  
   following = user.watches.all()
+  tags_watched = user.watches_tags.all()
+  tags_ignored = user.ignores_tags.all()
+  
+  tag_statuses = None
+  for t in tags_watched:
+    if tag_statuses:
+      tag_statuses = tag_statuses + t.status.all()
+    else:
+      tag_statuses = t.status.all()
+  
+  print tag_statuses
+  
   if private:
     result = Status.objects.filter(
       ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and own
-       ( Q(owner__in=following) & Q(recipient__exact=None)) | # all followed public statuses
-       (Q(owner__exact=profile) | Q(recipient__exact=profile))
-       ).order_by('-date')
+       ( Q(owner__in=following) & Q(recipient__exact=None) ) | # all followed public statuses
+       ( Q(owner__exact=profile) | Q(recipient__exact=profile) )#| # mesgi do i od
+#       ( Q) ) # tags subscribed 
+       ).order_by('-date') | tag_statuses
   else:
      result = Status.objects.filter(
        ( Q(private__exact=False) & 
@@ -55,7 +69,7 @@ def feed_lookup (user, profile, private):
        ( Q(owner__exact=user) & Q(recipient__exact=profile) ) ) )
        ).order_by('-date')
  
-  return result
+  return result.distinct()
 
 
 def notify(recipient, message, sender='blip'):
