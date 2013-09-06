@@ -40,7 +40,15 @@ urlpatterns = patterns('',
     (r'^status/(?P<object_id>\d+)/count/?$', 'cockpit.views.feed_count_since', dict(private=False), 'count_public'),            
 
     (r'^tag/(?P<text>\w+)/$', 'cockpit.views.tag'),
-    
+    (r'^tag/(?P<text>\w+)/subscribe/?$', 'cockpit.views.tag_subscription',
+      dict(action='subscribe'), 'tag_subscribe'),
+    (r'^tag/(?P<text>\w+)/unsubscribe/?$', 'cockpit.views.tag_subscription',
+      dict(action='unsubscribe'), 'tag_unsubscribe'),
+    (r'^tag/(?P<text>\w+)/ignore/?$', 'cockpit.views.tag_subscription',
+      dict(action='ignore'), 'tag_ignore'),
+    (r'^tag/(?P<text>\w+)/unignore/?$', 'cockpit.views.tag_subscription',
+      dict(action='unignore'), 'tag_unignore'),
+      
     # user management stuff
     (r'^account/login/$', 'django.contrib.auth.views.login',
       {'template_name': 'login.html'}, 'login_user'), #fixme

@@ -40,7 +40,9 @@ class Status (models.Model):
     ('follow', u'dodał/a Cię do obserwowanych'), 
     ('unfollow', u'przestal/a cie obserwować'),
     ('mention', u'o Tobie mówi'),
-    ('quote', u'Cię cytuje') ), blank=True, null=True)
+    ('quote', u'Cię cytuje'),
+    ('watch', 'watches tag'),
+    ('unwatch', 'unwatches tag' )), blank=True, null=True)
   likes = models.ManyToManyField ('profile.User', through='Like')
 #  blip = models.ForeignKey('blip.Info', null=True)
 
@@ -97,6 +99,12 @@ class Status (models.Model):
        result = e[0].sub(e[1], result)
       
       return result
+
+    def tag_cockpit(text, view='cockpit.views.tag'):
+      template = '<a href="%s">%s</a>'
+      cockpit = reverse(view, kwargs=dict(text=text))
+      return template % (cockpit, text)
+      
     
     ###
                    
@@ -121,7 +129,9 @@ class Status (models.Model):
       else:
         result = u'%s lubi status %s' % ( user_cockpit(self.owner),
           user_cockpit(self.recipient))        
-
+    elif self.action == 'watch':
+      result = '%s subskrybuje tag #%s' % (self.owner.cockpit(), tag_cockpit(self.text))
+      
     # mention & quoting
     elif self.action in ('mention', 'quote'):    
       u = self.owner.user.username
