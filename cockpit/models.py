@@ -43,7 +43,12 @@ class Status (models.Model):
     ('quote', u'Cię cytuje') ), blank=True, null=True)
   likes = models.ManyToManyField ('profile.User', through='Like')
 #  blip = models.ForeignKey('blip.Info', null=True)
-  
+
+
+  class Meta:
+    app_label = 'cockpit'  
+    
+
   def num_likes (self):
     # .distinct().count()
 #    return 0   
@@ -203,9 +208,14 @@ class Tag (models.Model):
   tag = models.TextField ()
   status = models.ManyToManyField (Status)
 
-
+  class Meta:
+    app_label = 'cockpit'    
+    
 class Like (models.Model):
 
   status = models.ForeignKey ('cockpit.Status', null=True)
   user = models.ForeignKey ('profile.User', null=False)
   date = models.DateTimeField (auto_now_add=True,null=True)
+
+  class Meta:
+    app_label = 'cockpit'    
