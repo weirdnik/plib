@@ -51,8 +51,6 @@ def feed_lookup (user, profile, private):
     else:
       tag_statuses = t.status.all()
   
-  print tag_statuses
-  
   if private:
     result = Status.objects.filter(
       ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and own
