@@ -265,16 +265,44 @@ def tag(request, text):
   if request.method == 'GET':
   
     tag_object = get_object_or_404(Tag, tag=text)
-  
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
+    
     form = StatusForm (initial=dict(text='#%s' % text))
     statuses = tag_object.status.filter(private__exact=False, 
       recipient__exact=None).order_by('-date')[:32]
   
     template = loader.get_template("tag.html")
+    result = dict(feed=statuses, text=text, 
+      follow=tag_object not in user.watches_tags.all(), 
+      ignore=tag_object not in user.ignores_tags.all())
   
-  return HTTPResponse (template.render(RequestContext(request, dict(feed=statuses))))
+    return HTTPResponse (template.render(RequestContext(request, result)))
 
 
+def tag_subscription(request, text, action=None):
+
+  if request.method == 'POST':
+
+    tag_object = get_object_or_404(Tag, tag=text)
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
+  
+    if action == 'subscribe':
+      user.watches_tags.add(tag_object)
+      user.save()
+  
+      notification = Status(owner=user, action='watch', text=text)
+      notification.save()
+    elif action == 'unsubscribe':
+      if tag_object in user.watches_tags.all():
+        user.watches_tags.remove(tag_object)
+    elif action == 'ignore':
+      pass
+                          
+    return HTTPResponseRedirect (reverse('mobile_dashboard'))
+  else:
+    return HTTPResponseNotAllowed ()
+
+  
 @login_required
 def like (request, object_id, mobile=False):
 
@@ -295,6 +323,7 @@ def like (request, object_id, mobile=False):
   else:
     return HTTPResponseNotAllowed ()
 
+
 @login_required
 def unlike (request, object_id, mobile=False):
 
@@ -313,6 +342,7 @@ def unlike (request, object_id, mobile=False):
   else:
     return HTTPResponseNotAllowed ()
 
+
 @login_required
 def delete (request, object_id, mobile=False):
 
@@ -329,12 +359,12 @@ def delete (request, object_id, mobile=False):
   else:
     return HTTPResponseBadRequest()
     
+
 @login_required
 def feed_count_since (request, object_id, username=None, private=False):
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
   profile = get_object_or_404 (User, user__username__exact=username) if username else user
-
 
   if request.method == 'GET':
     query = feed_lookup(user, profile, private)
