@@ -227,44 +227,50 @@ def status (request, object_id=None, mobile=False):
           kwargs=dict(slug='UEImage')))
                            
           
-        if status.tagged:
-          for tag_text in tag_result:    
-            tag, create = Tag.objects.get_or_create(tag=tag_text)
-            tag.status.add(status)
-            tag.save()          
+      if status.tagged:
+        for tag_text in tag_result:    
+          tag, create = Tag.objects.get_or_create(tag=tag_text)
+          tag.status.add(status)
+          tag.save()          
         
-        # mention notification       
-        mention_result = MENTION_RE.findall(status.text)
-        if mention_result:
-          for u in mention_result:
-            recipient = User.objects.get(user__username__exact=u)
-            action = Status(owner=profile, recipient=recipient, action='mention',
-              text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
-            action.save()
-
-        # quote notification
-        quote_result = STATUS_RE.findall(status.text)        
-        for q in quote_result:
-          action = Status (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
+      # mention notification       
+      mention_result = MENTION_RE.findall(status.text)
+      if mention_result:
+        for u in mention_result:
+          recipient = User.objects.get(user__username__exact=u)
+          action = Status(owner=profile, recipient=recipient, action='mention',
             text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
           action.save()
+
+        # quote notification
+      quote_result = STATUS_RE.findall(status.text)        
+      for q in quote_result:
+        action = Status (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
+          text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
+        action.save()
           
-      else:
-        HTTPResponseBadRequest()
-      if mobile:
-        return HTTPResponseRedirect(reverse('mobile_dashboard'))      
-      else:
-        return HTTPResponseRedirect(reverse('cockpit.views.main'))
+  #  else:
+  #    HTTPResponseBadRequest()
+
+    if mobile:
+      return HTTPResponseRedirect(reverse('mobile_dashboard'))      
+    else:
+      return HTTPResponseRedirect(reverse('cockpit.views.main'))
       
   else:
     return HTTPResponseBadRequest()
 
 def tag(request, text):
-  tag_object = get_object_or_404(Tag, tag=text)
+
+  if request.method == 'GET':
   
-  statuses = tag_object.status.all().order_by('-date')
+    tag_object = get_object_or_404(Tag, tag=text)
   
-  template = loader.get_template("feed.html")
+    form = StatusForm (initial=dict(text='#%s' % text))
+    statuses = tag_object.status.filter(private__exact=False, 
+      recipient__exact=None).order_by('-date')[:32]
+  
+    template = loader.get_template("tag.html")
   
   return HTTPResponse (template.render(RequestContext(request, dict(feed=statuses))))
 
