@@ -39,13 +39,27 @@ def feed_lookup (user, profile, private):
   ''' This is the core function of the service. It takes logged user's profile,
   current displayed user's profile, and private [?] parameter.
   '''
+  
   following = user.watches.all()
+  tags_watched = user.watches_tags.all()
+  tags_ignored = user.ignores_tags.all()
+  
+  tag_statuses = None
+  for t in tags_watched:
+    if tag_statuses:
+      tag_statuses = tag_statuses + t.status.all()
+    else:
+      tag_statuses = t.status.all()
+  
+  print tag_statuses
+  
   if private:
     result = Status.objects.filter(
       ( Q(owner__exact=user)| Q(recipient__exact=user) ) | # all msgs between displayed and own
-       ( Q(owner__in=following) & Q(recipient__exact=None)) | # all followed public statuses
-       (Q(owner__exact=profile) | Q(recipient__exact=profile))
-       ).order_by('-date')
+       ( Q(owner__in=following) & Q(recipient__exact=None) ) | # all followed public statuses
+       ( Q(owner__exact=profile) | Q(recipient__exact=profile) )#| # mesgi do i od
+#       ( Q) ) # tags subscribed 
+       ).order_by('-date') | tag_statuses
   else:
      result = Status.objects.filter(
        ( Q(private__exact=False) & 
@@ -55,7 +69,7 @@ def feed_lookup (user, profile, private):
        ( Q(owner__exact=user) & Q(recipient__exact=profile) ) ) )
        ).order_by('-date')
  
-  return result
+  return result.distinct()
 
 
 def notify(recipient, message, sender='blip'):
@@ -227,48 +241,82 @@ def status (request, object_id=None, mobile=False):
           kwargs=dict(slug='UEImage')))
                            
           
-        if status.tagged:
-          for tag_text in tag_result:    
-            tag, create = Tag.objects.get_or_create(tag=tag_text)
-            tag.status.add(status)
-            tag.save()          
+      if status.tagged:
+        for tag_text in tag_result:    
+          tag, create = Tag.objects.get_or_create(tag=tag_text)
+          tag.status.add(status)
+          tag.save()          
         
-        # mention notification       
-        mention_result = MENTION_RE.findall(status.text)
-        if mention_result:
-          for u in mention_result:
-            recipient = User.objects.get(user__username__exact=u)
-            action = Status(owner=profile, recipient=recipient, action='mention',
-              text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
-            action.save()
-
-        # quote notification
-        quote_result = STATUS_RE.findall(status.text)        
-        for q in quote_result:
-          action = Status (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
+      # mention notification       
+      mention_result = MENTION_RE.findall(status.text)
+      if mention_result:
+        for u in mention_result:
+          recipient = User.objects.get(user__username__exact=u)
+          action = Status(owner=profile, recipient=recipient, action='mention',
             text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
           action.save()
+
+        # quote notification
+      quote_result = STATUS_RE.findall(status.text)        
+      for q in quote_result:
+        action = Status (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
+          text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
+        action.save()
           
-      else:
-        HTTPResponseBadRequest()
-      if mobile:
-        return HTTPResponseRedirect(reverse('mobile_dashboard'))      
-      else:
-        return HTTPResponseRedirect(reverse('cockpit.views.main'))
+  #  else:
+  #    HTTPResponseBadRequest()
+
+    if mobile:
+      return HTTPResponseRedirect(reverse('mobile_dashboard'))      
+    else:
+      return HTTPResponseRedirect(reverse('cockpit.views.main'))
       
   else:
     return HTTPResponseBadRequest()
 
 def tag(request, text):
-  tag_object = get_object_or_404(Tag, tag=text)
+
+  if request.method == 'GET':
   
-  statuses = tag_object.status.all().order_by('-date')
+    tag_object = get_object_or_404(Tag, tag=text)
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
+    
+    form = StatusForm (initial=dict(text='#%s' % text))
+    statuses = tag_object.status.filter(private__exact=False, 
+      recipient__exact=None).order_by('-date')[:32]
   
-  template = loader.get_template("feed.html")
+    template = loader.get_template("tag.html")
+    result = dict(feed=statuses, text=text, 
+      follow=tag_object not in user.watches_tags.all(), 
+      ignore=tag_object not in user.ignores_tags.all())
   
-  return HTTPResponse (template.render(RequestContext(request, dict(feed=statuses))))
+    return HTTPResponse (template.render(RequestContext(request, result)))
 
 
+def tag_subscription(request, text, action=None):
+
+  if request.method == 'POST':
+
+    tag_object = get_object_or_404(Tag, tag=text)
+    user =  get_object_or_404(User, user__id__exact=request.user.id)  
+  
+    if action == 'subscribe':
+      user.watches_tags.add(tag_object)
+      user.save()
+  
+      notification = Status(owner=user, action='watch', text=text)
+      notification.save()
+    elif action == 'unsubscribe':
+      if tag_object in user.watches_tags.all():
+        user.watches_tags.remove(tag_object)
+    elif action == 'ignore':
+      pass
+                          
+    return HTTPResponseRedirect (reverse('mobile_dashboard'))
+  else:
+    return HTTPResponseNotAllowed ()
+
+  
 @login_required
 def like (request, object_id, mobile=False):
 
@@ -289,6 +337,7 @@ def like (request, object_id, mobile=False):
   else:
     return HTTPResponseNotAllowed ()
 
+
 @login_required
 def unlike (request, object_id, mobile=False):
 
@@ -307,6 +356,7 @@ def unlike (request, object_id, mobile=False):
   else:
     return HTTPResponseNotAllowed ()
 
+
 @login_required
 def delete (request, object_id, mobile=False):
 
@@ -323,12 +373,12 @@ def delete (request, object_id, mobile=False):
   else:
     return HTTPResponseBadRequest()
     
+
 @login_required
 def feed_count_since (request, object_id, username=None, private=False):
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
   profile = get_object_or_404 (User, user__username__exact=username) if username else user
-
 
   if request.method == 'GET':
     query = feed_lookup(user, profile, private)

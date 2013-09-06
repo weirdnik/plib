@@ -1,0 +1,103 @@
+{% extends "xhtml.html" %}{% block body %}
+{% include "parts/menu.html" %}
+<div id="cockpit" class="container{% if profile.background %} status-background{% endif %}">
+    {% if message %}
+    <div id="cockpit-message" class="alert danger">{{ message }}</div>
+    {% endif %}
+    <div id="cockpit-head">
+        <form method="post" action="{% url mobile_status %}" enctype="multipart/form-data"
+              onkeyup="if(isEnterPressed(event)){ document.status_form.submit();}">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+            <script type="text/javascript">
+                $('textarea#id_text').attr({
+                    'maxlength':'160',
+                    'placeholder': 'Plumknij co porabiasz...'
+                }).maxlength({
+                    alwaysShow: true,
+                    threshold: 10,
+                    warningClass: "label label-success",
+                    limitReachedClass: "label label-important",
+                    separator: ' z ',
+                    preText: 'Pozostało ',
+                    postText: ' znaków.',
+                    validate: true
+                });
+            </script>
+
+
+            <!-- div class="input-group addPhoto" style="display:none">
+                <input type="text" class="form-control" id="photoCover">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default btn-small" type="button" onclick="$('input[id=id_image]').click();">Przeglądaj</button>
+                  </span>
+            </div -->
+            <!-- script type="text/javascript">
+                $('input[id=id_image]').change(function () {
+                    $('#photoCover').val($(this).val());
+                });
+            </script -->
+            <!--End add photo-->
+        </form>
+        {% if not profile.user.username = user.username %}
+        <div id="follow-block">
+            {% if follow %}
+            <form method="post" action="{% url tag_subscribe text=text %}">
+                {% csrf_token %}
+                <input type="submit" value="obserwuj tag"/>
+            </form>
+            {% else %}
+            <form method="post" action="{% url tag_unsubscribe text=text %}">
+                {% csrf_token %}
+                <input type="submit" value="nie obserwuj taga"/>
+            </form>
+            {% endif %}
+        </div>
+        {% endif %}
+        <!-- div id="queue-counter" style="text-align: center; display: none;">
+            <a href="{% url mobile_dashboard %}">
+                nowe statusy:
+                <span id="statuses">0</span>
+                (kliknij, żeby odświeżyć kokpit)
+            </a>
+        </div -->
+    </div>
+    <!-- end cockpit-head -->
+    {% if feed %}
+    <!-- feed start -->
+    {% for status in feed %}
+    {% include "status.inc" %}
+    <!-- end status -->
+    {% if profile.background %}
+    {% endif %}
+    <hr/>
+    {% endfor %}
+    {% else %}
+    <p class="message">Kokpit jest pusty!</p>
+    {% endif %}
+    <div id="prevnext">
+      {% if skip_prev %}<a href="{% url mobile_dashboard skip=skip_prev %}">&Larr;</a>{% endif %}
+      {% if skip_next %}<a href="{% url mobile_dashboard skip=skip_next %}">&Rarr;</a>{% endif %}
+    </div>
+    {% if watches %}    <div id="watch">
+      <h4>Obserwowani</h4>    
+      <ul>{% for w in watches %}
+        <li>{{ w.cockpit|safe }}</li>{% endfor %}
+      </ul>
+    </div>{% endif %}{% if watchers %}
+    <div id="watch">
+      <h4>Obserwujacy</h4>
+      <ul>{% for w in watchers %}
+        <li>{{ w.cockpit|safe }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+</div>
+<script type="text/javascript">
+    var lastID = "{{ last_id }}";
+    var IntervalID = setInterval(function () {
+        feed_count_check(lastID);
+    }, 5000);
+</script>
+{% endblock body %}
