@@ -47,7 +47,7 @@ def feed_lookup (user, profile, private):
   tag_statuses = None
   for t in tags_watched:
     if tag_statuses:
-      tag_statuses = tag_statuses + t.status.all()
+      tag_statuses = tag_statuses | t.status.all()
     else:
       tag_statuses = t.status.all()
   
@@ -57,7 +57,10 @@ def feed_lookup (user, profile, private):
        ( Q(owner__in=following) & Q(recipient__exact=None) ) | # all followed public statuses
        ( Q(owner__exact=profile) | Q(recipient__exact=profile) )#| # mesgi do i od
 #       ( Q) ) # tags subscribed 
-       ).order_by('-date') | tag_statuses
+       ).order_by('-date')
+       
+    if tag_statuses:
+      result = result | tag_statuses
   else:
      result = Status.objects.filter(
        ( Q(private__exact=False) & 

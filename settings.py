@@ -1,13 +1,13 @@
 # Django settings for blip project.
-
+# -*- coding: utf-8 -*-
 import os
 
 PROJECT_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-APP_NAME = 'Plan B 0.0.4&alpha; (&bdquo;szalupa&rdquo;)'
+APP_NAME = 'Plan B 0.0.5&alpha; (&bdquo;wiosłuj, nie gadaj&rdquo;)'
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
