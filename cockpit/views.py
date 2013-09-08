@@ -30,7 +30,8 @@ from profile.models import User
 MESSAGES = { '0': '',
              'IOImage': 'Nie można zamieścić statusu: niedobry obrazek.',
              'UEImage': 'Nie można zamieścić statusu: niedobra nazwa obrazka.',
-             'TOOLarge': 'Zbyt duzy status.' }
+             'TOOLarge': 'Zbyt duży status.',
+             'TOOLong': 'Zbyt długi status.', }
 
 
 ###
@@ -202,7 +203,7 @@ def status (request, object_id=None, mobile=False):
   
   if request.method == 'GET':
     if not object_id:
-      return HTTPResponseNotAllowed ()
+      return HTTPResponseNotAllowed ('No GETting here.')
       
     status = get_object_or_404 (Status, pk=object_id)
     
