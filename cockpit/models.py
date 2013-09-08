@@ -11,7 +11,7 @@ from django.forms import ModelForm, Textarea
 
 TAG_RE = re.compile(ur'#(?P<tag>\w+)',re.UNICODE)
 MENTION_RE = re.compile('\^(?P<username>\w+)')
-YOUTUBE_RE = re.compile ('https?://(www.)?youtube.com/watch\?v=(?P<video>[\w\d-]+)')
+YOUTUBE_RE = re.compile ('https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
@@ -37,12 +37,12 @@ class Status (models.Model):
   preview = models.ImageField(upload_to="images/%s", blank=True, null=True)
   icon = models.ImageField(upload_to="images/%s", blank=True, null=True)
   action = models.CharField (max_length=16, choices=(('like', 'like'), 
-    ('follow', u'dodał/a Cię do obserwowanych'), 
-    ('unfollow', u'przestal/a cie obserwować'),
-    ('mention', u'o Tobie mówi'),
-    ('quote', u'Cię cytuje'),
-    ('watch', 'watches tag'),
-    ('unwatch', 'unwatches tag' )), blank=True, null=True)
+    ('follow', u'dodał/a cię do obserwowanych'), 
+    ('unfollow', u'przestał/a cię obserwować'),
+    ('mention', u'mówi o tobie'),
+    ('quote', u'cytuje cię'),
+    ('watch', 'subskrybuje tag'),
+    ('unwatch', 'już nie subskrybuje tagu' )), blank=True, null=True)
   likes = models.ManyToManyField ('profile.User', through='Like')
 #  blip = models.ForeignKey('blip.Info', null=True)
 
@@ -125,7 +125,7 @@ class Status (models.Model):
             status.text,
             user_cockpit(self.recipient))        
         except Status.DoesNotExist:
-          result = u'%s lubi [usuniety]' % user_cockpit(self.owner)
+          result = u'%s lubi [usunięty]' % user_cockpit(self.owner)
       else:
         result = u'%s lubi status %s' % ( user_cockpit(self.owner),
           user_cockpit(self.recipient))        
