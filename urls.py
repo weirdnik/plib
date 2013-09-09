@@ -64,7 +64,7 @@ urlpatterns = patterns('',
     (r'^account/reset/?$', 'django.contrib.auth.views.password_reset',
       {'post_reset_redirect' : '/account/reset/sent/',
         'from_email': 'Plum.ME <blip@hell.pl>'
-        }),            
+        }, 'reset_password'),            
     (r'^account/reset/sent/?$', 'django.contrib.auth.views.password_reset_done',
       {'template_name': 'registration/password_reset_notice.html'}, ), #change template
     (r'^account/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/?$', 
