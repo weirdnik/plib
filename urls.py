@@ -1,6 +1,7 @@
 #
 
 from django.conf.urls.defaults import *
+#from django.contrib.auth.views import password_reset
 
 import settings
 
@@ -59,6 +60,19 @@ urlpatterns = patterns('',
     (r'^account/confirm/(?P<slug>\w+)/?$', 'profile.views.confirm'),        
     (r'^account/import/?$', 'blip.views.importer', {}, 'import_blip'),        
 
+    # password handling
+    (r'^account/reset/?$', 'django.contrib.auth.views.password_reset',
+      {'post_reset_redirect' : '/account/reset/sent/',
+        'from_email': 'Plum.ME <blip@hell.pl>'
+        }),            
+    (r'^account/reset/sent/?$', 'django.contrib.auth.views.password_reset_done',
+      {'template_name': 'registration/password_reset_notice.html'}, ), #change template
+    (r'^account/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/?$', 
+      'django.contrib.auth.views.password_reset_confirm', 
+      {'post_reset_redirect' : '/account/reset/done/'}, 'password_reset_confirm'),
+    (r'^account/reset/done/$', 'django.contrib.auth.views.password_reset_complete'),      
+
+    
     # legacy paths, hardcoded somewhere
     (r'^accounts/login/$', 'django.contrib.auth.views.login',
       {'template_name': 'login.html'}),
