@@ -21,6 +21,7 @@ from django.template import RequestContext, loader, Template
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 from django.utils.html import escape
+from django.http import Http404 as HTTP404
 
 from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE, STATUS_RE, STATUS_LENGTH
 from profile.models import User
@@ -283,11 +284,12 @@ def status (request, object_id=None, mobile=False):
 
 def tag(request, text):
 
+  user =  get_object_or_404(User, user__id__exact=request.user.id)  
   if request.method == 'GET':
   
-    tag_object = get_object_or_404(Tag, tag=text)
-    user =  get_object_or_404(User, user__id__exact=request.user.id)  
-    
+    tag_object, create = Tag.objects.get_or_create(tag=text)
+    if create:
+      tag_object.save()   
     form = StatusForm (initial=dict(text='#%s' % text))
     statuses = tag_object.status.filter(private__exact=False, 
       recipient__exact=None).order_by('-date')[:32]
