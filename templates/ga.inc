@@ -4,7 +4,7 @@
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-1501801-3', 'hell.pl');
+  ga('create', 'UA-1501801-3', 'plum.me');
   ga('send', 'pageview');
 
 </script>
