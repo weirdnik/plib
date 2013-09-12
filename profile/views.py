@@ -161,7 +161,7 @@ def confirm (request, slug=None):
 	  return HTTPResponse(template.render(RequestContext(request, dict(user=user))))
 	  
   return HTTPResponseRedirect(reverse('cockpit.views.main'))
-
+  
 
 def edit (request):
 
@@ -170,9 +170,12 @@ def edit (request):
 	
 	instance = kwargs.get('instance', None)
 	if instance.avatar:
-	  avatar = Image.open(instance.avatar.path)
-	  avatar.thumbnail((256,256), Image.ANTIALIAS)
-	  avatar.save(instance.avatar.path + '.jpg', 'JPEG')
+          try:
+            avatar = Image.open(instance.avatar.path)
+            avatar.thumbnail((256,256), Image.ANTIALIAS)
+            avatar.save(instance.avatar.path + '.jpg', 'JPEG')
+          except IOError: # cannot write mode P as JPEG
+            pass
 
   # works but unnecessary
   
@@ -210,3 +213,18 @@ def edit (request):
 	  
   return HTTPResponse(template.render(RequestContext(request, result)))
 
+def reset(request, slug=None, confirm=False):
+  '''account password reset'''
+  
+#  '''resets account's password:
+#  plain GET brings out nickname query form
+#  POST sends reset email message
+#  confirm GET gets password form
+#  '''
+#  if request.method == 'GET':
+#    if confirm:
+#      pass:
+#    else:
+#      template = loader.get_template("reset_login.html")
+#  elif request.method == 'POST':
+#    pass
