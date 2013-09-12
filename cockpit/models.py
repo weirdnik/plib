@@ -7,6 +7,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import ModelForm, Textarea
 
+# constants
+
+STATUS_LENGTH = 160
+
 # RE-s
 
 TAG_RE = re.compile(ur'#(?P<tag>\w+)',re.UNICODE)
@@ -210,7 +214,7 @@ class StatusForm (ModelForm):
     model = Status
     fields = ['text', 'image']
     widgets = {
-      'text': Textarea(attrs={'maxlength': 160, 'size': 160, 'cols': 80, 'rows': 2, 'onkeydown': 'pressed(event)'}),
+      'text': Textarea(attrs={'maxlength': 256, 'size': 160, 'cols': 80, 'rows': 2, 'onkeydown': 'pressed(event)'}),
     }
 
 class Tag (models.Model):

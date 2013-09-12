@@ -1,5 +1,5 @@
 # Create your views here.
-# -*- coding: iso-8859-2 -*-
+# -*- coding: utf-8 -*-
 
 import re
 
@@ -22,17 +22,16 @@ from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 from django.utils.html import escape
 
-from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE, STATUS_RE
+from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE, STATUS_RE, STATUS_LENGTH
 from profile.models import User
 
 ###
 
 MESSAGES = { '0': '',
-             'IOImage': 'Nie można zamieścić statusu: niedobry obrazek.',
-             'UEImage': 'Nie można zamieścić statusu: niedobra nazwa obrazka.',
-             'TOOLarge': 'Zbyt duży status.',
-             'TOOLong': 'Zbyt długi status.', }
-
+             'IOImage': u'Nie można zamieścić statusu: niedobry obrazek.',
+             'UEImage': u'Nie można zamieścić statusu: niedobra nazwa obrazka.',
+             'TOOLarge': u'Zbyt duży status.',
+             'TOOLong': u'Zbyt długi status.' }
 
 ###
 
@@ -216,12 +215,19 @@ def status (request, object_id=None, mobile=False):
      
   elif request.method == 'POST':
     if object_id:
-      return HTTPResponseNotAllowed ()
+      return HTTPResponseNotAllowed ('No editing of the history!')
     else:    
       try:
         form = StatusForm (request.POST, request.FILES)
         if form.is_valid():
           status=form.save(commit=False)
+          if len(status.text) > STATUS_LENGTH:
+            newform = StatusForm(initial=dict(text=status.text))
+            message = u'%s: ...%s' % (MESSAGES.get('TOOLong'),
+              status.text[STATUS_LENGTH-16:STATUS_LENGTH])
+            template = loader.get_template("mobile.html")
+            return HTTPResponse(template.render(RequestContext(request,
+              dict(form=newform, message=message, profile=profile))))
           status.owner=profile
         # message detection
           msg = MESSAGE_RE.match(status.text)
@@ -242,7 +248,6 @@ def status (request, object_id=None, mobile=False):
         return HTTPResponseRedirect(reverse('message_dashboard',
           kwargs=dict(slug='UEImage')))
                            
-          
       if status.tagged:
         for tag_text in tag_result:    
           tag, create = Tag.objects.get_or_create(tag=tag_text)
@@ -261,7 +266,7 @@ def status (request, object_id=None, mobile=False):
         # quote notification
       quote_result = STATUS_RE.findall(status.text)        
       for q in quote_result:
-        action = Status (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
+        action = Status	 (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
           text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
         action.save()
           
