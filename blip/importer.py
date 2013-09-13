@@ -292,7 +292,8 @@ if __name__ == '__main__':
   print r  
   if len(r) < JOBS+2:
     blips = queue()
-    q = set([i[0] for i in blips if i[0] not in ('semprini', 'LuKocur', 'ewcikson','gatto') ])
+    q = set([i[0] for i in blips 
+      if i[0] not in ('semprini', 'LuKocur', 'ewcikson','gatto', 'robmar', 'Ivka','twymmf') ])
     
     print 'queue',q
     waiting=list(q-r)        
