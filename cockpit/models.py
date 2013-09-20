@@ -21,6 +21,7 @@ INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
 STATUS_RE = re.compile(ur'(?:(?:https?://(?:plum\.me|plib\.hell\.pl))|\A|\s)(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
+APO_RE = re.compile(ur'(&#39;)')
 
 # Create your models here.
 
@@ -166,9 +167,9 @@ class Status (models.Model):
       # size limit
       
       text = self.text[:160] if len(self.text) > 160 else self.text
-      
+      result = APO_RE.sub("'", text)
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
-        kwargs=dict(username=g.group().strip('^'))), g.group()), text)
+        kwargs=dict(username=g.group().strip('^'))), g.group()), result)
       # TODO add flat_render for onmouseover display
       result = STATUS_RE.sub( lambda g: u'<a title="%(text)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
         url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
