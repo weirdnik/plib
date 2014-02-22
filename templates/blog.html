@@ -17,20 +17,20 @@
       {% endfor %}</div>{% else %}
       <p>Nic tu jeszcze nie ma</p>{% endif %}
       <div id="pages"> {% if today %}
-        {% if week > 1 %}<a href="{{ year }}/{{ week|add:-1 }}" class="pagelink">Poprzedni tydzień</a> | {% endif %}
-        {% if week == 1 %}<a href="{{ year|add:-1 }}/{{ week|add:51 }}" class="pagelink">Poprzedni tydzień</a> |{% endif %}
+        {% if week > 1 %}<a href="{% url profile.views.blog username=profile.user.username,year=year,week=week|add:-1 %}" class="pagelink">Poprzedni tydzień</a> | {% endif %}
+        {% if week == 1 %}<a href="{% url profile.views.blog username=profile.user.username,year=year|add:-1,week=week|add:51 %}" class="pagelink">Poprzedni tydzień</a> |{% endif %}
         {% else %}
-        {% if week > 1 %}<a href="../{{ year }}/{{ week|add:-1 }}" class="pagelink">Poprzedni tydzień</a> | {% endif %}
-        {% if week == 1 %}<a href="../{{ year|add:-1 }}/{{ week|add:51 }}" class="pagelink">Poprzedni tydzień</a> |{% endif %}
+        {% if week > 1 %}<a href="{% url profile.views.blog username=profile.user.username,year=year,week=week|add:-1 %}" class="pagelink">Poprzedni tydzień</a> | {% endif %}
+        {% if week == 1 %}<a href="{% url profile.views.blog username=profile.user.username,year=year|add:-1,week=week|add:51 %}" class="pagelink">Poprzedni tydzień</a> |{% endif %}
         {% endif %} Tydzien {{ week }} | {% if today %}
-        {% if week < 52 %}<a href="{{ year }}/{{ week|add:+1 }}" class="pagelink">
+        {% if week < 52 %}<a href="{% url profile.views.blog username=profile.user.username,year=year,week=week|add:+1 %}" class="pagelink">
         Następny tydzień</a> {% endif %}
-        {% if week == 52 %}<a href="{{ year|add:+1 }}/{{ week|add:-51 }}" class="pagelink">
+        {% if week == 52 %}<a href="{{ url profile.views.blog username=profile.user.username,year=year|add:+1,week=week|add:-51 %}" class="pagelink">
         Następny tydzień</a>{% endif %}     
         {% else %}
-        {% if week < 52 %}<a href="../{{ year }}/{{ week|add:+1 }}" class="pagelink">
+        {% if week < 52 %}<a href="{% url profile.views.blog username=profile.user.username,year=year,week=week|add:+1 %}" class="pagelink">
         Następny tydzień</a> {% endif %}
-        {% if week == 52 %}<a href="../{{ year|add:+1 }}/{{ week|add:-51 }}" class="pagelink">
+        {% if week == 52 %}<a href="{% url profile.views.blog username=profile.user.username,year=year|add:+1,week=week|add:-51 %}" class="pagelink">
         Następny tydzień</a>{% endif %}
         {% endif %}
         </div>
