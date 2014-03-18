@@ -34,7 +34,7 @@ from cockpit.models import Status
 from settings import MEDIA_ROOT
 ###
 
-HOST_URL = 'http://plib.hell.pl'
+HOST_URL = 'http://plum.me'
 
 ###
 
