@@ -13,15 +13,22 @@ STATUS_LENGTH = 160
 
 # RE-s
 
-TAG_RE = re.compile(ur'#(?P<tag>\w+)',re.UNICODE)
+TAG_RE = re.compile(ur'\A#(?P<tag>\w+\Z)', re.UNICODE)
 MENTION_RE = re.compile('\^(?P<username>\w+)')
+
 YOUTUBE_RE = re.compile ('https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<video>[\w\d-]+)')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
+
+PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?P<url>https?://\w+(\.\w+)*(/[\w\?=]*)*)')
+
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
 STATUS_RE = re.compile(ur'(?:(?:https?://(?:plum\.me|plib\.hell\.pl))|\A|\s)(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
 APO_RE = re.compile(ur'(&#39;)')
+URL_RE = None
+
+
 
 # Create your models here.
 
@@ -57,12 +64,15 @@ class Status (models.Model):
     
 
   def num_likes (self):
+    'number of likes on the status'
+    
     # .distinct().count()
 #    return 0   
     return Like.objects.filter(status__exact=self)
     
 
   def liking (self):
+    'list of users that like this status'
 
     l = self.likes()
     return [ f.user.user.username for f in l ] if l else []
@@ -74,11 +84,11 @@ class Status (models.Model):
   def render (self, simple=False):
   
     '''rendering of status' text to displayable HTML, it involves
- * interpretation of status' action and presentation with appropriate text or
+    * interpretation of status' action and presentation with appropriate text or
  
- * mention and quote parsing and presentation
- * hashtags parsing and presentation
- * embedded media URL-s parsing and presentation
+    * mention and quote parsing and presentation
+    * hashtags parsing and presentation
+    * embedded media URL-s parsing and presentation
     '''
 
     ### utility functions
@@ -104,6 +114,15 @@ class Status (models.Model):
        result = e[0].sub(e[1], result)
       
       return result
+
+    def clickable_url(text):
+      match = PROCESS_RE.search(text)
+      if match_dict:
+        url = match.groupdict.get('url')
+        if url:
+          result = text.replace(url, '<a href="%s">%s</a>' % ( url, url ) )
+          return result    
+      return text
 
     def tag_cockpit(text, view='cockpit.views.tag'):
       template = '<a href="%s">%s</a>'
@@ -140,12 +159,11 @@ class Status (models.Model):
     # mention & quoting
     elif self.action in ('mention', 'quote'):    
       u = self.owner.user.username
-#      p = self.recipient.user.username if self.recipient else None
       d = dict( user=user_cockpit (self.owner),
         username=u,
- #       profilename=p
         profile=user_cockpit (self.recipient),
         url=self.text)
+
       if self.action == 'mention':
         result = u'%(user)s mówi o %(profile)s: <a href="%(url)s">[^%(username)s]</a>' % d
       else:
@@ -166,7 +184,7 @@ class Status (models.Model):
       
       # size limit
       
-      text = self.text[:160] if len(self.text) > 160 else self.text
+      text = self.text[:STATUS_LENGTH] if len(self.text) > STATUS_LENGTH else self.text
       result = APO_RE.sub("'", text)
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), result)
@@ -187,7 +205,9 @@ class Status (models.Model):
         else:
           result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
-      # embedding stuff from other sites    
+      # URL-s and embedding stuff from other sites    
+      
+      result = clickable_url(result)
       result = insert_embeds(result)      
 
       try:
@@ -203,7 +223,8 @@ class Status (models.Model):
 
       # hashtags detected
       if self.tagged:
-        result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag', kwargs=dict(text=g.group().strip().strip('#'))) ,g.group().strip()), result)
+        result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag',
+          kwargs=dict(text=g.group().strip().strip('#'))), g.group().strip()), result)
 
       # image handling
 
