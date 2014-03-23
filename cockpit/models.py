@@ -13,7 +13,7 @@ STATUS_LENGTH = 160
 
 # RE-s
 
-TAG_RE = re.compile(ur'\A#(?P<tag>\w+\Z)', re.UNICODE)
+TAG_RE = re.compile(ur'(?:\s|\A)#(?P<tag>\w+)', re.UNICODE)
 MENTION_RE = re.compile('\^(?P<username>\w+)')
 
 YOUTUBE_RE = re.compile ('https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<video>[\w\d-]+)')
@@ -223,8 +223,9 @@ class Status (models.Model):
 
       # hashtags detected
       if self.tagged:
+        
         result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag',
-          kwargs=dict(text=g.group().strip().strip('#'))), g.group().strip()), result)
+          kwargs=dict(text=g.group().strip().strip('#'))), g.group()), result)
 
       # image handling
 
