@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import logging 
 
 from PIL import Image
 
@@ -125,8 +126,11 @@ def main (request, username=None):
 @login_required
 def feed (request, username=None, mobile=False, quote=None, reply=None,
           private=False, slug=None, skip=0):  
+  logging.basicConfig(filename='/var/log/plum/logfile', level=logging.INFO)
+  #logger = logging.getLogger('plum.cockpit.feed')
 
   user = get_object_or_404(User, user__id__exact=request.user.id) 
+  logging.info('cockpit: %s',user.user.username)
   follow = True
   profile = get_object_or_404 (User, user__username__exact=username) if username else user
 
