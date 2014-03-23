@@ -20,7 +20,7 @@ YOUTUBE_RE = re.compile ('https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<v
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 
-PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?P<url>https?://\w+(\.\w+)*(/[\w\?=]*)*)')
+PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?P<url>https?://[\w-]+(\.[\w-]+)*(/[\w\?=,.\-%]*)*)')
 
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
@@ -117,10 +117,10 @@ class Status (models.Model):
 
     def clickable_url(text):
       match = PROCESS_RE.search(text)
-      if match_dict:
-        url = match.groupdict.get('url')
+      if match:
+        url = match.groupdict().get('url')
         if url:
-          result = text.replace(url, '<a href="%s">%s</a>' % ( url, url ) )
+          result = text.replace(url, '<a href="%s" target="_blank">%s</a>' % ( url, url ) )
           return result    
       return text
 
