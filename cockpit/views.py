@@ -23,7 +23,7 @@ from django.db.models.signals import post_save
 from django.utils.html import escape
 from django.http import Http404 as HTTP404
 
-from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE, STATUS_RE, STATUS_LENGTH
+from models import Status, StatusForm, Tag, Like, TAG_RE, MESSAGE_RE, MENTION_RE, STATUS_RE, PROCESS_RE, STATUS_LENGTH
 from profile.models import User
 
 ###
