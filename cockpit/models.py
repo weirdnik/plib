@@ -16,13 +16,13 @@ STATUS_LENGTH = 160
 TAG_RE = re.compile(ur'(?:\s|\A)#(?P<tag>\w+)', re.UNICODE)
 MENTION_RE = re.compile('\^(?P<username>\w+)')
 
-YOUTUBE_RE = re.compile ('https?://(www.)?(youtu.be/|youtube.com/watch(?:feature=player_embedded&)\?v=)(?P<video>[\w\d-]+)')
+YOUTUBE_RE = re.compile ('https?://(www.)?(youtu.be/|youtube.com/watch\?(?:feature=player_embedded&)?v=)(?P<video>[\w\d-]+)(?:#t=\d+)?')
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 
 # the URL clause finds urls not preceded by iframe call to not fuck embeds - FUGLY
 
-PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch(?:feature=player_embedded&)\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?<!(<iframe src=")|(t="270" src="))(?P<url>https?://[\w-]+(\.[\w-]+)*(/[\w\?=,.\-%&;]*)*)')
+PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?(?:feature=player_embedded&)?v=)(?P<YT_id>[\w\d-]+)(?:#t=\d+)?)|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?<!(<iframe src=")|(t="270" src="))(?P<url>https?://[\w-]+(\.[\w-]+)*(/[\w\?=,.\-%&;#]*)*)')
 
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
@@ -227,7 +227,10 @@ class Status (models.Model):
       # embedding stuff from other sites    
       
       result = insert_embeds(result)      
+
+      # clickable urls
       result = clickable_url(result)      
+
 
       # quotes - AFTER EMBEDS      
       # TODO add flat_render for onmouseover display      
@@ -235,9 +238,6 @@ class Status (models.Model):
         url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
         user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username,
         space=g.groupdict().get('space','')), result)
-
-      # clickable urls
-
 
       try:
         if simple:
