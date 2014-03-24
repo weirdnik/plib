@@ -24,7 +24,7 @@ PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=
 
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
-STATUS_RE = re.compile(ur'(?:(?:https?://(?:plum\.me|plib\.hell\.pl))|\A|\s)(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
+STATUS_RE = re.compile(ur'(?:\s|\A)(?:https?://(?:plum\.me|plib\.hell\.pl))?(?P<status>/s(?:tatus)?/(?P<object_id>\d+)/?)')
 APO_RE = re.compile(ur'(&#39;)')
 URL_RE = None
 
@@ -179,19 +179,17 @@ class Status (models.Model):
         result = result + ': %s <a href="%s">[cytuj]</a> <a href="%s">[odpowiedz]</a>' % ( msg.render(),
           reverse('mobile_dashboard', kwargs=dict(mobile=True, quote=object_id)),
           reverse('reply_dashboard', kwargs=dict(mobile=True, reply=msg.owner.user.username)))
+
     else:
-      # mentions and quotes
-      
       # size limit
       
       text = self.text[:STATUS_LENGTH] if len(self.text) > STATUS_LENGTH else self.text
       result = APO_RE.sub("'", text)
+
+      # mentions 
+          
       result = MENTION_RE.sub ( lambda g: u'<a href="%s" target="_top">%s</a>' % (reverse('cockpit.views.main',
         kwargs=dict(username=g.group().strip('^'))), g.group()), result)
-      # TODO add flat_render for onmouseover display
-      result = STATUS_RE.sub( lambda g: u'<a title="%(text)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
-        url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
-        user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username), result)
 
       # message prefix display mangling        
       if self.recipient:
@@ -205,10 +203,17 @@ class Status (models.Model):
         else:
           result = MSG_PREFIX_RE.sub('&rsaquo;', result)
               
-      # URL-s and embedding stuff from other sites    
+      # embedding stuff from other sites    
       
-      result = clickable_url(result)
+      result = clickable_url(result)      
       result = insert_embeds(result)      
+
+      # quotes - AFTER EMBEDS      
+      # TODO add flat_render for onmouseover display      
+      result = STATUS_RE.sub( lambda g: u'<a title="%(text)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
+        url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
+        user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username), result)
+
 
       try:
         if simple:
