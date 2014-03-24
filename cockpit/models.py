@@ -20,7 +20,7 @@ YOUTUBE_RE = re.compile ('https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<v
 VIMEO_RE = re.compile ('https?://(www.)?vimeo.com/(?P<video>[\w\d]+)')
 INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 
-PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?P<url>https?://[\w-]+(\.[\w-]+)*(/[\w\?=,.\-%]*)*)')
+PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?<!<iframe src=")(?P<url>https?://[\w-]+(\.[\w-]+)*(/[\w\?=,.\-%]*)*)')
 
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
