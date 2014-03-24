@@ -22,7 +22,7 @@ INSTAGRAM_RE = re.compile('https?://instagram.com/p/(?P<image>[\w\d]+)/?')
 
 # the URL clause finds urls not preceded by iframe call to not fuck embeds - FUGLY
 
-PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?<!<iframe src=")(?P<url>https?://[\w-]+(\.[\w-]+)*(/[\w\?=,.\-%]*)*)')
+PROCESS_RE = re.compile('(?P<YT>https?://(www.)?(youtu.be/|youtube.com/watch\?v=)(?P<YT_id>[\w\d-]+))|(?P<Vimeo>https?://(www.)?vimeo.com/(?P<V_ID>[\w\d]+))|(?P<Instagram>https?://instagram.com/p/(?P<I_ID>[\w\d]+)/?)|(?<!(<iframe src=")|(t="270" src="))(?P<url>https?://[\w-]+(\.[\w-]+)*(/[\w\?=,.\-%]*)*)')
 
 MESSAGE_RE = re.compile('^(\>|&gt;)(\>|&gt;)?(?P<recipient>\w+):?')
 MSG_PREFIX_RE = re.compile('^\>')
@@ -134,6 +134,7 @@ class Status (models.Model):
     
     ###
                    
+    
     if self.action == 'follow':
       result = u'%s obserwuje %s' % (user_cockpit(self.recipient),
         user_cockpit(self.owner)) 
@@ -187,6 +188,24 @@ class Status (models.Model):
       
       text = self.text[:STATUS_LENGTH] if len(self.text) > STATUS_LENGTH else self.text
       result = APO_RE.sub("'", text)
+
+      # replacing http://.../status links with /status links
+      # FUCK THIS SHIT    
+
+#      result = STATUS_RE.sub(lambda g: u'%(space)s/status/%(object_id)s/' % g.groupdict(), result)
+      
+#      print result
+# dict(url=reverse('cockpit.views.status', 
+#                                                                             kwargs=dict(object_id=g.groupdict().get('object_id')))),
+#                                                                 space=g.groupdict().get('space','')),
+ #                            result)
+    
+      # go on with processing               
+
+#      result = STATUS_RE.sub( lambda g: u'%(space)sxt)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
+#        url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
+#        user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username,
+#        space=g.groupdict().get('space','')), result)
 
       # mentions 
           
