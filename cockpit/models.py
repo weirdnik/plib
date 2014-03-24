@@ -192,20 +192,12 @@ class Status (models.Model):
       # replacing http://.../status links with /status links
       # FUCK THIS SHIT    
 
-#      result = STATUS_RE.sub(lambda g: u'%(space)s/status/%(object_id)s/' % g.groupdict(), result)
-      
-#      print result
-# dict(url=reverse('cockpit.views.status', 
-#                                                                             kwargs=dict(object_id=g.groupdict().get('object_id')))),
-#                                                                 space=g.groupdict().get('space','')),
- #                            result)
-    
-      # go on with processing               
+      result = STATUS_RE.sub(lambda g: u'%(space)s/status/%(object_id)s/' % g.groupdict(), result)
 
-#      result = STATUS_RE.sub( lambda g: u'%(space)sxt)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
-#        url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
-#        user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username,
-#        space=g.groupdict().get('space','')), result)
+      # FIX THIS FOR REVERSE URLS
+#      result = STATUS_RE.sub(lambda g: u'%(space)s/%(url)s/' % dict(space=g.groupdict.get('space',''),
+#        url=reverse('cockpit.views.status', kwargs=g.groupdict())),
+#        result)
 
       # mentions 
           
