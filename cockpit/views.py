@@ -271,8 +271,11 @@ def status (request, object_id=None, mobile=False):
         # quote notification
       quote_result = STATUS_RE.findall(status.text)        
       for q in quote_result:
-        action = Status	 (owner=profile, recipient=Status.objects.get(pk=q[1]).owner, action='quote', 
-          text=reverse('cockpit.views.status', kwargs=dict(object_id=status.id)))
+        action = Status(owner=profile, 
+                        recipient=Status.objects.get(pk=q[2]).owner, 
+                        action='quote', 
+                        text=reverse('cockpit.views.status',
+                                     kwargs=dict(object_id=status.id)))
         action.save()
           
   #  else:
