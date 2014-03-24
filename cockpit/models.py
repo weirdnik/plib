@@ -208,6 +208,7 @@ class Status (models.Model):
       # embedding stuff from other sites    
       
       result = insert_embeds(result)      
+      result = clickable_url(result)      
 
       # quotes - AFTER EMBEDS      
       # TODO add flat_render for onmouseover display      
@@ -217,7 +218,7 @@ class Status (models.Model):
         space=g.groupdict().get('space','')), result)
 
       # clickable urls
-      result = clickable_url(result)      
+
 
       try:
         if simple:
