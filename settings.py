@@ -7,7 +7,7 @@ PROJECT_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-APP_NAME = 'Plan B 0.0.5&alpha; (&bdquo;wiosłuj, nie gadaj&rdquo;)'
+APP_NAME = 'Plum.ME 0.1&alpha; (&bdquo;wiosłuj, nie gadaj&rdquo;)'
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
