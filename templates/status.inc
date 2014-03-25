@@ -12,7 +12,7 @@
               {{ status.render|safe }}</p>
 
           <div class="status-meta">{% if not status.recipient %}
-              <span class="date">{{ status.date|date:"d E H:m" }}</span> [&hearts; {{ status.num_likes.distinct.count|safe }} ]{% endif %}
+              <span class="date">{{ status.date|date:"d E H:i" }}</span> [&hearts; {{ status.num_likes.distinct.count|safe }} ]{% endif %}
               <a href="{% url cockpit.views.status object_id=status.id %}">link</a>
               <a href="{% url mobile_dashboard quote=status.id %}">cytuj</a>{% if not user.username = status.owner.user.username %} <a href="{% if status.private %}{% url private_dashboard reply=status.owner.user.username %}{% else %}{% url reply_dashboard reply=status.owner.user.username %}{% endif %}">odpowiedz</a>{% endif %}
 
