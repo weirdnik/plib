@@ -224,12 +224,6 @@ class Status (models.Model):
       result = clickable_url(result)      
 
 
-      # quotes - AFTER EMBEDS      
-      # TODO add flat_render for onmouseover display      
-      result = STATUS_RE.sub( lambda g: u'%(space)s<a title="%(text)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
-        url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
-        user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username,
-        space=g.groupdict().get('space','')), result)
 
       try:
         if simple:
@@ -248,7 +242,13 @@ class Status (models.Model):
         result = TAG_RE.sub ( lambda g: '<a target="_top" href="%s">%s</a>' % (reverse('cockpit.views.tag',
           kwargs=dict(text=g.group().strip().strip('#'))), g.group()), result)
 
-      # image handling
+      # quotes - AFTER EMBEDS      
+      # TODO add flat_render for onmouseover display      
+      result = STATUS_RE.sub( lambda g: u'%(space)s<a title="%(text)s" href="%(url)s">[%(user)s]</a>' % dict(text=Status.objects.get(pk=g.groupdict()['object_id']).text,
+        url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
+        user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username,
+        space=g.groupdict().get('space','')), result)
+
 
     return result
 
