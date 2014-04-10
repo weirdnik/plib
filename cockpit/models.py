@@ -245,6 +245,8 @@ class Status (models.Model):
         elif os.path.exists(self.image.path):
           try:
             ext = os.path.splitext(self.image.path)[1]
+            if ext == '.jpeg':
+              ext = '.jpg'
           except IndexError:
             ext = '.jpg'
           path = self.image.url + '_preview' + ext
