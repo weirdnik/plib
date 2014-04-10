@@ -223,19 +223,6 @@ class Status (models.Model):
       # clickable urls
       result = clickable_url(result)      
 
-
-
-      try:
-        if simple:
-          if self.image:
-            result = result + ' <img src="/static/img/image.png" />'
-        elif os.path.exists(self.image.path):
-          path = self.image.url + '_preview.jpg'
-#           '/'+'/'.join(path.split('/')[-5:]) # dirty hack, no time to fuck with django path handling        
-          result = result + '<div class="status-image"><img src="%s" /></div>' % path
-      except ValueError:
-        pass 
-
       # hashtags detected
       if self.tagged:
         
@@ -248,7 +235,22 @@ class Status (models.Model):
         url=reverse('cockpit.views.status', kwargs=dict(object_id=g.groupdict()['object_id'])),
         user=Status.objects.get(pk=g.groupdict()['object_id']).owner.user.username,
         space=g.groupdict().get('space','')), result)
+        
+      # images
 
+      try:
+        if simple:
+          if self.image:
+            result = result + ' <img src="/static/img/image.png" />'
+        elif os.path.exists(self.image.path):
+          try:
+            ext = os.path.splitext(self.image.path)[1]
+          except IndexError:
+            ext = '.jpg'
+          path = self.image.url + '_preview' + ext
+          result = result + '<div class="status-image"><a href="%s"><img src="%s" /></a></div>' % (self.image.url, path)
+      except ValueError:
+        pass 
 
     return result
 

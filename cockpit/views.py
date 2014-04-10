@@ -1,6 +1,7 @@
 # Create your views here.
 # -*- coding: utf-8 -*-
 
+import os
 import re
 import logging 
 
@@ -184,16 +185,18 @@ def feed (request, username=None, mobile=False, quote=None, reply=None,
 def status (request, object_id=None, mobile=False):
 
   def process_image(**kwargs):
+  
+    SUFFIXES = {'JPEG': 'jpg', 'PNG': 'png', 'GIF': 'gif'}
     instance = kwargs.get('instance', None)
+    
     if kwargs.get('created', False):
       if instance:
         if instance.image:
           try:
             image = Image.open(instance.image.path)
-            image.thumbnail((640,480), Image.ANTIALIAS)
-#        icon = image.thumbnail((256,256), Image.ANTIALIAS)
-            image.save(instance.image.path + '_preview' + '.jpg', 'JPEG')
-#        icon.save(instance.image.path + '.preview.', 'JPEG')
+            image.thumbnail((320,320), Image.ANTIALIAS)
+            path = instance.image.path + '.'.join(('_preview', SUFFIXES.get(image.format)))
+            image.save(path, image.format)                        
           except IOError:
             os.remove(instance.image.path)
             instance.delete()
