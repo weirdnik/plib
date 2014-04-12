@@ -178,9 +178,13 @@ img.background {
 #watch ul { list-style-type: none; }
 #watch ul li { display: inline; }
 
-.container .status { background: white; }
+.container .status { background: rgba(255, 255, 255, 0.7); }
 #pages { background: white; }
 
 .container #profile { background: rgba(255, 255, 255, 0.7); flow: left;}
 
 .container #profile img { flow: right; }
+
+img, object {
+     max-width: 100%;
+}
