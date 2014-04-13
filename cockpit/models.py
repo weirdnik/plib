@@ -76,8 +76,8 @@ class Status (models.Model):
   def liking (self):
     'list of users that like this status'
 
-    l = self.likes()
-    return [ f.user.user.username for f in l ] if l else []
+    l = self.likes.all()
+    return [ f.user.username for f in l ] if l else []
 
   def show(self):
     '''Wrapper method to make simplified render(simple=True) avaliable in templates.'''
