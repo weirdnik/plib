@@ -186,7 +186,8 @@ def status (request, object_id=None, mobile=False):
 
   def process_image(**kwargs):
   
-    SUFFIXES = {'JPEG': 'jpg', 'PNG': 'png', 'GIF': 'gif'}
+    SUFFIXES = {'JPEG': 'jpg', 'JPG': 'jpg', 'jpg': 'jpg', 'jpeg': 'jpg',
+    'PNG': 'png', 'png': 'png', 'GIF': 'gif', 'gif': 'gif'}
     instance = kwargs.get('instance', None)
     
     if kwargs.get('created', False):
