@@ -4,25 +4,26 @@ import os
 
 PROJECT_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-APP_NAME = 'Plum.ME 0.1&alpha; (&bdquo;wiosłuj, nie gadaj&rdquo;)'
+APP_NAME = 'Plum.ME 0.2&alpha; (&bdquo;go forth and multiply&rdquo;)'
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+     ('Plib', 'plib@localhost'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'plum',                       # Or path to database file if using sqlite3.
-        'USER': 'planb',                      # Not used with sqlite3.
-        'PASSWORD': 'blip2.planb.plib',       # Not used with sqlite3.
-        'HOST': 'db.hell',                    # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3'
+        #     'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        # 'NAME': 'plum',                       # Or path to database file if using sqlite3.
+        # 'USER': 'planb',                      # Not used with sqlite3.
+        # 'PASSWORD': 'blip2.planb.plib',       # Not used with sqlite3.
+        # 'HOST': 'db.hell',                    # Set to empty string for localhost. Not used with sqlite3.
+        # 'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -113,9 +114,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     # appserver
-    'gunicorn',
+   # 'gunicorn',
     # model migrations
-    'south',
+      #'south',
 )
 
 AUTH_PROFILE_MODULE = 'profile.User'
