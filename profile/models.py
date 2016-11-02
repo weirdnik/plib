@@ -11,8 +11,6 @@ from django.core.urlresolvers import reverse
 
 class User (models.Model):
   '''
-#  active     - konto aktywne - obsolete, auth to ma
-#  name       - nazwa usera  -''-
   about      - opis
   icbm       - lokalizacja
   avatar     - obrazek awatara
@@ -30,17 +28,28 @@ class User (models.Model):
   name = models.TextField (blank=True, null=True)
   about = models.TextField (blank=True, null=True)
   icbm = models.TextField (blank=True, null=True)
-  sex = models.CharField(max_length=1, choices=(('m','m'), ('f', 'f'), ('o','o'), ('n','nie dotyczy')), default='o')
+  sex = models.CharField(max_length=1, 
+                         choices=(('m','m'), 
+                                  ('f', 'f'), 
+                                  ('o','o'), ('n','nie dotyczy')),
+                         default='o')
   avatar = models.ImageField(upload_to="avatars/%s", blank=True, null=True)
-  background = models.ImageField (upload_to="backgrounds/%s", blank=True, null=True, height_field='background_height', width_field='background_width')
+  background = models.ImageField (upload_to="backgrounds/%s",
+                                  blank=True, null=True,
+                                  height_field='background_height',
+                                  width_field='background_width')
   background_height = models.IntegerField(blank=True, null=True)
   background_width = models.IntegerField(blank=True, null=True)
   phone = models.TextField (blank=True, null=True)
   private = models.BooleanField (default=False)
-  watches = models.ManyToManyField ('User', related_name='watched_users_set', blank=True, null=True)
-  ignores = models.ManyToManyField ('User', related_name='ignored_users_set', blank=True, null=True)  
-  watches_tags = models.ManyToManyField ('cockpit.Tag', related_name='watched_tag_set', blank=True, null=True)
-  ignores_tags = models.ManyToManyField ('cockpit.Tag', related_name='ignored_tag_set', blank=True, null=True)  
+  watches = models.ManyToManyField ('User', related_name='watched_users_set',
+                                    blank=True, null=True)
+  ignores = models.ManyToManyField ('User', related_name='ignored_users_set',
+                                    blank=True, null=True)  
+  watches_tags = models.ManyToManyField ('cockpit.Tag', related_name='watched_tag_set',
+                                         blank=True, null=True)
+  ignores_tags = models.ManyToManyField ('cockpit.Tag', related_name='ignored_tag_set',
+                                         blank=True, null=True)  
   
   def __unicode__ (self):
   

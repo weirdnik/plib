@@ -5,9 +5,10 @@
         <h1>{{ app_name|safe }}</h1>
     </div>
     <div id="frontpage-mainframe">
-        <h2>Najpopularniejsze statusy ostatniego tygodnia:</h2>
+        <!-- h2 Najpopularniejsze statusy ostatniego tygodnia:</h2>
+         
           <div id="frontpage-likes">
-            {% if likes %}
+            {% if not likes %}
             <ul class="feed">
                 {% for status in likes %}
                 <li>
@@ -24,7 +25,7 @@
             {% else %}
             <p>Nie ma jeszcze zadnych statusow!</p>
             {% endif %}
-        </div>
+        </div -->
       
         <h2>Ostatnie statusy:</h2>
 
