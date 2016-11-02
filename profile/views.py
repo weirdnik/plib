@@ -3,6 +3,8 @@
 import string, random, datetime
 import os
 
+import PyRSS2Gen as RSS2
+
 from PIL import Image
 
 import sendmail
@@ -97,6 +99,10 @@ def blog (request, username, year=None, month=None, week=None, day=None):
   return archive_week(request, year, week, statuses, 'date', 
     template_name='blog.html', 
     extra_context={'profile': user, 'week': int(week), 'year': int(year), 'today': today})
+
+#def feed(request, username):
+#  pass
+
                   
 def register (request):
 
@@ -139,7 +145,8 @@ def register (request):
 		  profile.save()
 		  sendmail.confirm (email, slug_url)		  
 		  template = loader.get_template ('confirm.html')
-		  return HTTPResponse (template.render(RequestContext(request, dict(email=email))))
+		  return HTTPResponse (template.render(RequestContext(request,
+                                                                      dict(email=email))))
 	  else:
 		return HTTPResponseBadRequest()
     else:
@@ -190,9 +197,13 @@ def edit (request):
 
   if request.method == 'GET':
         from blip.models import Blip
-        blips = [ (blip.blip, os.path.join('backups', blip.slug, 'blip-%s-archive.zip' % blip.blip))
+        blips = [ (blip.blip, os.path.join('backups', blip.slug,
+                                           'blip-%s-archive.zip' % blip.blip))
           for blip in Blip.objects.filter(user__exact=user)
-          if blip.slug and os.path.exists(os.path.join(MEDIA_ROOT, 'backups', blip.slug, 'blip-%s-archive.zip' % blip.blip))]
+          if blip.slug and os.path.exists(os.path.join(MEDIA_ROOT,
+                                                       'backups',
+                                                       blip.slug,
+                                                       'blip-%s-archive.zip' % blip.blip))]
         
 	initial = { 'name': user.name, 'about': user.about, 'icbm': user.icbm,
 	            'sex': user.sex }

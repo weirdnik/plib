@@ -4,7 +4,7 @@ import os
 
 PROJECT_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 APP_NAME = 'Plum.ME 0.1&alpha; (&bdquo;wiosłuj, nie gadaj&rdquo;)'

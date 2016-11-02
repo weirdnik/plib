@@ -11,14 +11,14 @@ class URL(models.Model):
   owner = models.ForeignKey(User)  
   url = models.URLField(verify_exists=True)   
   slug = models.SlugField(unique=True)
-  public = models.BooleanField()
+  public = models.BooleanField(default=True)
   description = models.TextField(blank=True)
   created = models.DateTimeField(auto_now_add=True)
 
 class URLForm (ModelForm):
   class Meta:
     model = URL
-    fields = ('url')
+    fields = ('url', 'owner')
     
 class Click (models.Model):
 
