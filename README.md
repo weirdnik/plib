@@ -16,9 +16,9 @@ Blip was a microblogging site loosely based on Twitter with changes that made it
 
 * `>username message` sends user `username` a **public** message (that can be seen on the user's timeline).
 
-* `>>username message` sends user `username` a **private** message (only the sender and recipient can see it on their timelines.
+* `>>username message` sends user `username` a **private** message (only the sender and recipient can see it on their timelines).
 
-* Messages are parts of users' timelines (no separate message box).
+* There is no separate message box.
 
 * `#hashtags` work more like IRC channels. An user can subscribe a hashtag and all tagged statuses (but not messages) will show on his timeline.
 
@@ -61,6 +61,8 @@ BLIP had a complicated architecture based on a message broker system, Plib is da
 * Plib was written and deployed as Plum.ME using Django 1.3 and 1.4 features. The main TODO is to port it to a modern Django version.
 
 * The URL shortener is missing.
+
+* Separate message box (aggregation of private and public direct messages) would be useful.
 
 * The frontend needs much work. It was coded by someone (`^alex`) with only superificial knowledge of frontend programming with some CSS fixes from other users.
 
