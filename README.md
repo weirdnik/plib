@@ -60,7 +60,7 @@ BLIP had a complicated architecture based on a message broker system, Plib is da
 
 ## Deployment
 
-In its final form, Plib should be deployed using a WSGI manager (preferably `gunicorn`) running behind reverse proxy. Apache was utilized for this. Static files (all paths starting with `/static` should be served directly through Apache, while the active URL-s should be passing to a WSGI manager. Example apache configuration is stored in the `apache.cfg` file. 
+In its final form, Plib should be deployed using a WSGI manager (preferably `gunicorn`) running behind a reverse proxy. Apache was utilized for this in production. Static files (all paths starting with `/static`) should be served directly through Apache, while the active URL-s should be passing to a WSGI manager. Example apache configuration utilizing Django WSGI interface directly is stored in the `apache.cfg` file. 
 
 ## TODO
 
