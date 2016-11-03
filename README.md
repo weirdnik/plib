@@ -58,6 +58,10 @@ Plib engine is a Django LAMP/LAPP application (*project* in Django parlance) wit
 
 BLIP had a complicated architecture based on a message broker system, Plib is database driven (and mostly database agnostic due to Django ORM).
 
+## Deployment
+
+In its final form, Plib should be deployed using a WSGI manager (preferably `gunicorn`) running behind reverse proxy. Apache was utilized for this. Static files (all paths starting with `/static` should be served directly through Apache, while the active URL-s should be passing to a WSGI manager. Example apache configuration is stored in the `apache.cfg` file. 
+
 ## TODO
 
 * Plib was written and deployed as Plum.ME using Django 1.3 and 1.4 features. The main TODO is to port it to a modern Django version.
