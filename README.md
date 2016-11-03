@@ -28,7 +28,9 @@ Blip was a microblogging site loosely based on Twitter with changes that made it
 
 ### Not implemented BLIP features
 
-* BLIP had a feature of sending statuses and messages through XMPP. This is not implemented in Plib.
+* BLIP was displaying a list of last ten logged in visitors who displayed the user's cockpit. This is not implemented in Plib.
+
+* BLIP had a feature of sending and receiving statuses and messages through XMPP. This is not implemented in Plib.
 
 * BLIP had an option to receive voice messages and MMS messages with pictures. This is not implemented in Plib.
 
@@ -65,6 +67,8 @@ In its final form, Plib should be deployed using a WSGI manager (preferably `gun
 ## TODO
 
 * Plib was written and deployed as Plum.ME using Django 1.3 and 1.4 features. The main TODO is to port it to a modern Django version.
+
+* The visitors list is missing from the cockpit.
 
 * The URL shortener is missing.
 
