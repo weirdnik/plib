@@ -36,11 +36,11 @@ Blip was a microblogging site loosely based on Twitter with changes that made it
 
 ## History
 
-BLIP.pl was written by Marcin Jagodziński (`^reuptake`) and Zbigniew Sobiecki (`^kodz`) and operated from 2006 to 2013. In the meantime it was sold to Gadu-Gadu S.A.
+BLIP.pl was written by Marcin Jagodziński (`^reuptake`) and Zbigniew Sobiecki (`^kodz`) and operated from 2007 to 2013. In the meantime it was sold to Gadu-Gadu S.A.
 
 During its operation, BLIP managed to attract a vibrant and active user community.
 
-Plib was written in frenzy in summer 2013 as Gadu Gadu S.A. announced sunsetting of BLIP. Plib (a reverse of 'BLIP', get it?) was used to run Plum.ME, which in turn went defunct in early spring of 2015 due to low usage numbers. 
+Plib was written in frenzy in summer 2013 as Gadu Gadu S.A. announced sunsetting of BLIP. Plib (a reverse of 'BLIP', get it?) was used to run Plum.ME, which in turn went defunct in early spring of 2015 due to low usage numbers.
 
 ## Architecture
 
@@ -76,7 +76,7 @@ The main programmer of Plib 0.1 was `^alex`, with `^cain` and `^brand` doing fro
 
 ### Icons
 
-The blue icons utilized as placeholders come from the excellent Iconic set by P. J. Onori (@somerandomdude on GitHub and Twitter) who gave them out on (CC) BY-SA licence. The set is avaliable at http://somerandomdude.com/work/iconic . Thanks! 
+The blue icons utilized as placeholders come from the excellent Iconic set by P. J. Onori (@somerandomdude on GitHub and Twitter) who gave them out on (CC) BY-SA licence. The set is avaliable at <http://somerandomdude.com/work/iconic>. Thanks! 
 
 ## Licence
 
