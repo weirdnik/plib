@@ -26,6 +26,8 @@ Blip was a microblogging site loosely based on Twitter with changes that made it
 
 * Users can quote the statuses with the body of the status being seen as a tooltip (this was implemented long before Twitter allowed quoting).
 
+* There is no retweeting (reposting someone else's status to one's timeline verbatim).
+
 ### Not implemented BLIP features
 
 * BLIP was displaying a list of last ten logged in visitors who displayed the user's cockpit. This is not implemented in Plib.
