@@ -1,6 +1,6 @@
 #
 
-from django.conf.urls.defaults import *
+from django.conf.urls import url, include
 #from django.contrib.auth.views import password_reset
 
 import settings
@@ -9,7 +9,7 @@ import settings
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Example:
     # (r'^blip/', include('blip.foo.urls')),
 
@@ -83,10 +83,10 @@ urlpatterns = patterns('',
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-)
+]
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
+    urlpatterns.append(
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', 
             {'document_root': settings.MEDIA_ROOT}),
     )
