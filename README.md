@@ -68,15 +68,21 @@ In its final form, Plib should be deployed using a WSGI manager (preferably `gun
 
 ## TODO
 
+### Major
+
 * Plib was written and deployed as Plum.ME using Django 1.3 and 1.4 features. The main TODO is to port it to a modern Django version.
+
+* There are no tests at all, at least some test code should be introduced.
+
+* The frontend needs much work. It was coded by someone (`^alex`) with only superificial knowledge of frontend programming with some CSS fixes from other users.
+
+### Minor
 
 * The visitors list is missing from the cockpit.
 
 * The URL shortener is missing.
 
 * Separate message box (aggregation of private and public direct messages) would be useful.
-
-* The frontend needs much work. It was coded by someone (`^alex`) with only superificial knowledge of frontend programming with some CSS fixes from other users.
 
 * BLIP had an extensive API used by independent mobile apps. There is no API.
 
