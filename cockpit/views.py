@@ -15,7 +15,6 @@ from django.http import HttpResponseBadRequest as HTTPResponseBadRequest
 from django.http import HttpResponseNotAllowed as HTTPResponseNotAllowed
 from django.http import HttpResponseForbidden as HTTPResponseForbidden
 from django.contrib.auth.decorators import login_required
-from django.core.context_processors import csrf
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
