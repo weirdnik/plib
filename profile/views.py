@@ -16,7 +16,6 @@ from django.http import HttpResponseBadRequest as HTTPResponseBadRequest
 from django.http import HttpResponseNotAllowed as HTTPResponseNotAllowed
 from django.http import HttpResponseForbidden as HTTPResponseForbidden
 from django.contrib.auth.decorators import login_required
-from django.core.context_processors import csrf
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
@@ -26,7 +25,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models.signals import post_save
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.views.generic.date_based import archive_week
+from django.views.generic.dates import WeekArchiveView
 
 import django.forms as forms
 
@@ -36,7 +35,7 @@ from cockpit.models import Status
 from settings import MEDIA_ROOT
 ###
 
-HOST_URL = 'http://plum.me'
+HOST_URL = 'http://example.com'
 
 ###
 
@@ -45,19 +44,19 @@ def follow (request, username):
 
   if request.method == 'POST':
   
-	user =	get_object_or_404(User, user__id__exact=request.user.id)  
-	follow = get_object_or_404 (User, user__username__exact=username)
+    user = get_object_or_404(User, user__id__exact=request.user.id)
+    follow = get_object_or_404 (User, user__username__exact=username)
   
-	user.watches.add(follow)
-	user.save()
+    user.watches.add(follow)
+    user.save()
 
-	action = Status(owner=follow, recipient=user, action='follow')
-	action.save()
+    action = Status(owner=follow, recipient=user, action='follow')
+    action.save()
 	
   
-	return HTTPResponseRedirect (reverse('mobile_dashboard'))
+    return HTTPResponseRedirect (reverse('mobile_dashboard'))
   else:
-	return HTTPResponseNotAllowed ()
+    return HTTPResponseNotAllowed ()
 
 
 @login_required
