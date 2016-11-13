@@ -76,6 +76,8 @@ In its final form, Plib should be deployed using a WSGI manager (preferably `gun
 
 * The frontend needs much work. It was coded by someone (`^alex`) with only superificial knowledge of frontend programming with some CSS fixes from other users.
 
+* I18N & L10N -- Plib now talks in Polish only.
+
 ### Minor
 
 * The visitors list is missing from the cockpit.
