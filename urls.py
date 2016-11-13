@@ -19,7 +19,7 @@ import django.contrib.auth.views
 
 urlpatterns = [
 
-    url(r'^/?$', main.views.front, None, 'front_page'),    # front page
+    url(r'^/?$', main.views.front, name='front_page'),    # front page
     url(r'^health/?', main.views.health),
 
     url(r'^dashboard/m/?$', cockpit.views.feed, dict(mobile=True), 'mobile_dashboard'),
