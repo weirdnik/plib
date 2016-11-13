@@ -5,7 +5,6 @@ import os
 PROJECT_DIR = (lambda p:'/'.join(p.split('/')[:-1]))(os.path.abspath(__file__))
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 APP_NAME = 'Plum.ME 0.2&alpha; (&bdquo;go forth and multiply&rdquo;)'
 
@@ -55,7 +54,7 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/"
 #STATIC_ROOT = os.path.join(PROJECT_DIR,'static')
 
-MEDIA_ROOT = os.path.join(PROJECT_DIR,'static')
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -75,12 +74,12 @@ ADMIN_MEDIA_PREFIX = '/media/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'k1zokyi%^_n6q(pl700zn4-6fxv0h-rmrv!9-kn2clo)y_x$@@'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+# # List of callables that know how to import templates from various sources.
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# #     'django.template.loaders.eggs.Loader',
+# )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -141,4 +140,26 @@ INSTALLED_APPS = (
 
 AUTH_PROFILE_MODULE = 'profile.User'
 
+USE_ETAGS = True
+USE_TZ = True
+FIRST_DAY_OF_WEEK = 1
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(PROJECT_DIR, 'debug.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
