@@ -1,4 +1,4 @@
-{% extends "xhtml.html" %}{% block body %}
+{% extends "xhtml.html" %}{% load i18n %}{% block body %}
 {% include "parts/menu.html" %}
 <div class="container">
     <div id="frontpage-intro">
@@ -27,7 +27,7 @@
             {% endif %}
         </div -->
       
-        <h2>Ostatnie statusy:</h2>
+        <h2>{% trans "Ostatnie statusy:" %}</h2>
 
         <div id="frontpage-feed">
             {% if feed %}
@@ -45,7 +45,7 @@
                 {% endfor %}
             </ul>
             {% else %}
-            <p>Nie ma jeszcze zadnych statusow!</p>
+            <p>{% trans "Nie ma jeszcze zadnych statusow!" %}</p>
             {% endif %}
         </div>
     </div>
