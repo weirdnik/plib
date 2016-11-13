@@ -24,12 +24,12 @@ def front(request):
     likes = Status.objects.filter(date__gte=(now-week)).annotate(likes_count=Count('likes')).order_by('-likes_count')[:16]
   
     statuses = Status.objects.filter(private__exact=False, recipient__exact=None,
-      action__exact=None).order_by('-date')    
+      action__exact=None).order_by('-date')
     feed = statuses[:20] if statuses else None
-    
+
     template = loader.get_template('front.html')
     return HTTPResponse(template.render(RequestContext(request,
-      dict(feed=feed,likes=likes,app_name=APP_NAME))))
+      dict(feed=feed, likes=likes, app_name=APP_NAME))))
       
 def health(request):
 
