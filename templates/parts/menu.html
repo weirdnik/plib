@@ -1,27 +1,27 @@
-<div id="menu" class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
+{% load i18n %}<div id="menu" class="navbar navbar-inverse navbar-fixed-top bs-docs-nav">
     <div class="container">
-        <a class="logo" href="{% url 'front_page' %}">Plum</a>
+        <a class="logo" href="{% url 'front_page' %}">Plib</a>
         <nav class="nav-collapse bs-navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
                 <li>
-                    <a href="{% url 'mobile_dashboard' %}">kokpit</a>
+                    <a href="{% url 'mobile_dashboard' %}">{% trans "kokpit" %}</a>
                 </li>
                 <li>
-                    <a href="{% url 'profile.views.blog' username=user.username #}">blog</a>
+                    <a href="{% url 'profile.views.blog' username=user.username %}">{% trans "blog" %}</a>
                 </li>
                 <li>
-                    <a href="{% url 'edit_account' %}">konto</a>
+                    <a href="{% url 'edit_account' %}">{% trans "konto" %}</a>
                 </li>
                 <li>
-                    <a href="{% url 'logout_user' %}">wyloguj</a>
+                    <a href="{% url 'logout_user' %}">{% trans "wyloguj" %}</a>
                 </li>
                 {% else %}
                 <li>
-                    <a href="{% url 'login_user' %}">zaloguj się</a>
+                    <a href="{% url 'login_user' %}">{% trans "zaloguj się" %}</a>
                 </li>
                 <li>
-                    <a href="{% url 'create_user' %}">załóż konto</a>
+                    <a href="{% url 'create_user' %}">{% trans "załóż konto" %}</a>
                 </li>
             {% endif %}
             </ul>
