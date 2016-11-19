@@ -44,7 +44,7 @@ BLIP.pl was written by Marcin Jagodziński (`^reuptake`) and Zbigniew Sobiecki (
 
 During its operation, BLIP managed to attract a vibrant and active user community.
 
-Plib was written in frenzy in summer 2013 as Gadu Gadu S.A. announced sunsetting of BLIP. Plib (a reverse of 'BLIP', get it?) was used to run Plum.ME, which in turn went defunct in early spring of 2015 due to low usage numbers.
+Plib was written in frenzy in summer 2013 as Gadu Gadu S.A. announced sunsetting of BLIP. Plib (a permutation of 'BLIP', get it?) was used to run Plum.ME, which in turn went defunct in early spring of 2015 due to low usage numbers.
 
 ## Architecture
 
@@ -64,7 +64,27 @@ BLIP had a complicated architecture based on a message broker system, Plib is da
 
 ## Deployment
 
-In its final form, Plib should be deployed using a WSGI manager (preferably `gunicorn`) running behind a reverse proxy. Apache was utilized for this in production. Static files (all paths starting with `/static`) should be served directly through Apache, while the active URL-s should be passing to a WSGI manager. Example apache configuration utilizing Django WSGI interface directly is stored in the `apache.cfg` file. 
+In its final form, Plib should be deployed using a WSGI manager (preferably `gunicorn`) running behind a reverse proxy. Apache was utilized for this in production. Static files (all paths starting with `/static`) should be served directly through Apache, while the active URL-s should be passing to a WSGI manager. Example apache configuration utilizing Django WSGI interface directly is stored in the `apache.cfg` file.
+ 
+### Requirements
+
+#### System requirements
+
+* Django-supported SQL Database (PostgreSQL, MySQL, MariaDB),
+
+* reverse proxy (Apache, Varnish, Nginx),
+
+* WSGI manager (Gunicorn).
+
+#### Python requirements
+
+* Python 2.7
+
+* Django
+
+* Pillow
+
+* PyRSS2Gen
 
 ## TODO
 
@@ -88,13 +108,27 @@ In its final form, Plib should be deployed using a WSGI manager (preferably `gun
 
 * BLIP had an extensive API used by independent mobile apps. There is no API.
 
-## Authors
+* Removing hardcoded 'Plum.ME' sitename from templates.
+
+## Authors and external dependencies
 
 The main programmer of Plib 0.1 was `^alex`, with `^cain` and `^brand` doing frontend work. Maciej Orliński did some basic work on status archives (*bliplogs*).
 
 ### Icons
 
-The blue icons utilized as placeholders come from the excellent Iconic set by P. J. Onori (@somerandomdude on GitHub and Twitter) who gave them out on (CC) BY-SA licence. The set is avaliable at <http://somerandomdude.com/work/iconic>. Thanks! 
+The blue icons utilized as placeholders come from the excellent Iconic set by P. J. Onori (@somerandomdude on GitHub and Twitter) who gave them out on (CC) BY-SA licence. The set is avaliable at <http://somerandomdude.com/work/iconic>. Thanks!
+ 
+### Javascript
+
+The current frontend uses:
+
+* Bootstrap JS framework by Mark Otto (@mdo) and Jacob Thornton (@fat);
+
+* HTML5Shiv by @afarkas @jdalton @jon_neal and @rem;
+
+* jQuery 1.10 by John Resig et al;
+
+* Google Web Fonts library.
 
 ## Licence
 
